@@ -1,0 +1,31 @@
+<resources>
+	<string name="app_name">Teaching Evaluate</string>
+	<string name="title_activity_person_center" translatable="false">title_activity_person_center</string>
+	<string name="title_activity_student_evaluate" translatable="false">title_activity_student_evaluate</string>
+	<string name="inputUsername">Input username</string>
+	<string name="inputPassword">Input password</string>
+	<string name="rememberPassword">Remember password</string>
+	<string name="autoLogin">Auto login</string>
+	<string name="login">Log in</string>
+	<string name="fillInUsernameAndPassword">Please fill in the username and password.</string>
+	<string name="loggingIn">Logging in</string>
+	<string name="wait">Please wait...</string>
+	<string name="connectServerFail">Connect to the server failed.\nError Code:0x%1$08x.</string>
+	<string name="errorPassword">The password is not correct.</string>
+	<string name="nonExistUsername">The user do not exist.</string>
+	<string name="systemError">System error, please try it again soon.</string>
+	<string name="serverSetting">Server setting</string>
+	<string name="logout">Log out</string>
+	<string name="help">Help</string>
+	<string name="about">About</string>
+	<string name="setServerAddress">Set Server Address</string>
+	<string name="setServerAddressHint">Modify the default server address may cause the software not work properly, set it only when you have confirmed that the server address has changed.</string>
+	<string name="reset">Reset</string>
+	<string name="modify">Modify</string>
+	<string name="firstUseHint">Welcome to the Teaching Evaluation System, for the first use, please complete your information.</string>
+	<string name="usernameInUse">This user name is already in use.</string>
+	<string name="name">Name</string>
+	<string name="studentId">Student ID</string>
+	<string name="passwordInconsistent">Password input inconsistent.</string>
+	<string name="identityExpired">The identity of the currently logged on has expired, please log in again.</string>
+</resources>

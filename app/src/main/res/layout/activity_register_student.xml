@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+	android:id="@+id/clRegister"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:fitsSystemWindows="true"
+	tools:context=".ui.activity.StudentMainUiActivity">
+
+	<android.support.design.widget.AppBarLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:theme="@style/MyActivityTheme.AppBarOverlay">
+
+		<android.support.v7.widget.Toolbar
+			android:id="@+id/toolbar"
+			android:layout_width="match_parent"
+			android:layout_height="?attr/actionBarSize"
+			android:background="?attr/colorPrimary"
+			app:popupTheme="@style/MyActivityTheme.PopupOverlay"/>
+
+	</android.support.design.widget.AppBarLayout>
+
+	<android.support.v4.widget.SwipeRefreshLayout
+		android:id="@+id/srlRegister"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+		<ScrollView android:layout_width="match_parent"
+					android:layout_height="match_parent">
+			<LinearLayout android:layout_width="match_parent"
+						  android:layout_height="match_parent"
+						  android:orientation="vertical"
+						  android:paddingBottom="@dimen/activity_vertical_margin"
+						  android:paddingLeft="@dimen/activity_horizontal_margin"
+						  android:paddingRight="@dimen/activity_horizontal_margin"
+						  android:paddingTop="@dimen/activity_vertical_margin">
+
+				<TextView android:layout_width="wrap_content"
+						  android:layout_height="wrap_content"
+						  android:text="@string/firstUseHint"/>
+
+				<android.support.design.widget.TextInputLayout
+					android:id="@+id/tilStudentId"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:paddingTop="20dp">
+
+					<EditText
+						android:id="@+id/etStudentId"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:hint="学号"
+						android:singleLine="true"
+						android:inputType="number"/>
+
+				</android.support.design.widget.TextInputLayout>
+
+				<android.support.design.widget.TextInputLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content">
+
+					<EditText
+						android:id="@+id/etName"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:singleLine="true"
+						android:hint="姓名"/>
+
+				</android.support.design.widget.TextInputLayout>
+
+				<RadioGroup android:id="@+id/rgSex"
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:orientation="horizontal"
+							android:padding="5dp">
+
+					<TextView android:layout_width="wrap_content"
+							  android:layout_height="wrap_content"
+							  android:layout_marginRight="30dp"
+							  android:text="性别"
+							  android:textSize="17sp"/>
+
+					<RadioButton android:id="@+id/rbSexMale"
+								 android:layout_width="0dp"
+								 android:layout_height="wrap_content"
+								 android:layout_weight="1"
+								 android:checked="true"
+								 android:text="男"/>
+
+					<RadioButton android:id="@+id/rbSexFemale"
+								 android:layout_width="0dp"
+								 android:layout_height="wrap_content"
+								 android:layout_weight="1"
+								 android:text="女"/>
+				</RadioGroup>
+
+				<LinearLayout android:layout_width="match_parent"
+							  android:layout_height="wrap_content"
+							  android:gravity="center_vertical"
+							  android:orientation="horizontal"
+							  android:padding="5dp">
+
+					<TextView android:layout_width="wrap_content"
+							  android:layout_height="wrap_content"
+							  android:layout_marginRight="30dp"
+							  android:text="系部"
+							  android:textSize="17sp"/>
+
+					<Spinner android:id="@+id/spDepartment"
+							 android:layout_width="match_parent"
+							 android:layout_height="wrap_content"
+							 android:layout_margin="5dp"/>
+				</LinearLayout>
+
+				<LinearLayout android:layout_width="match_parent"
+							  android:layout_height="wrap_content"
+							  android:gravity="center_vertical"
+							  android:orientation="horizontal"
+							  android:padding="5dp">
+
+					<TextView android:layout_width="wrap_content"
+							  android:layout_height="wrap_content"
+							  android:layout_marginRight="30dp"
+							  android:text="专业"
+							  android:textSize="17sp"/>
+
+					<Spinner android:id="@+id/spSubject"
+							 android:layout_width="match_parent"
+							 android:layout_height="wrap_content"
+							 android:layout_margin="5dp"/>
+				</LinearLayout>
+
+				<LinearLayout android:layout_width="match_parent"
+							  android:layout_height="wrap_content"
+							  android:gravity="center_vertical"
+							  android:orientation="horizontal"
+							  android:padding="5dp">
+
+					<TextView android:layout_width="wrap_content"
+							  android:layout_height="wrap_content"
+							  android:layout_marginRight="30dp"
+							  android:text="入学年份"
+							  android:textSize="17sp"/>
+
+					<Spinner android:id="@+id/spYear"
+							 android:layout_width="match_parent"
+							 android:layout_height="wrap_content"
+							 android:layout_margin="5dp"/>
+				</LinearLayout>
+
+				<LinearLayout android:layout_width="match_parent"
+							  android:layout_height="wrap_content"
+							  android:gravity="center_vertical"
+							  android:orientation="horizontal"
+							  android:padding="5dp">
+
+					<TextView android:layout_width="wrap_content"
+							  android:layout_height="wrap_content"
+							  android:layout_marginRight="30dp"
+							  android:text="班级"
+							  android:textSize="17sp"/>
+
+					<Spinner android:id="@+id/spClazz"
+							 android:layout_width="match_parent"
+							 android:layout_height="wrap_content"
+							 android:layout_margin="5dp"/>
+				</LinearLayout>
+
+				<Button android:id="@+id/btnSave"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_gravity="right"
+						android:text="保存"/>
+			</LinearLayout>
+		</ScrollView>
+	</android.support.v4.widget.SwipeRefreshLayout>
+</android.support.design.widget.CoordinatorLayout>

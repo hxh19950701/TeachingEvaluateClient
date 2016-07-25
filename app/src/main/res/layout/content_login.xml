@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	android:id="@+id/llLogin"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical"
+	android:paddingBottom="@dimen/activity_vertical_margin"
+	android:paddingLeft="@dimen/activity_horizontal_margin"
+	android:paddingRight="@dimen/activity_horizontal_margin"
+	android:paddingTop="@dimen/activity_vertical_margin"
+	app:layout_behavior="@string/appbar_scrolling_view_behavior"
+	tools:context=".ui.activity.LoginActivity"
+	tools:showIn="@layout/activity_login">
+
+	<android.support.design.widget.TextInputLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="20dp">
+
+		<EditText
+			android:id="@+id/etUsername"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:imeOptions="actionNext"
+			android:hint="@string/inputUsername"
+			android:inputType="textEmailAddress"
+			android:digits="0123456789abcdefghigklmnopqrstuvwxyzABCDEFGHIGKLMNOPQRSTUVWXYZ"/>
+	</android.support.design.widget.TextInputLayout>
+
+	<android.support.design.widget.TextInputLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+
+		<EditText
+			android:id="@+id/etPassword"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:hint="@string/inputPassword"
+			android:imeOptions="actionDone"
+			android:inputType="textPassword"/>
+
+	</android.support.design.widget.TextInputLayout>
+
+	<CheckBox android:id="@+id/cbRememberPassword"
+			  android:layout_width="wrap_content"
+			  android:layout_height="wrap_content"
+			  android:text="@string/rememberPassword"/>
+
+	<CheckBox android:id="@+id/cbAutoLogin"
+			  android:layout_width="wrap_content"
+			  android:layout_height="wrap_content"
+			  android:text="@string/autoLogin"/>
+
+	<Button android:id="@+id/btnLogin"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="right"
+			android:text="@string/login"/>
+</LinearLayout>

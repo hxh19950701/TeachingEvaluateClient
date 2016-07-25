@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<style name="MyActivityTheme" parent="AppTheme.NoActionBar" >
+		<item name="android:windowAnimationStyle">@style/AnimationActivity</item>
+		<item name="android:windowNoTitle">true</item>
+		<item name="android:alertDialogTheme">@style/Theme.AppCompat.Dialog</item>
+	</style>
+</resources>

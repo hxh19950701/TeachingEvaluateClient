@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest package="com.hxh19950701.teachingevaluateclient"
+		  xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<uses-permission android:name="android.permission.INTERNET"/>
+
+	<application
+		android:name=".application.TeachingEvaluateClientApplication"
+		android:allowBackup="true"
+		android:icon="@mipmap/ic_launcher"
+		android:label="@string/app_name"
+		android:supportsRtl="true"
+		android:theme="@style/MyActivityTheme">
+		<activity
+			android:name=".ui.activity.LoginActivity"
+			android:label="@string/app_name">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN"/>
+
+				<category android:name="android.intent.category.LAUNCHER"/>
+			</intent-filter>
+		</activity>
+		<activity android:name=".ui.activity.RegisterUserActivity">
+		</activity>
+		<activity android:name=".ui.activity.RegisterStudentActivity">
+		</activity>
+		<activity
+			android:name=".ui.activity.StudentMainUiActivity"
+			android:label="@string/title_activity_person_center"
+			android:theme="@style/MyActivityTheme">
+		</activity>
+		<!--
+ ATTENTION: This was auto-generated to add Google Play services to your project for
+     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
+        -->
+		<meta-data
+			android:name="com.google.android.gms.version"
+			android:value="@integer/google_play_services_version"/>
+
+		<activity
+			android:name=".ui.activity.StudentEvaluateActivity"
+			android:label="@string/title_activity_student_evaluate"
+			android:theme="@style/MyActivityTheme">
+		</activity>
+	</application>
+
+</manifest>

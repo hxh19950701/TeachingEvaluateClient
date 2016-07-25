@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:padding="10dp">
+
+	<TextView android:id="@+id/tvCourseName"
+			  android:layout_width="match_parent"
+			  android:layout_height="wrap_content"
+			  android:singleLine="true"
+			  android:text="课程名称"
+			  android:textColor="#000"
+			  android:textSize="20sp"/>
+
+	<TextView android:layout_width="wrap_content"
+			  android:layout_height="wrap_content"
+			  android:id="@+id/tvTeacher"
+			  android:layout_below="@id/tvCourseName"
+			  android:layout_marginTop="5dp"
+			  android:textColor="#9000"
+			  android:text="任课老师"/>
+
+	<TextView android:layout_width="wrap_content"
+			  android:layout_height="wrap_content"
+			  android:id="@+id/tvScore"
+			  android:layout_below="@id/tvCourseName"
+			  android:layout_marginTop="5dp"
+			  android:layout_alignParentRight="true"
+			  android:textColor="#FF2D2D"
+			  android:text="得分"/>
+</RelativeLayout>
