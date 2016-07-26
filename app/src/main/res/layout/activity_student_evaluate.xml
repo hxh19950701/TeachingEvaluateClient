@@ -25,10 +25,6 @@
 
 	<FrameLayout android:layout_width="match_parent"
 				 android:layout_height="match_parent"
-				 android:paddingBottom="@dimen/activity_vertical_margin"
-				 android:paddingLeft="@dimen/activity_horizontal_margin"
-				 android:paddingRight="@dimen/activity_horizontal_margin"
-				 android:paddingTop="@dimen/activity_vertical_margin"
 				 app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 		<LinearLayout android:id="@+id/llEvaluate"
@@ -36,85 +32,16 @@
 					  android:layout_height="match_parent"
 					  android:orientation="vertical">
 
-			<TextView android:id="@+id/tvCourse"
-					  android:layout_width="wrap_content"
-					  android:layout_height="wrap_content"
-					  android:layout_gravity="center_vertical"
-					  android:text="课程"/>
+			<android.support.design.widget.TabLayout
+				android:id="@+id/tlFirstTarget"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"/>
 
-			<View android:layout_width="match_parent"
-				  android:layout_height="1dp"
-				  android:layout_margin="3dp"
-				  android:background="#AAA"/>
+			<android.support.v4.view.ViewPager
+				android:id="@+id/vpFirstTarget"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"/>
 
-			<TextView android:id="@+id/tvFirstTarget"
-					  android:layout_width="wrap_content"
-					  android:layout_height="wrap_content"
-					  android:layout_gravity="center_vertical"
-					  android:text="第一指标"
-					  android:textSize="18sp"/>
-
-			<TextView android:id="@+id/tvSecondTarget"
-					  android:layout_width="wrap_content"
-					  android:layout_height="wrap_content"
-					  android:layout_gravity="center_vertical"
-					  android:text="第二指标"
-					  android:textSize="18sp"/>
-
-			<android.support.v4.view.ViewPager android:id="@+id/vpItem"
-											   android:layout_width="wrap_content"
-											   android:layout_height="0dp"
-											   android:layout_weight="1"/>
-
-			<LinearLayout android:layout_width="match_parent"
-						  android:layout_height="wrap_content"
-						  android:orientation="vertical">
-
-				<TextView android:layout_width="match_parent"
-						  android:layout_height="wrap_content"
-						  android:padding="4dp"
-						  android:text="以上内容是否符合实际情况？"/>
-
-				<RadioGroup android:layout_width="match_parent"
-							android:layout_height="wrap_content"
-							android:id="@+id/rgAnswer"
-							android:orientation="horizontal">
-
-					<RadioButton android:layout_width="wrap_content"
-								 android:layout_height="wrap_content"
-								 android:layout_weight="1"
-								 android:id="@+id/rbYes"
-								 android:text="符合"/>
-					<RadioButton android:layout_width="wrap_content"
-								 android:layout_height="wrap_content"
-								 android:layout_weight="1"
-								 android:id="@+id/rbNo"
-								 android:text="不符合"/>
-					<RadioButton android:layout_width="wrap_content"
-								 android:layout_height="wrap_content"
-								 android:layout_weight="1"
-								 android:id="@+id/rbUnclear"
-								 android:text="不清楚"/>
-				</RadioGroup>
-
-				<LinearLayout android:layout_width="match_parent"
-							  android:layout_height="wrap_content"
-							  android:orientation="horizontal">
-
-					<Button android:id="@+id/btnLast"
-							android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:layout_weight="1"
-							android:text="上一个"/>
-
-					<Button android:id="@+id/btnNext"
-							android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:layout_weight="1"
-							android:text="下一个"/>
-
-				</LinearLayout>
-			</LinearLayout>
 		</LinearLayout>
 
 		<TextView android:id="@+id/tvLoading"

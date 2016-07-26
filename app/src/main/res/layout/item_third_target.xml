@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			  android:layout_width="match_parent"
+			  android:layout_height="wrap_content"
+			  android:orientation="vertical">
+
+	<TextView android:id="@+id/tvThirdTargetName"
+			  android:layout_width="match_parent"
+			  android:layout_height="wrap_content"
+			  android:layout_marginLeft="30dp"
+			  android:padding="5dp"
+			  android:text="54545454545454545"
+			  android:textColor="#222"
+			  android:textSize="12dp"/>
+
+	<TextView android:id="@+id/tvScore"
+			  android:layout_width="match_parent"
+			  android:layout_height="wrap_content"
+			  android:gravity="right"
+			  android:text="2221222121"
+			  android:textColor="#FF0000"
+			  android:textSize="12dp"
+	/>
+</LinearLayout>

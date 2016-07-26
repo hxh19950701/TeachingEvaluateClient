@@ -144,10 +144,7 @@ public class RegisterUserActivity extends BaseActivity {
         etPassword.setEnabled(false);
         etPasswordAgain.setEnabled(false);
         btnRegister.setEnabled(false);
-
-        etUsername.setFocusable(true);
-        etUsername.requestFocus();
-
+        //弹出键盘
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_NOT_ALWAYS);
     }
