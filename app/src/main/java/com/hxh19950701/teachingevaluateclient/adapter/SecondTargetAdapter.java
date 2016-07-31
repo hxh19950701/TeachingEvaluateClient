@@ -15,8 +15,8 @@ import java.util.List;
 
 public class SecondTargetAdapter extends BaseExpandableListAdapter {
 
-    List<Second> second = new ArrayList<>();
-    float[] score;
+    private List<Second> second = new ArrayList<>();
+    private float[] score;
 
     public SecondTargetAdapter(List<EvaluateThirdTarget> evaluateThirdTargets, float[] score) {
         for (int i = 0; i < evaluateThirdTargets.size(); ++i) {
@@ -65,7 +65,7 @@ public class SecondTargetAdapter extends BaseExpandableListAdapter {
 
     @Override
     public long getChildId(int groupPosition, int childPosition) {
-        return 0;
+        return second.get(groupPosition).third.get(childPosition).getId();
     }
 
     @Override
@@ -78,8 +78,8 @@ public class SecondTargetAdapter extends BaseExpandableListAdapter {
         if (convertView == null) {
             convertView = View.inflate(TeachingEvaluateClientApplication.getApplication(), R.layout.item_second_target, null);
         }
-
-        ((TextView) convertView.findViewById(R.id.tvSecondTargetName)).setText(second.get(groupPosition).evaluateSecondTarget.getName());
+        TextView tvSecondTargetName= (TextView) convertView.findViewById(R.id.tvSecondTargetName);
+        tvSecondTargetName.setText(second.get(groupPosition).evaluateSecondTarget.getName());
         return convertView;
     }
 
@@ -88,8 +88,11 @@ public class SecondTargetAdapter extends BaseExpandableListAdapter {
         if (convertView == null) {
             convertView = View.inflate(TeachingEvaluateClientApplication.getApplication(), R.layout.item_third_target, null);
         }
-        ((TextView) convertView.findViewById(R.id.tvThirdTargetName)).setText(second.get(groupPosition).third.get(childPosition).getName());
-        ((TextView) convertView.findViewById(R.id.tvScore)).setText(score[second.get(groupPosition).third.get(childPosition).getId()] == -1f ? "未评价" : score + "" );
+        float currentScore = score[second.get(groupPosition).third.get(childPosition).getId()];
+        TextView tvThirdTargetName = (TextView) convertView.findViewById(R.id.tvThirdTargetName);
+        TextView tvScore = (TextView) convertView.findViewById(R.id.tvScore);
+        tvThirdTargetName.setText(second.get(groupPosition).third.get(childPosition).getName());
+        tvScore.setText(currentScore == -1 ? "未评价" : currentScore + "分");
         return convertView;
     }
 
@@ -98,7 +101,7 @@ public class SecondTargetAdapter extends BaseExpandableListAdapter {
         return true;
     }
 
-    private static class Second {
+    public static class Second {
         public EvaluateSecondTarget evaluateSecondTarget;
         public List<EvaluateThirdTarget> third = new ArrayList<>();
 

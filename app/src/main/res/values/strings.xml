@@ -28,4 +28,10 @@
 	<string name="studentId">Student ID</string>
 	<string name="passwordInconsistent">Password input inconsistent.</string>
 	<string name="identityExpired">The identity of the currently logged on has expired, please log in again.</string>
+
+	<string-array name="checkItem">
+		<item name="yes">Yes</item>
+		<item name="no">No</item>
+		<item name="unclear">Unclear</item>
+	</string-array>
 </resources>

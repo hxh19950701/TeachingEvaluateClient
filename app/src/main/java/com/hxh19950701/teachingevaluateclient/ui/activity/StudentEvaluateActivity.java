@@ -13,14 +13,12 @@ import com.google.gson.GsonBuilder;
 import com.hxh19950701.teachingevaluateclient.Bean.CourseBean;
 import com.hxh19950701.teachingevaluateclient.Bean.EvaluatedItemBean;
 import com.hxh19950701.teachingevaluateclient.Bean.ItemBean;
-import com.hxh19950701.teachingevaluateclient.Bean.SuccessBean;
 import com.hxh19950701.teachingevaluateclient.R;
 import com.hxh19950701.teachingevaluateclient.adapter.FirstTargetAdapter;
 import com.hxh19950701.teachingevaluateclient.application.TeachingEvaluateClientApplication;
 import com.hxh19950701.teachingevaluateclient.base.BaseActivity;
 import com.hxh19950701.teachingevaluateclient.base.BaseRequestCallBack;
 import com.hxh19950701.teachingevaluateclient.base.BaseRequestParams;
-import com.hxh19950701.teachingevaluateclient.utils.SnackBarUtils;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.ResponseInfo;
@@ -68,46 +66,7 @@ public class StudentEvaluateActivity extends BaseActivity {
         tvLoadFail.setOnClickListener(this);
     }
 
-    protected void saveData(final int itemId, int radioButtonId) {
-        final float score;
-        float totalScore = itemBean.getTargetList().get(itemId).getTotalScore();
-        switch (radioButtonId) {
-            case -1:
-                score = -1;
-                break;
-            default:
-                score = totalScore * 0.5f;
-                break;
-        }
-        if (scoreData[itemId] != score) {
-            final BaseRequestParams requestParams = new BaseRequestParams();
-            requestParams.addQueryStringParameter("action", "updateStudentCourseEvaluateItem");
-            requestParams.addQueryStringParameter("courseId", courseId + "");
-            requestParams.addQueryStringParameter("itemId", itemId + "");
-            requestParams.addQueryStringParameter("score", score + "");
-            HttpUtils httpUtils = new HttpUtils();
-            httpUtils.configCurrentHttpCacheExpiry(0);
-            httpUtils.send(HttpRequest.HttpMethod.GET, TeachingEvaluateClientApplication.getEvaluateManager(),
-                    requestParams, new BaseRequestCallBack<String>() {
-                        public void onSuccess(ResponseInfo<String> responseInfo) {
-                            super.onSuccess(responseInfo);
-                            Gson gson = new Gson();
-                            SuccessBean successBean = gson.fromJson(responseInfo.result, SuccessBean.class);
-                            if (successBean.isSuccess()) {
-                                scoreData[itemId] = score;
-                            } else {
-                                SnackBarUtils.showLong(clEvaluate, "很抱歉，由于服务器故障等原因，您的评价没有保存成功。");
-                            }
-                        }
 
-                        @Override
-                        public void onFailure(HttpException e, String s) {
-                            super.onFailure(e, s);
-                            SnackBarUtils.showLong(clEvaluate, "很抱歉，由于网络故障等原因，您的评价没有保存成功。");
-                        }
-                    });
-        }
-    }
 
     protected void showResultDialog() {
     }
@@ -237,5 +196,13 @@ public class StudentEvaluateActivity extends BaseActivity {
                 initCourse();
                 break;
         }
+    }
+
+    public int getCourseId() {
+        return courseId;
+    }
+
+    public CoordinatorLayout getClEvaluate() {
+        return clEvaluate;
     }
 }
