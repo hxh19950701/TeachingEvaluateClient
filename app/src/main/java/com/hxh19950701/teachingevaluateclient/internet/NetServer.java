@@ -10,6 +10,7 @@ import com.hxh19950701.teachingevaluateclient.base.BaseRequestCallBack;
 import com.hxh19950701.teachingevaluateclient.base.BaseRequestParams;
 import com.hxh19950701.teachingevaluateclient.utils.PrefUtils;
 import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.http.HttpHandler;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.http.client.HttpRequest;
 
@@ -22,14 +23,14 @@ public class NetServer {
 
     }
 
-    public static void login(String username, String password, BaseRequestCallBack<String> callBack) {
+    public static HttpHandler<String> login(String username, String password, BaseRequestCallBack<String> callBack) {
         BaseRequestParams requestParams = new BaseRequestParams();
         requestParams.addBodyParameter("action", "login");
         requestParams.addBodyParameter("username", username);
         requestParams.addBodyParameter("password", password);
         HttpUtils httpUtils = new HttpUtils();
         httpUtils.configCurrentHttpCacheExpiry(0);
-        httpUtils.send(HttpRequest.HttpMethod.POST, TeachingEvaluateClientApplication.getUserManagerURL(), requestParams, callBack);
+        return httpUtils.send(HttpRequest.HttpMethod.POST, TeachingEvaluateClientApplication.getUserManagerURL(), requestParams, callBack);
     }
 
     public static void logout() {

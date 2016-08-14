@@ -1,6 +1,7 @@
 package com.hxh19950701.teachingevaluateclient.ui.activity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
@@ -40,6 +41,7 @@ import com.hxh19950701.teachingevaluateclient.utils.PrefUtils;
 import com.hxh19950701.teachingevaluateclient.utils.SnackBarUtils;
 import com.hxh19950701.teachingevaluateclient.utils.ViewUtils;
 import com.lidroid.xutils.exception.HttpException;
+import com.lidroid.xutils.http.HttpHandler;
 import com.lidroid.xutils.http.ResponseInfo;
 
 public class LoginActivity extends BaseActivity{
@@ -135,13 +137,17 @@ public class LoginActivity extends BaseActivity{
     public void initDate() {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(R.string.login);
+        initLoginInfo();
+        initAnim();
+        initMsg();
+    }
+
+    private void initLoginInfo(){
         isMD5 = true;
         etUsername.setText(PrefUtils.getString("username", ""));
         etPassword.setText(PrefUtils.getString("password", ""));
         cbRememberPassword.setChecked(PrefUtils.getBoolean("RememberPassword", false));
         cbAutoLogin.setChecked(PrefUtils.getBoolean("AutoLogin", false));
-        initAnim();
-        initMsg();
     }
 
     private void initMsg() {
@@ -178,17 +184,21 @@ public class LoginActivity extends BaseActivity{
     }
 
     private void startLogin() {
-        final String username = etUsername.getText().toString();
-        final String password = isMD5 ? etPassword.getText().toString() : MD5Utils.encipher(etPassword.getText().toString());
-        if (TextUtils.isEmpty(username) || TextUtils.isEmpty(etPassword.getText().toString())) {
+        //判断用户名及密码是否已填写
+        if (TextUtils.isEmpty(etUsername.getText().toString()) || TextUtils.isEmpty(etPassword.getText().toString())) {
             SnackBarUtils.showLong(clLogin, getText(R.string.fillInUsernameAndPassword));
             return;
         }
+        //获取用户名及密码MD5
+        final String username = etUsername.getText().toString();
+        final String password = isMD5 ? etPassword.getText().toString() : MD5Utils.encipher(etPassword.getText().toString());
+        //显示登录对话框
         final MaterialDialog loginDialog = new MaterialDialog.Builder(this)
                 .title(R.string.loggingIn).content(R.string.wait)
                 .progress(true, 0).progressIndeterminateStyle(true)
-                .cancelable(false).show();
-        NetServer.login(username, password, new BaseRequestCallBack<String>() {
+                .cancelable(true).show();
+        //开始登录
+        final HttpHandler httpHandler =  NetServer.login(username, password, new BaseRequestCallBack<String>() {
             @Override
             public void onSuccess(ResponseInfo<String> responseInfo) {
                 super.onSuccess(responseInfo);
@@ -230,6 +240,14 @@ public class LoginActivity extends BaseActivity{
                 super.onFailure(e, s);
                 SnackBarUtils.showLong(clLogin, String.format(getString(R.string.connectServerFail), e.getExceptionCode()));
                 loginDialog.dismiss();
+            }
+        });
+        //添加取消登录监听器
+        loginDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                SnackBarUtils.showLong(clLogin, "登录过程被取消。");
+                httpHandler.cancel();
             }
         });
     }

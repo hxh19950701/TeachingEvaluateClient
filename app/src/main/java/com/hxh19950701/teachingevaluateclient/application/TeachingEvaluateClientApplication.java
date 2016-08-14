@@ -26,12 +26,12 @@ public class TeachingEvaluateClientApplication extends Application {
     }
 
     public static void initServerURL() {
-        serverURL = PrefUtils.getString("serverURL", "http://172.28.132.162:8080/TeachingEvaluateServer");
+        serverURL = PrefUtils.getString("serverURL", "http://192.168.1.108:8080/TeachingEvaluateServer");
         departmentManagerURL = serverURL + "/departmentManager.action";
         userManagerURL = serverURL + "/userManager.action";
         studentManagerURL = serverURL + "/studentManager.action";
         courseManager = serverURL + "/courseManager.action";
-        evaluateManager=studentManagerURL+"/evaluateManager.action";
+        evaluateManager = serverURL + "/evaluateManager.action";
     }
 
     public static void initUtils() {
@@ -59,7 +59,7 @@ public class TeachingEvaluateClientApplication extends Application {
         return courseManager;
     }
 
-    public static String getEvaluateManager(){
+    public static String getEvaluateManager() {
         return evaluateManager;
     }
 

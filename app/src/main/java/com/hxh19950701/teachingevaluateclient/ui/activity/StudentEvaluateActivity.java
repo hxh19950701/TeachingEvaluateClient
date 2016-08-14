@@ -13,12 +13,14 @@ import com.google.gson.GsonBuilder;
 import com.hxh19950701.teachingevaluateclient.Bean.CourseBean;
 import com.hxh19950701.teachingevaluateclient.Bean.EvaluatedItemBean;
 import com.hxh19950701.teachingevaluateclient.Bean.ItemBean;
+import com.hxh19950701.teachingevaluateclient.Bean.SuccessBean;
 import com.hxh19950701.teachingevaluateclient.R;
 import com.hxh19950701.teachingevaluateclient.adapter.FirstTargetAdapter;
 import com.hxh19950701.teachingevaluateclient.application.TeachingEvaluateClientApplication;
 import com.hxh19950701.teachingevaluateclient.base.BaseActivity;
 import com.hxh19950701.teachingevaluateclient.base.BaseRequestCallBack;
 import com.hxh19950701.teachingevaluateclient.base.BaseRequestParams;
+import com.hxh19950701.teachingevaluateclient.utils.SnackBarUtils;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.ResponseInfo;
@@ -58,14 +60,13 @@ public class StudentEvaluateActivity extends BaseActivity {
         tvLoading = (TextView) findViewById(R.id.tvLoading);
         llEvaluate = (LinearLayout) findViewById(R.id.llEvaluate);
         tlFirstTarget = (TabLayout) findViewById(R.id.tlFirstTarget);
-        vpFirstTarget= (ViewPager) findViewById(R.id.vpFirstTarget);
+        vpFirstTarget = (ViewPager) findViewById(R.id.vpFirstTarget);
     }
 
     @Override
     protected void initListener() {
         tvLoadFail.setOnClickListener(this);
     }
-
 
 
     protected void showResultDialog() {
@@ -204,5 +205,39 @@ public class StudentEvaluateActivity extends BaseActivity {
 
     public CoordinatorLayout getClEvaluate() {
         return clEvaluate;
+    }
+
+    public void saveData(final View v, final long itemId, final float newScore) {
+        final int pos = (int) itemId;
+        System.out.println(itemId+" "+newScore+" "+courseId);
+        if (scoreData[pos] != newScore) {
+            final BaseRequestParams requestParams = new BaseRequestParams();
+            requestParams.addQueryStringParameter("action", "updateStudentCourseEvaluateItem");
+            requestParams.addQueryStringParameter("courseId", courseId + "");
+            requestParams.addQueryStringParameter("itemId", itemId + "");
+            requestParams.addQueryStringParameter("score", newScore + "");
+            HttpUtils httpUtils = new HttpUtils();
+            httpUtils.configCurrentHttpCacheExpiry(0);
+            httpUtils.send(HttpRequest.HttpMethod.GET, TeachingEvaluateClientApplication.getEvaluateManager(),
+                    requestParams, new BaseRequestCallBack<String>() {
+                        public void onSuccess(ResponseInfo<String> responseInfo) {
+                            super.onSuccess(responseInfo);
+                            Gson gson = new Gson();
+                            SuccessBean successBean = gson.fromJson(responseInfo.result, SuccessBean.class);
+                            if (successBean.isSuccess()) {
+                                scoreData[pos] = newScore;
+                                ((TextView) v.findViewById(R.id.tvScore)).setText(newScore + "分");
+                            } else {
+                                SnackBarUtils.showLong(clEvaluate, "很抱歉，由于服务器故障等原因，您的评价没有保存成功。");
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(HttpException e, String s) {
+                            super.onFailure(e, s);
+                            SnackBarUtils.showLong(clEvaluate, "很抱歉，由于网络故障等原因，您的评价没有保存成功。");
+                        }
+                    });
+        }
     }
 }
