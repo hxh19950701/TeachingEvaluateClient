@@ -409,7 +409,8 @@ public class RegisterStudentActivity extends BaseActivity {
     }
 
     private void refreshSaveButtonEnable() {
-        if (!TextUtils.isEmpty(tilStudentId.getError()) || TextUtils.isEmpty(etName.getText().toString()) || data == null) {
+        if (tilStudentId.isFocused() || !TextUtils.isEmpty(tilStudentId.getError())
+                || TextUtils.isEmpty(etName.getText().toString()) || data == null) {
             btnSave.setEnabled(false);
         } else {
             btnSave.setEnabled(true);

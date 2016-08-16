@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.hxh19950701.teachingevaluateclient.Bean.CourseListBean;
 import com.hxh19950701.teachingevaluateclient.Bean.StudentInfoBean;
 import com.hxh19950701.teachingevaluateclient.R;
@@ -88,9 +89,14 @@ public class StudentMainUiActivity extends BaseActivity {
         lvCourse.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getApplication(), StudentEvaluateActivity.class);
-                intent.putExtra("course", data.getCourseList().get(position).getId());
-                startActivity(intent);
+                if (data.getCourseList().get(position).getScore() >= 0) {
+
+                } else {
+                    Intent intent = new Intent(getApplication(), StudentEvaluateActivity.class);
+                    intent.putExtra("course", data.getCourseList().get(position).getId());
+                    startActivity(intent);
+                }
+
             }
         });
     }
@@ -114,7 +120,8 @@ public class StudentMainUiActivity extends BaseActivity {
                 requestParams, new BaseRequestCallBack<String>() {
                     public void onSuccess(ResponseInfo<String> responseInfo) {
                         super.onSuccess(responseInfo);
-                        Gson gson = new Gson();
+                        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+                        ;
                         data = gson.fromJson(responseInfo.result, CourseListBean.class);
                         if (data.isSuccess()) {
                             initCourseList();
@@ -175,7 +182,7 @@ public class StudentMainUiActivity extends BaseActivity {
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.fabAddCourse:
 
         }

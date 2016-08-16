@@ -26,7 +26,7 @@ public class TeachingEvaluateClientApplication extends Application {
     }
 
     public static void initServerURL() {
-        serverURL = PrefUtils.getString("serverURL", "http://192.168.1.108:8080/TeachingEvaluateServer");
+        serverURL = PrefUtils.getString("serverURL", "http://192.168.2.103:8080/TeachingEvaluateServer");
         departmentManagerURL = serverURL + "/departmentManager.action";
         userManagerURL = serverURL + "/userManager.action";
         studentManagerURL = serverURL + "/studentManager.action";

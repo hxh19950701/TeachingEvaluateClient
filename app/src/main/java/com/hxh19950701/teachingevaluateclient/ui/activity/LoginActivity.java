@@ -155,7 +155,7 @@ public class LoginActivity extends BaseActivity{
         if (intent != null) {
             String msg = intent.getStringExtra("msg");
             if (!TextUtils.isEmpty(msg)) {
-                SnackBarUtils.showLong(clLogin, msg);
+                SnackBarUtils.showLongPost(clLogin, msg);
             }
         }
     }
@@ -205,9 +205,9 @@ public class LoginActivity extends BaseActivity{
                 Gson gson = new Gson();
                 LoginBean loginBean = gson.fromJson(responseInfo.result, LoginBean.class);
                 if (loginBean.isSuccess()) {
+                    saveDate(username, password);
                     switch (loginBean.getIdentity()) {
                         case Constant.IDENTITY_STUDENT:
-                            saveDate(username, password);
                             startActivity(new Intent(getApplication(), StudentMainUiActivity.class));
                             break;
                         case Constant.IDENTITY_TEACHER:
@@ -215,7 +215,6 @@ public class LoginActivity extends BaseActivity{
                         case Constant.IDENTITY_ADMINISTRATOR:
                             break;
                         default:
-                            SnackBarUtils.showLong(clLogin, getText(R.string.systemError));
                             break;
                     }
                     finish();
@@ -330,7 +329,7 @@ public class LoginActivity extends BaseActivity{
             etPassword.setText(data.getStringExtra("password"));
             cbRememberPassword.setChecked(true);
             isMD5 = false;
-            SnackBarUtils.showLong(clLogin, "注册成功，点击登录按钮立刻登录。");
+            SnackBarUtils.showLongPost(clLogin, "注册成功，点击登录按钮立刻登录。");
         }
     }
 

@@ -1,13 +1,18 @@
 package com.hxh19950701.teachingevaluateclient.ui.activity;
 
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.hxh19950701.teachingevaluateclient.Bean.CourseBean;
@@ -54,7 +59,6 @@ public class StudentEvaluateActivity extends BaseActivity {
     protected void initView() {
         setContentView(R.layout.activity_student_evaluate);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-
         clEvaluate = (CoordinatorLayout) findViewById(R.id.clEvaluate);
         tvLoadFail = (TextView) findViewById(R.id.tvLoadFail);
         tvLoading = (TextView) findViewById(R.id.tvLoading);
@@ -68,8 +72,61 @@ public class StudentEvaluateActivity extends BaseActivity {
         tvLoadFail.setOnClickListener(this);
     }
 
-
     protected void showResultDialog() {
+        if (currentStatus == STATUS_LOAD_SUCCESS) {
+            float totalScore = 0.0f;
+            for (int i = 0; i < scoreData.length; ++i) {
+                if (scoreData[i] < 0) {
+                    SnackBarUtils.showLong(clEvaluate, "存在未评价的项目。");
+                    return;
+                }
+                totalScore += scoreData[i];
+            }
+            StringBuilder content = new StringBuilder();
+            content.append("课程：").append(courseBean.getCourse().getName()).append("\n");
+            content.append("得分：").append(totalScore);
+            new MaterialDialog.Builder(this)
+                    .title("结果").content(content)
+                    .positiveText("提交").onPositive(new MaterialDialog.SingleButtonCallback() {
+                @Override
+                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                    commitScore();
+                }
+            }).show();
+        }
+    }
+
+    protected void commitScore() {
+        final MaterialDialog commitDialog = new MaterialDialog.Builder(this)
+                .title("正在提交").content("请稍后...").cancelable(false)
+                .progress(true, 0).progressIndeterminateStyle(false).show();
+        BaseRequestParams requestParams = new BaseRequestParams();
+        requestParams.addQueryStringParameter("action", "commitEvaluate");
+        requestParams.addQueryStringParameter("courseId", courseId + "");
+        HttpUtils httpUtils = new HttpUtils();
+        httpUtils.send(HttpRequest.HttpMethod.GET, TeachingEvaluateClientApplication.getEvaluateManager(),
+                requestParams, new BaseRequestCallBack<String>() {
+
+                    @Override
+                    public void onSuccess(ResponseInfo<String> responseInfo) {
+                        super.onSuccess(responseInfo);
+                        commitDialog.dismiss();
+                        Gson gson = new Gson();
+                        SuccessBean successBean = gson.fromJson(responseInfo.result, SuccessBean.class);
+                        if (successBean.isSuccess()) {
+                            finish();
+                        } else {
+                            SnackBarUtils.showLong(clEvaluate, "服务器错误");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(HttpException e, String s) {
+                        super.onFailure(e, s);
+                        commitDialog.dismiss();
+                        SnackBarUtils.showLong(clEvaluate, s);
+                    }
+                });
     }
 
     @Override
@@ -209,7 +266,6 @@ public class StudentEvaluateActivity extends BaseActivity {
 
     public void saveData(final View v, final long itemId, final float newScore) {
         final int pos = (int) itemId;
-        System.out.println(itemId+" "+newScore+" "+courseId);
         if (scoreData[pos] != newScore) {
             final BaseRequestParams requestParams = new BaseRequestParams();
             requestParams.addQueryStringParameter("action", "updateStudentCourseEvaluateItem");
@@ -239,5 +295,21 @@ public class StudentEvaluateActivity extends BaseActivity {
                         }
                     });
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.commit, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_commit) {
+            showResultDialog();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
