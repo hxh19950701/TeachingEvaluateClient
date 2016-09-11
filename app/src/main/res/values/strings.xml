@@ -34,4 +34,5 @@
 		<item name="no">No</item>
 		<item name="unclear">Unclear</item>
 	</string-array>
+	<string name="ok">ok</string>
 </resources>

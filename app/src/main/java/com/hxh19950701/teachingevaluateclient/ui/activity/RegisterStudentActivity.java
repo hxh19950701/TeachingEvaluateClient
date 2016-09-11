@@ -8,7 +8,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -28,6 +27,8 @@ import com.hxh19950701.teachingevaluateclient.R;
 import com.hxh19950701.teachingevaluateclient.application.TeachingEvaluateClientApplication;
 import com.hxh19950701.teachingevaluateclient.base.BaseActivity;
 import com.hxh19950701.teachingevaluateclient.base.BaseRequestCallBack;
+import com.hxh19950701.teachingevaluateclient.base.BaseRequestParams;
+import com.hxh19950701.teachingevaluateclient.base.BaseTextWatcher;
 import com.hxh19950701.teachingevaluateclient.internet.NetServer;
 import com.hxh19950701.teachingevaluateclient.utils.PrefUtils;
 import com.hxh19950701.teachingevaluateclient.utils.SnackBarUtils;
@@ -93,18 +94,7 @@ public class RegisterStudentActivity extends BaseActivity {
     protected void initListener() {
         btnSave.setOnClickListener(this);
 
-        etStudentId.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
+        etStudentId.addTextChangedListener(new BaseTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.length() < 6 || s.length() > 16) {
@@ -117,17 +107,7 @@ public class RegisterStudentActivity extends BaseActivity {
             }
         });
 
-        etName.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
+        etName.addTextChangedListener(new BaseTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
                 refreshSaveButtonEnable();
@@ -180,11 +160,12 @@ public class RegisterStudentActivity extends BaseActivity {
         etStudentId.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
+                if (!hasFocus && TextUtils.isEmpty(tilStudentId.getError())) {
                     checkStudentId();
                 }
             }
         });
+
     }
 
     @Override
@@ -368,12 +349,12 @@ public class RegisterStudentActivity extends BaseActivity {
     }
 
     protected void checkStudentId() {
-        RequestParams requestParams = new RequestParams();
-        requestParams.addHeader("cookie", PrefUtils.getString("cookie", ""));
+        RequestParams requestParams = new BaseRequestParams();
+        requestParams.addQueryStringParameter("action", "hasExist");
+        requestParams.addQueryStringParameter("studentId", etStudentId.getText().toString());
         HttpUtils httpUtils = new HttpUtils();
         httpUtils.configCurrentHttpCacheExpiry(0);
-        httpUtils.send(HttpRequest.HttpMethod.GET,
-                TeachingEvaluateClientApplication.getStudentManagerURL() + "?action=hasExist&studentId=" + etStudentId.getText().toString(),
+        httpUtils.send(HttpRequest.HttpMethod.GET, TeachingEvaluateClientApplication.getStudentManagerURL(),
                 requestParams, new BaseRequestCallBack<String>() {
                     @Override
                     public void onSuccess(ResponseInfo<String> responseInfo) {
@@ -382,11 +363,17 @@ public class RegisterStudentActivity extends BaseActivity {
                         HasExistBean hasExistBean = gson.fromJson(responseInfo.result, HasExistBean.class);
                         if (hasExistBean.isExist()) {
                             tilStudentId.setError("该学号已被使用。");
-                            SnackBarUtils.showLong(clRegister, "该学号已被使用。");
                         } else {
                             tilStudentId.setError("");
                             tilStudentId.setErrorEnabled(false);
+                            refreshSaveButtonEnable();
                         }
+                    }
+
+                    @Override
+                    public void onFailure(HttpException e, String s) {
+                        super.onFailure(e, s);
+                        tilStudentId.setError("无法检测该学号是否已被使用。");
                     }
                 });
     }
@@ -409,7 +396,7 @@ public class RegisterStudentActivity extends BaseActivity {
     }
 
     private void refreshSaveButtonEnable() {
-        if (tilStudentId.isFocused() || !TextUtils.isEmpty(tilStudentId.getError())
+        if (tilStudentId.getEditText().isFocused() || !TextUtils.isEmpty(tilStudentId.getError())
                 || TextUtils.isEmpty(etName.getText().toString()) || data == null) {
             btnSave.setEnabled(false);
         } else {

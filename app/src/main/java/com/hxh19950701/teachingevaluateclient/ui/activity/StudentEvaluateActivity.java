@@ -200,7 +200,7 @@ public class StudentEvaluateActivity extends BaseActivity {
         setStatus(STATUS_LOADING);
         final BaseRequestParams requestParams = new BaseRequestParams();
         requestParams.addQueryStringParameter("action", "getStudentAllEvaluatedItemsByCourse");
-        requestParams.addQueryStringParameter("courseId", courseBean.getCourse().getId() + "");
+        requestParams.addQueryStringParameter("courseId", courseId + "");
         HttpUtils httpUtils = new HttpUtils();
         httpUtils.configCurrentHttpCacheExpiry(0);
         httpUtils.send(HttpRequest.HttpMethod.GET, TeachingEvaluateClientApplication.getEvaluateManager(),

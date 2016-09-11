@@ -93,7 +93,7 @@ public class StudentMainUiActivity extends BaseActivity {
 
                 } else {
                     Intent intent = new Intent(getApplication(), StudentEvaluateActivity.class);
-                    intent.putExtra("course", data.getCourseList().get(position).getId());
+                    intent.putExtra("course", data.getCourseList().get(position).getCourse().getId());
                     startActivity(intent);
                 }
 
@@ -121,7 +121,6 @@ public class StudentMainUiActivity extends BaseActivity {
                     public void onSuccess(ResponseInfo<String> responseInfo) {
                         super.onSuccess(responseInfo);
                         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-                        ;
                         data = gson.fromJson(responseInfo.result, CourseListBean.class);
                         if (data.isSuccess()) {
                             initCourseList();
@@ -184,8 +183,16 @@ public class StudentMainUiActivity extends BaseActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.fabAddCourse:
-
+                startActivityForResult(new Intent(this, StudentAddCourseActivity.class), 1);
+                break;
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && requestCode == 1) {
+            initStudentCourse();
+        }
+    }
 }

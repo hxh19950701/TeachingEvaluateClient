@@ -26,5 +26,10 @@
 	<string name="usernameInUse">该用户名已被使用。</string>
 	<string name="passwordInconsistent">两次密码输入不一致。</string>
 	<string name="identityExpired">当前登录身份已过期，请重新登录。</string>
-
+	<string name="ok">确认</string>
+	<string-array name="checkItem">
+		<item name="yes">完全符合</item>
+		<item name="no">完全不符合</item>
+		<item name="unclear">不清楚</item>
+	</string-array>
 </resources>

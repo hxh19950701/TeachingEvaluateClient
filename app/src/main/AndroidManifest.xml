@@ -24,6 +24,9 @@
 		</activity>
 		<activity android:name=".ui.activity.RegisterStudentActivity">
 		</activity>
+		<activity android:name=".ui.activity.StudentAddCourseActivity">
+
+		</activity>
 		<activity
 			android:name=".ui.activity.StudentMainUiActivity"
 			android:label="@string/title_activity_person_center"
