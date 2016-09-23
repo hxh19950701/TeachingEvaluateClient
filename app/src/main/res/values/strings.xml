@@ -1,7 +1,10 @@
 <resources>
 	<string name="app_name">Teaching Evaluate</string>
-	<string name="title_activity_person_center" translatable="false">title_activity_person_center</string>
-	<string name="title_activity_student_evaluate" translatable="false">title_activity_student_evaluate</string>
+	<string name="title_activity_person_center" translatable="false">title_activity_person_center
+	</string>
+	<string name="title_activity_student_evaluate" translatable="false">
+		title_activity_student_evaluate
+	</string>
 	<string name="inputUsername">Input username</string>
 	<string name="inputPassword">Input password</string>
 	<string name="rememberPassword">Remember password</string>
@@ -19,20 +22,27 @@
 	<string name="help">Help</string>
 	<string name="about">About</string>
 	<string name="setServerAddress">Set Server Address</string>
-	<string name="setServerAddressHint">Modify the default server address may cause the software not work properly, set it only when you have confirmed that the server address has changed.</string>
+	<string name="setServerAddressHint">Modify the default server address may cause the software not
+		work properly, set it only when you have confirmed that the server address has changed.
+	</string>
 	<string name="reset">Reset</string>
 	<string name="modify">Modify</string>
-	<string name="firstUseHint">Welcome to the Teaching Evaluation System, for the first use, please complete your information.</string>
+	<string name="firstUseHint">Welcome to the Teaching Evaluation System, for the first use, please
+		complete your information.
+	</string>
 	<string name="usernameInUse">This user name is already in use.</string>
 	<string name="name">Name</string>
 	<string name="studentId">Student ID</string>
 	<string name="passwordInconsistent">Password input inconsistent.</string>
-	<string name="identityExpired">The identity of the currently logged on has expired, please log in again.</string>
-
+	<string name="identityExpired">The identity of the currently logged on has expired, please log
+		in again.
+	</string>
+	<string name="chooseColor">Choose Color</string>
 	<string-array name="checkItem">
 		<item name="yes">Yes</item>
 		<item name="no">No</item>
 		<item name="unclear">Unclear</item>
 	</string-array>
 	<string name="ok">ok</string>
+	<string name="cancel">Cancel</string>
 </resources>

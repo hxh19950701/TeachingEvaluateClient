@@ -32,4 +32,6 @@
 		<item name="no">完全不符合</item>
 		<item name="unclear">不清楚</item>
 	</string-array>
+	<string name="cancel">取消</string>
+	<string name="chooseColor">选择颜色</string>
 </resources>

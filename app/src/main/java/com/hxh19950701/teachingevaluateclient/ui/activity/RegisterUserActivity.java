@@ -186,10 +186,12 @@ public class RegisterUserActivity extends BaseActivity {
         final MaterialDialog registerDialog = new MaterialDialog.Builder(this)
                 .title("正在注册").content("请稍后...").cancelable(false)
                 .progress(true, 0).progressIndeterminateStyle(false).show();
+
         BaseRequestParams requestParams = new BaseRequestParams();
         requestParams.addBodyParameter("action", "register");
         requestParams.addBodyParameter("username", etUsername.getText().toString());
         requestParams.addBodyParameter("password", MD5Utils.encipher(etPassword.getText().toString()));
+        
         HttpUtils httpUtils = new HttpUtils();
         httpUtils.send(HttpRequest.HttpMethod.POST, TeachingEvaluateClientApplication.getUserManagerURL(),
                 requestParams, new BaseRequestCallBack<String>() {

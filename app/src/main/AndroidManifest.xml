@@ -25,7 +25,6 @@
 		<activity android:name=".ui.activity.RegisterStudentActivity">
 		</activity>
 		<activity android:name=".ui.activity.StudentAddCourseActivity">
-
 		</activity>
 		<activity
 			android:name=".ui.activity.StudentMainUiActivity"
@@ -44,6 +43,8 @@
 			android:name=".ui.activity.StudentEvaluateActivity"
 			android:label="@string/title_activity_student_evaluate"
 			android:theme="@style/MyActivityTheme">
+		</activity>
+		<activity android:name=".ui.activity.HelpActivity">
 		</activity>
 	</application>
 

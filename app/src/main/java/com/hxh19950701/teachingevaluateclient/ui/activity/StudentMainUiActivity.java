@@ -72,6 +72,12 @@ public class StudentMainUiActivity extends BaseActivity {
                     case R.id.navigationItemLogout:
                         NetServer.requireLoginAgain(StudentMainUiActivity.this, "注销成功。");
                         break;
+                    case R.id.navigationItemChooseAccent:
+                        showColorChooserAccent();
+                        break;
+                    case R.id.navigationItemChoosePrimary:
+                        showColorChooserPrimary();
+                        break;
                 }
                 item.setChecked(true);
                 dlPersonCenter.closeDrawers();

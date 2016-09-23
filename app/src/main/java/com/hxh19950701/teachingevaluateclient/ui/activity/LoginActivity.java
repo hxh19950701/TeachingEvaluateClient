@@ -44,7 +44,7 @@ import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.HttpHandler;
 import com.lidroid.xutils.http.ResponseInfo;
 
-public class LoginActivity extends BaseActivity{
+public class LoginActivity extends BaseActivity {
 
     protected Toolbar toolbar;
     protected FloatingActionButton fabRegisterStudent;
@@ -142,7 +142,7 @@ public class LoginActivity extends BaseActivity{
         initMsg();
     }
 
-    private void initLoginInfo(){
+    private void initLoginInfo() {
         isMD5 = true;
         etUsername.setText(PrefUtils.getString("username", ""));
         etPassword.setText(PrefUtils.getString("password", ""));
@@ -198,7 +198,7 @@ public class LoginActivity extends BaseActivity{
                 .progress(true, 0).progressIndeterminateStyle(true)
                 .cancelable(true).show();
         //开始登录
-        final HttpHandler httpHandler =  NetServer.login(username, password, new BaseRequestCallBack<String>() {
+        final HttpHandler httpHandler = NetServer.login(username, password, new BaseRequestCallBack<String>() {
             @Override
             public void onSuccess(ResponseInfo<String> responseInfo) {
                 super.onSuccess(responseInfo);
@@ -273,10 +273,13 @@ public class LoginActivity extends BaseActivity{
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            showSetServerIpDialog();
-            return true;
+        switch (item.getItemId()){
+            case R.id.action_settings:
+                showSetServerIpDialog();
+                return true;
+            case R.id.action_help:
+                startActivity(new Intent(this, HelpActivity.class));
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -287,7 +290,8 @@ public class LoginActivity extends BaseActivity{
                 .content(R.string.setServerAddressHint)
                 .inputType(InputType.TYPE_TEXT_VARIATION_URI)
                 .cancelable(true)
-                .negativeText(R.string.reset)
+                .neutralText(R.string.reset)
+                .negativeText(R.string.cancel)
                 .positiveText(R.string.modify)
                 .alwaysCallInputCallback()
                 .input("", PrefUtils.getString("serverURL", "http://"), new MaterialDialog.InputCallback() {
@@ -300,9 +304,9 @@ public class LoginActivity extends BaseActivity{
                         }
                     }
                 })
-                .callback(new MaterialDialog.ButtonCallback() {
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
-                    public void onPositive(MaterialDialog dialog) {
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         String url = dialog.getInputEditText().getText().toString();
                         if (TextUtils.isEmpty(url)) {
                             PrefUtils.remove("serverURL");
@@ -311,9 +315,10 @@ public class LoginActivity extends BaseActivity{
                         }
                         TeachingEvaluateClientApplication.initServerURL();
                     }
-
+                })
+                .onNeutral(new MaterialDialog.SingleButtonCallback() {
                     @Override
-                    public void onNegative(MaterialDialog dialog) {
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         PrefUtils.remove("serverURL");
                         TeachingEvaluateClientApplication.initServerURL();
                     }
