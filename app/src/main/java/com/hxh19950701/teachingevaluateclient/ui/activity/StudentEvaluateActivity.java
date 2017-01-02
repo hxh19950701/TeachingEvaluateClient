@@ -13,25 +13,21 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.hxh19950701.teachingevaluateclient.Bean.CourseBean;
-import com.hxh19950701.teachingevaluateclient.Bean.EvaluatedItemBean;
-import com.hxh19950701.teachingevaluateclient.Bean.ItemBean;
-import com.hxh19950701.teachingevaluateclient.Bean.SuccessBean;
 import com.hxh19950701.teachingevaluateclient.R;
 import com.hxh19950701.teachingevaluateclient.adapter.FirstTargetAdapter;
-import com.hxh19950701.teachingevaluateclient.application.TeachingEvaluateClientApplication;
 import com.hxh19950701.teachingevaluateclient.base.BaseActivity;
-import com.hxh19950701.teachingevaluateclient.base.BaseRequestCallBack;
-import com.hxh19950701.teachingevaluateclient.base.BaseRequestParams;
+import com.hxh19950701.teachingevaluateclient.bean.service.Course;
+import com.hxh19950701.teachingevaluateclient.bean.service.EvaluateThirdTarget;
+import com.hxh19950701.teachingevaluateclient.bean.service.StudentCourseEvaluate;
+import com.hxh19950701.teachingevaluateclient.bean.service.StudentCourseInfo;
+import com.hxh19950701.teachingevaluateclient.internet.SimpleServiceCallback;
+import com.hxh19950701.teachingevaluateclient.internet.api.CourseApi;
+import com.hxh19950701.teachingevaluateclient.internet.api.EvaluateApi;
 import com.hxh19950701.teachingevaluateclient.utils.SnackBarUtils;
-import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.exception.HttpException;
-import com.lidroid.xutils.http.ResponseInfo;
-import com.lidroid.xutils.http.client.HttpRequest;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class StudentEvaluateActivity extends BaseActivity {
 
@@ -47,9 +43,9 @@ public class StudentEvaluateActivity extends BaseActivity {
     protected float[] scoreData;
     protected int currentStatus = -1;
 
-    protected CourseBean courseBean;
-    protected ItemBean itemBean;
-    protected EvaluatedItemBean evaluatedItemBean;
+    protected Course course;
+    protected List<EvaluateThirdTarget> item;
+    protected List<StudentCourseEvaluate> evaluatedItem;
 
     private static final int STATUS_LOADING = 0;
     private static final int STATUS_LOAD_FAIL = 1;
@@ -83,7 +79,7 @@ public class StudentEvaluateActivity extends BaseActivity {
                 totalScore += scoreData[i];
             }
             StringBuilder content = new StringBuilder();
-            content.append("课程：").append(courseBean.getCourse().getName()).append("\n");
+            content.append("课程：").append(course.getName()).append("\n");
             content.append("得分：").append(totalScore);
             new MaterialDialog.Builder(this)
                     .title("结果").content(content)
@@ -100,37 +96,22 @@ public class StudentEvaluateActivity extends BaseActivity {
         final MaterialDialog commitDialog = new MaterialDialog.Builder(this)
                 .title("正在提交").content("请稍后...").cancelable(false)
                 .progress(true, 0).progressIndeterminateStyle(false).show();
-        BaseRequestParams requestParams = new BaseRequestParams();
-        requestParams.addQueryStringParameter("action", "commitEvaluate");
-        requestParams.addQueryStringParameter("courseId", courseId + "");
-        HttpUtils httpUtils = new HttpUtils();
-        httpUtils.send(HttpRequest.HttpMethod.GET, TeachingEvaluateClientApplication.getEvaluateManager(),
-                requestParams, new BaseRequestCallBack<String>() {
+        EvaluateApi.commitEvaluate(courseId, new SimpleServiceCallback<StudentCourseInfo>(clEvaluate) {
 
-                    @Override
-                    public void onSuccess(ResponseInfo<String> responseInfo) {
-                        super.onSuccess(responseInfo);
-                        commitDialog.dismiss();
-                        Gson gson = new Gson();
-                        SuccessBean successBean = gson.fromJson(responseInfo.result, SuccessBean.class);
-                        if (successBean.isSuccess()) {
-                            finish();
-                        } else {
-                            SnackBarUtils.showLong(clEvaluate, "服务器错误");
-                        }
-                    }
+            @Override
+            public void onAfter() {
+                commitDialog.dismiss();
+            }
 
-                    @Override
-                    public void onFailure(HttpException e, String s) {
-                        super.onFailure(e, s);
-                        commitDialog.dismiss();
-                        SnackBarUtils.showLong(clEvaluate, s);
-                    }
-                });
+            @Override
+            public void onGetDataSuccess(StudentCourseInfo studentCourseInfo) {
+                finish();
+            }
+        });
     }
 
     @Override
-    protected void initDate() {
+    protected void initData() {
         courseId = getIntent().getIntExtra("course", 0);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("教学评价");
@@ -141,101 +122,98 @@ public class StudentEvaluateActivity extends BaseActivity {
     private void initCourse() {
         setStatus(STATUS_LOADING);
         if (courseId > 0) {
-            final BaseRequestParams requestParams = new BaseRequestParams();
-            requestParams.addQueryStringParameter("action", "getCourse");
-            requestParams.addQueryStringParameter("courseId", courseId + "");
-            HttpUtils httpUtils = new HttpUtils();
-            httpUtils.configCurrentHttpCacheExpiry(0);
-            httpUtils.send(HttpRequest.HttpMethod.GET, TeachingEvaluateClientApplication.getCourseManager(),
-                    requestParams, new BaseRequestCallBack<String>() {
-                        public void onSuccess(ResponseInfo<String> responseInfo) {
-                            super.onSuccess(responseInfo);
-                            Gson gson = new Gson();
-                            courseBean = gson.fromJson(responseInfo.result, CourseBean.class);
-                            if (courseBean.isSuccess()) {
-                                initItem();
-                            } else {
-                                setStatus(STATUS_LOAD_FAIL);
-                            }
-                        }
+            CourseApi.getCourse(courseId, new SimpleServiceCallback<Course>(clEvaluate) {
 
-                        @Override
-                        public void onFailure(HttpException e, String s) {
-                            super.onFailure(e, s);
-                            setStatus(STATUS_LOAD_FAIL);
-                        }
-                    });
+                @Override
+                public void onGetDataSuccess(Course course) {
+                    initItem();
+                }
+
+                @Override
+                public void onGetDataFailure(int code, String msg) {
+                    super.onGetDataFailure(code, msg);
+                    setStatus(STATUS_LOAD_FAIL);
+                }
+
+                @Override
+                public void onException(String s) {
+                    setStatus(STATUS_LOAD_FAIL);
+                }
+
+                @Override
+                public void onFailure(HttpException e, String s) {
+                    setStatus(STATUS_LOAD_FAIL);
+                }
+            });
         }
     }
 
     protected void initItem() {
         setStatus(STATUS_LOADING);
-        final BaseRequestParams requestParams = new BaseRequestParams();
-        requestParams.addQueryStringParameter("action", "getAllTargets");
-        HttpUtils httpUtils = new HttpUtils();
-        httpUtils.configCurrentHttpCacheExpiry(0);
-        httpUtils.send(HttpRequest.HttpMethod.GET, TeachingEvaluateClientApplication.getEvaluateManager(),
-                requestParams, new BaseRequestCallBack<String>() {
-                    public void onSuccess(ResponseInfo<String> responseInfo) {
-                        super.onSuccess(responseInfo);
-                        Gson gson = new Gson();
-                        itemBean = gson.fromJson(responseInfo.result, ItemBean.class);
-                        if (itemBean.isSuccess()) {
-                            scoreData = new float[itemBean.getTargetList().size()];
-                            initEvaluatedItem();
-                        } else {
-                            setStatus(STATUS_LOAD_FAIL);
-                        }
-                    }
+        EvaluateApi.getAllTargets(new SimpleServiceCallback<List<EvaluateThirdTarget>>(clEvaluate) {
 
-                    @Override
-                    public void onFailure(HttpException e, String s) {
-                        super.onFailure(e, s);
-                        setStatus(STATUS_LOAD_FAIL);
-                    }
-                });
+            @Override
+            public void onGetDataSuccess(List<EvaluateThirdTarget> data) {
+                item = data;
+                scoreData = new float[item.size()];
+                initEvaluatedItem();
+            }
+
+            @Override
+            public void onGetDataFailure(int code, String msg) {
+                super.onGetDataFailure(code, msg);
+                setStatus(STATUS_LOAD_FAIL);
+            }
+
+            @Override
+            public void onFailure(HttpException e, String s) {
+                setStatus(STATUS_LOAD_FAIL);
+            }
+
+            @Override
+            public void onException(String s) {
+                setStatus(STATUS_LOAD_FAIL);
+            }
+        });
     }
 
     protected void initEvaluatedItem() {
         setStatus(STATUS_LOADING);
-        final BaseRequestParams requestParams = new BaseRequestParams();
-        requestParams.addQueryStringParameter("action", "getStudentAllEvaluatedItemsByCourse");
-        requestParams.addQueryStringParameter("courseId", courseId + "");
-        HttpUtils httpUtils = new HttpUtils();
-        httpUtils.configCurrentHttpCacheExpiry(0);
-        httpUtils.send(HttpRequest.HttpMethod.GET, TeachingEvaluateClientApplication.getEvaluateManager(),
-                requestParams, new BaseRequestCallBack<String>() {
-                    public void onSuccess(ResponseInfo<String> responseInfo) {
-                        super.onSuccess(responseInfo);
-                        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-                        evaluatedItemBean = gson.fromJson(responseInfo.result, EvaluatedItemBean.class);
-                        if (evaluatedItemBean.isSuccess()) {
-                            Arrays.fill(scoreData, -1);
-                            if (evaluatedItemBean.getItem() != null && evaluatedItemBean.getItem().size() != 0) {
-                                for (int i = 0; i < evaluatedItemBean.getItem().size(); ++i) {
-                                    try {
-                                        scoreData[evaluatedItemBean.getItem().get(i).getItem().getId()]
-                                                = evaluatedItemBean.getItem().get(i).getScore();
-                                    } catch (NullPointerException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }
-                            setStatus(STATUS_LOAD_SUCCESS);
-                            vpFirstTarget.setAdapter(
-                                    new FirstTargetAdapter(getSupportFragmentManager(), itemBean.getTargetList(), scoreData));
-                            tlFirstTarget.setupWithViewPager(vpFirstTarget);
-                        } else {
-                            setStatus(STATUS_LOAD_FAIL);
+        EvaluateApi.getStudentAllEvaluatedItemsByCourse(courseId, new SimpleServiceCallback<List<StudentCourseEvaluate>>(clEvaluate) {
+            @Override
+            public void onGetDataSuccess(List<StudentCourseEvaluate> data) {
+                evaluatedItem = data;
+                Arrays.fill(scoreData, -1);
+                if (evaluatedItem != null && evaluatedItem.size() != 0) {
+                    for (int i = 0; i < evaluatedItem.size(); ++i) {
+                        try {
+                            scoreData[evaluatedItem.get(i).getItem().getId()] = evaluatedItem.get(i).getScore();
+                        } catch (NullPointerException e) {
+                            e.printStackTrace();
                         }
                     }
+                }
+                vpFirstTarget.setAdapter(new FirstTargetAdapter(getSupportFragmentManager(), item, scoreData));
+                tlFirstTarget.setupWithViewPager(vpFirstTarget);
+                setStatus(STATUS_LOAD_SUCCESS);
+            }
 
-                    @Override
-                    public void onFailure(HttpException e, String s) {
-                        super.onFailure(e, s);
-                        setStatus(STATUS_LOAD_FAIL);
-                    }
-                });
+            @Override
+            public void onGetDataFailure(int code, String msg) {
+                super.onGetDataFailure(code, msg);
+                setStatus(STATUS_LOAD_FAIL);
+            }
+
+            @Override
+            public void onFailure(HttpException e, String s) {
+                setStatus(STATUS_LOAD_FAIL);
+            }
+
+            @Override
+            public void onException(String s) {
+                setStatus(STATUS_LOAD_FAIL);
+            }
+        });
     }
 
     private void setStatus(int status) {
@@ -264,36 +242,22 @@ public class StudentEvaluateActivity extends BaseActivity {
         return clEvaluate;
     }
 
-    public void saveData(final View v, final long itemId, final float newScore) {
+    public void saveItemScore(final View view, final long itemId, final float newScore) {
         final int pos = (int) itemId;
         if (scoreData[pos] != newScore) {
-            final BaseRequestParams requestParams = new BaseRequestParams();
-            requestParams.addQueryStringParameter("action", "updateStudentCourseEvaluateItem");
-            requestParams.addQueryStringParameter("courseId", courseId + "");
-            requestParams.addQueryStringParameter("itemId", itemId + "");
-            requestParams.addQueryStringParameter("score", newScore + "");
-            HttpUtils httpUtils = new HttpUtils();
-            httpUtils.configCurrentHttpCacheExpiry(0);
-            httpUtils.send(HttpRequest.HttpMethod.GET, TeachingEvaluateClientApplication.getEvaluateManager(),
-                    requestParams, new BaseRequestCallBack<String>() {
-                        public void onSuccess(ResponseInfo<String> responseInfo) {
-                            super.onSuccess(responseInfo);
-                            Gson gson = new Gson();
-                            SuccessBean successBean = gson.fromJson(responseInfo.result, SuccessBean.class);
-                            if (successBean.isSuccess()) {
-                                scoreData[pos] = newScore;
-                                ((TextView) v.findViewById(R.id.tvScore)).setText(newScore + "分");
-                            } else {
-                                SnackBarUtils.showLong(clEvaluate, "很抱歉，由于服务器故障等原因，您的评价没有保存成功。");
-                            }
-                        }
+            EvaluateApi.updateItemScore(courseId, (int) itemId, newScore, new SimpleServiceCallback<StudentCourseEvaluate>(clEvaluate) {
+                @Override
+                public void onGetDataSuccess(StudentCourseEvaluate data) {
+                    scoreData[pos] = newScore;
+                    TextView tv = (TextView) view.findViewById(R.id.tvScore);
+                    tv.setText(newScore + "分");
+                }
 
-                        @Override
-                        public void onFailure(HttpException e, String s) {
-                            super.onFailure(e, s);
-                            SnackBarUtils.showLong(clEvaluate, "很抱歉，由于网络故障等原因，您的评价没有保存成功。");
-                        }
-                    });
+                @Override
+                public void onFailure(HttpException e, String s) {
+                    SnackBarUtils.showLong(clEvaluate, "很抱歉，由于服务器故障等原因，您的评价没有保存成功。");
+                }
+            });
         }
     }
 

@@ -5,22 +5,24 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.hxh19950701.teachingevaluateclient.Bean.CourseListBean;
 import com.hxh19950701.teachingevaluateclient.R;
-import com.hxh19950701.teachingevaluateclient.application.TeachingEvaluateClientApplication;
+import com.hxh19950701.teachingevaluateclient.application.MainApplication;
+import com.hxh19950701.teachingevaluateclient.bean.service.StudentCourseInfo;
+
+import java.util.List;
 
 public class StudentCourseAdapter extends BaseAdapter {
 
-    protected CourseListBean data;
+    protected List<StudentCourseInfo> data;
 
-    public StudentCourseAdapter(CourseListBean data) {
+    public StudentCourseAdapter(List<StudentCourseInfo> data) {
         this.data = data;
     }
 
     @Override
     public int getCount() {
         try {
-            return data.getCourseList().size();
+            return data.size();
         } catch (Exception e) {
             return 0;
         }
@@ -39,12 +41,12 @@ public class StudentCourseAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView = View.inflate(TeachingEvaluateClientApplication.getApplication(), R.layout.item_course, null);
+            convertView = View.inflate(MainApplication.getApplication(), R.layout.item_course, null);
         }
         ViewHolder viewHolder = getViewHolder(convertView);
-        viewHolder.tvCourseName.setText(data.getCourseList().get(position).getCourse().getName());
-        viewHolder.tvScore.setText(data.getCourseList().get(position).getScore() < 0 ? "未完成评价" : data.getCourseList().get(position).getScore() + "");
-        viewHolder.tvTeacher.setText(data.getCourseList().get(position).getCourse().getTeacher().getName());
+        viewHolder.tvCourseName.setText(data.get(position).getCourse().getName());
+        viewHolder.tvScore.setText(data.get(position).getScore() < 0 ? "未完成评价" : data.get(position).getScore() + "");
+        viewHolder.tvTeacher.setText(data.get(position).getCourse().getTeacher().getName());
         return convertView;
     }
 

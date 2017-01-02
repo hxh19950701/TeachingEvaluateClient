@@ -6,22 +6,9 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:fitsSystemWindows="true"
-	tools:context=".ui.activity.StudentMainUiActivity">
+	android:fitsSystemWindows="true">
 
-	<android.support.design.widget.AppBarLayout
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:theme="@style/MyActivityTheme.AppBarOverlay">
-
-		<android.support.v7.widget.Toolbar
-			android:id="@+id/toolbar"
-			android:layout_width="match_parent"
-			android:layout_height="?attr/actionBarSize"
-			android:background="?attr/colorPrimary"
-			app:popupTheme="@style/MyActivityTheme.PopupOverlay"/>
-
-	</android.support.design.widget.AppBarLayout>
+	<include layout="@layout/widget_toolbar"/>
 
 	<LinearLayout android:layout_width="match_parent"
 				  android:layout_height="match_parent"
@@ -49,7 +36,7 @@
 		</android.support.design.widget.TextInputLayout>
 
 		<android.support.design.widget.TextInputLayout
-			android:id="@+id/tilClassPassword"
+			android:id="@+id/tilCoursePasswordRetype"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content">
 
@@ -60,7 +47,7 @@
 					  android:singleLine="true"/>
 		</android.support.design.widget.TextInputLayout>
 
-		<Button android:id="@+id/btnAddCourse"
+		<Button android:id="@+id/btnNewCourse"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_gravity="right"

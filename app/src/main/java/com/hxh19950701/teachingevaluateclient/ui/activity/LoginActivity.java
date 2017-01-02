@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -27,26 +26,22 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.google.gson.Gson;
-import com.hxh19950701.teachingevaluateclient.Bean.LoginBean;
 import com.hxh19950701.teachingevaluateclient.R;
-import com.hxh19950701.teachingevaluateclient.application.TeachingEvaluateClientApplication;
+import com.hxh19950701.teachingevaluateclient.application.MainApplication;
 import com.hxh19950701.teachingevaluateclient.base.BaseActivity;
-import com.hxh19950701.teachingevaluateclient.base.BaseRequestCallBack;
-import com.hxh19950701.teachingevaluateclient.base.BaseTextWatcher;
+import com.hxh19950701.teachingevaluateclient.bean.service.User;
 import com.hxh19950701.teachingevaluateclient.constant.Constant;
-import com.hxh19950701.teachingevaluateclient.internet.NetServer;
+import com.hxh19950701.teachingevaluateclient.impl.TextWatcherImpl;
+import com.hxh19950701.teachingevaluateclient.internet.SimpleServiceCallback;
+import com.hxh19950701.teachingevaluateclient.internet.api.UserApi;
 import com.hxh19950701.teachingevaluateclient.utils.MD5Utils;
 import com.hxh19950701.teachingevaluateclient.utils.PrefUtils;
 import com.hxh19950701.teachingevaluateclient.utils.SnackBarUtils;
 import com.hxh19950701.teachingevaluateclient.utils.ViewUtils;
-import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.HttpHandler;
-import com.lidroid.xutils.http.ResponseInfo;
 
 public class LoginActivity extends BaseActivity {
 
-    protected Toolbar toolbar;
     protected FloatingActionButton fabRegisterStudent;
     protected EditText etUsername;
     protected EditText etPassword;
@@ -60,13 +55,7 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     public void initView() {
-        if (PrefUtils.getBoolean("AutoLogin", false)) {
-            NetServer.login(PrefUtils.getString("username", ""), PrefUtils.getString("password", ""), null);
-            startActivity(new Intent(getApplication(), StudentMainUiActivity.class));
-            finish();
-        }
         setContentView(R.layout.activity_login);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
         fabRegisterStudent = (FloatingActionButton) findViewById(R.id.fabRegisterStudent);
         etUsername = (EditText) findViewById(R.id.etUsername);
         etPassword = (EditText) findViewById(R.id.etPassword);
@@ -81,7 +70,7 @@ public class LoginActivity extends BaseActivity {
     public void initListener() {
         fabRegisterStudent.setOnClickListener(this);
         btnLogin.setOnClickListener(this);
-        etUsername.addTextChangedListener(new BaseTextWatcher() {
+        etUsername.addTextChangedListener(new TextWatcherImpl() {
             @Override
             public void afterTextChanged(Editable s) {
                 etPassword.setText("");
@@ -123,31 +112,22 @@ public class LoginActivity extends BaseActivity {
                     }
                 }
         );
-        cbRememberPassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (!isChecked) {
-                    PrefUtils.putString("password", "");
-                }
-            }
-        });
     }
 
     @Override
-    public void initDate() {
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(R.string.login);
+    public void initData() {
         initLoginInfo();
         initAnim();
         initMsg();
     }
 
+
     private void initLoginInfo() {
         isMD5 = true;
-        etUsername.setText(PrefUtils.getString("username", ""));
-        etPassword.setText(PrefUtils.getString("password", ""));
-        cbRememberPassword.setChecked(PrefUtils.getBoolean("RememberPassword", false));
-        cbAutoLogin.setChecked(PrefUtils.getBoolean("AutoLogin", false));
+        etUsername.setText(PrefUtils.getString(Constant.KEY_USERNAME, ""));
+        etPassword.setText(PrefUtils.getString(Constant.KEY_PASSWORD, ""));
+        cbRememberPassword.setChecked(PrefUtils.getBoolean(Constant.KEY_REMEMBER_PASSWORD, false));
+        cbAutoLogin.setChecked(PrefUtils.getBoolean(Constant.KEY_AUTO_LOGIN, false));
     }
 
     private void initMsg() {
@@ -175,7 +155,7 @@ public class LoginActivity extends BaseActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.fabRegisterStudent:
-                startActivityForResult(new Intent(getApplication(), RegisterUserActivity.class), 1);
+                startActivityForResult(new Intent(this, RegisterUserActivity.class), 1);
                 break;
             case R.id.btnLogin:
                 startLogin();
@@ -186,7 +166,7 @@ public class LoginActivity extends BaseActivity {
     private void startLogin() {
         //判断用户名及密码是否已填写
         if (TextUtils.isEmpty(etUsername.getText().toString()) || TextUtils.isEmpty(etPassword.getText().toString())) {
-            SnackBarUtils.showLong(clLogin, getText(R.string.fillInUsernameAndPassword));
+            SnackBarUtils.showLong(clLogin, R.string.fillInUsernameAndPassword);
             return;
         }
         //获取用户名及密码MD5
@@ -198,49 +178,19 @@ public class LoginActivity extends BaseActivity {
                 .progress(true, 0).progressIndeterminateStyle(true)
                 .cancelable(true).show();
         //开始登录
-        final HttpHandler httpHandler = NetServer.login(username, password, new BaseRequestCallBack<String>() {
-            @Override
-            public void onSuccess(ResponseInfo<String> responseInfo) {
-                super.onSuccess(responseInfo);
-                Gson gson = new Gson();
-                LoginBean loginBean = gson.fromJson(responseInfo.result, LoginBean.class);
-                if (loginBean.isSuccess()) {
-                    saveDate(username, password);
-                    switch (loginBean.getIdentity()) {
-                        case Constant.IDENTITY_STUDENT:
-                            startActivity(new Intent(getApplication(), StudentMainUiActivity.class));
-                            break;
-                        case Constant.IDENTITY_TEACHER:
-                            break;
-                        case Constant.IDENTITY_ADMINISTRATOR:
-                            break;
-                        default:
-                            break;
+        final HttpHandler httpHandler = UserApi.login(username, password,
+                new SimpleServiceCallback<User>(clLogin) {
+                    @Override
+                    public void onAfter() {
+                        loginDialog.dismiss();
                     }
-                    finish();
-                } else {
-                    switch (loginBean.getErrorCode()) {
-                        case Constant.ERROR_NO_SUCH_USERNAME:
-                            SnackBarUtils.showLong(clLogin, getText(R.string.nonExistUsername));
-                            break;
-                        case Constant.ERROR_INCORRECT_PASSWORD:
-                            SnackBarUtils.showLong(clLogin, getText(R.string.errorPassword));
-                            break;
-                        default:
-                            SnackBarUtils.showLong(clLogin, getText(R.string.systemError));
-                            break;
-                    }
-                }
-                loginDialog.dismiss();
-            }
 
-            @Override
-            public void onFailure(HttpException e, String s) {
-                super.onFailure(e, s);
-                SnackBarUtils.showLong(clLogin, String.format(getString(R.string.connectServerFail), e.getExceptionCode()));
-                loginDialog.dismiss();
-            }
-        });
+                    @Override
+                    public void onGetDataSuccess(User user) {
+                        saveDate();
+                        enterApp(user.getIdentity());
+                    }
+                });
         //添加取消登录监听器
         loginDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
@@ -251,29 +201,64 @@ public class LoginActivity extends BaseActivity {
         });
     }
 
-    private void saveDate(String username, String password) {
+    private void enterApp(int identity) {
+        switch (identity) {
+            case Constant.IDENTITY_STUDENT:
+                startActivity(new Intent(this, StudentMainUiActivity.class));
+                break;
+            case Constant.IDENTITY_TEACHER:
+                startActivity(new Intent(this, TeacherMainUiActivity.class));
+                break;
+            case Constant.IDENTITY_ADMINISTRATOR:
+                startActivity(new Intent(this, AdministratorMainUiActivity.class));
+                break;
+            default:
+                SnackBarUtils.showSystemError(clLogin);
+                break;
+        }
+    }
+
+    private void showErrorMsg(int errorCode) {
+        switch (errorCode) {
+            case Constant.ERROR_NO_SUCH_USERNAME:
+            case Constant.ERROR_INVALID_USERNAME:
+                SnackBarUtils.showLong(clLogin, R.string.nonExistUsername);
+                break;
+            case Constant.ERROR_INCORRECT_PASSWORD:
+            case Constant.ERROR_INVALID_PASSWORD:
+                SnackBarUtils.showLong(clLogin, R.string.errorPassword);
+                break;
+            default:
+                SnackBarUtils.showSystemError(clLogin);
+                break;
+        }
+    }
+
+    private void saveDate() {
+        final String username = etUsername.getText().toString();
+        final String password = isMD5 ? etPassword.getText().toString() : MD5Utils.encipher(etPassword.getText().toString());
         if (cbRememberPassword.isChecked()) {
-            PrefUtils.putBoolean("RememberPassword", true);
-            PrefUtils.putBoolean("AutoLogin", cbAutoLogin.isChecked());
-            PrefUtils.putString("username", username);
-            PrefUtils.putString("password", password);
+            PrefUtils.putString(Constant.KEY_USERNAME, username);
+            PrefUtils.putString(Constant.KEY_PASSWORD, password);
+            PrefUtils.putBoolean(Constant.KEY_REMEMBER_PASSWORD, true);
+            PrefUtils.putBoolean(Constant.KEY_AUTO_LOGIN, cbAutoLogin.isChecked());
         } else {
-            PrefUtils.putBoolean("RememberPassword", false);
-            PrefUtils.putBoolean("AutoLogin", false);
-            PrefUtils.putString("username", username);
-            PrefUtils.putString("password", "");
+            PrefUtils.putString(Constant.KEY_USERNAME, username);
+            PrefUtils.putString(Constant.KEY_PASSWORD, "");
+            PrefUtils.putBoolean(Constant.KEY_REMEMBER_PASSWORD, false);
+            PrefUtils.putBoolean(Constant.KEY_AUTO_LOGIN, false);
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_login, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_settings:
                 showSetServerIpDialog();
                 return true;
@@ -285,42 +270,33 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void showSetServerIpDialog() {
+        final MainApplication application = (MainApplication) getApplication();
         new MaterialDialog.Builder(this)
                 .title(R.string.setServerAddress)
                 .content(R.string.setServerAddressHint)
-                .inputType(InputType.TYPE_TEXT_VARIATION_URI)
-                .cancelable(true)
-                .neutralText(R.string.reset)
-                .negativeText(R.string.cancel)
-                .positiveText(R.string.modify)
+                .inputType(InputType.TYPE_TEXT_VARIATION_URI).cancelable(true)
+                .neutralText(R.string.reset).negativeText(R.string.cancel).positiveText(R.string.modify)
                 .alwaysCallInputCallback()
-                .input("", PrefUtils.getString("serverURL", "http://"), new MaterialDialog.InputCallback() {
+                .input(null, PrefUtils.getString("serverURL", "http://"), new MaterialDialog.InputCallback() {
                     @Override
                     public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-                        if ((TextUtils.isEmpty(input.toString()) || input.toString().startsWith("http://")) && input.length() > 10) {
-                            dialog.getActionButton(DialogAction.POSITIVE).setEnabled(true);
-                        } else {
-                            dialog.getActionButton(DialogAction.POSITIVE).setEnabled(false);
-                        }
+                        boolean enable = input.toString().startsWith("http://") && input.length() > 10;
+                        dialog.getActionButton(DialogAction.POSITIVE).setEnabled(enable);
                     }
                 })
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         String url = dialog.getInputEditText().getText().toString();
-                        if (TextUtils.isEmpty(url)) {
-                            PrefUtils.remove("serverURL");
-                        } else {
-                            PrefUtils.putString("serverURL", dialog.getInputEditText().getText().toString());
-                        }
-                        TeachingEvaluateClientApplication.initServerURL();
+                        PrefUtils.putString("serverURL", url);
+                        application.initServerURL();
                     }
                 })
                 .onNeutral(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         PrefUtils.remove("serverURL");
-                        TeachingEvaluateClientApplication.initServerURL();
+                        application.initServerURL();
                     }
                 })
                 .show();
@@ -329,9 +305,9 @@ public class LoginActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (data != null) {
-            etUsername.setText(data.getStringExtra("username"));
-            etPassword.setText(data.getStringExtra("password"));
+        if (resultCode == RESULT_OK) {
+            etUsername.setText(data.getStringExtra(Constant.KEY_USERNAME));
+            etPassword.setText(data.getStringExtra(Constant.KEY_PASSWORD));
             cbRememberPassword.setChecked(true);
             isMD5 = false;
             SnackBarUtils.showLongPost(clLogin, "注册成功，点击登录按钮立刻登录。");

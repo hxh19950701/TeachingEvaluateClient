@@ -6,22 +6,9 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:fitsSystemWindows="true"
-	tools:context=".ui.activity.StudentMainUiActivity">
+	android:fitsSystemWindows="true">
 
-	<android.support.design.widget.AppBarLayout
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:theme="@style/MyActivityTheme.AppBarOverlay">
-
-		<android.support.v7.widget.Toolbar
-			android:id="@+id/toolbar"
-			android:layout_width="match_parent"
-			android:layout_height="?attr/actionBarSize"
-			android:background="?attr/colorPrimary"
-			app:popupTheme="@style/MyActivityTheme.PopupOverlay"/>
-
-	</android.support.design.widget.AppBarLayout>
+	<include layout="@layout/widget_toolbar"/>
 
 	<android.support.v4.widget.SwipeRefreshLayout
 		android:id="@+id/srlRegister"
@@ -54,8 +41,8 @@
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
 						android:hint="学号"
-						android:singleLine="true"
-						android:inputType="number"/>
+						android:inputType="number"
+						android:singleLine="true"/>
 
 				</android.support.design.widget.TextInputLayout>
 
@@ -67,12 +54,12 @@
 						android:id="@+id/etName"
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
-						android:singleLine="true"
-						android:hint="姓名"/>
+						android:hint="姓名"
+						android:singleLine="true"/>
 
 				</android.support.design.widget.TextInputLayout>
 
-				<RadioGroup android:id="@+id/rgSex"
+				<RadioGroup android:id="@+id/rgTerm"
 							android:layout_width="match_parent"
 							android:layout_height="wrap_content"
 							android:orientation="horizontal"
@@ -84,14 +71,14 @@
 							  android:text="性别"
 							  android:textSize="17sp"/>
 
-					<RadioButton android:id="@+id/rbSexMale"
+					<RadioButton android:id="@+id/rbTerm1"
 								 android:layout_width="0dp"
 								 android:layout_height="wrap_content"
 								 android:layout_weight="1"
 								 android:checked="true"
 								 android:text="男"/>
 
-					<RadioButton android:id="@+id/rbSexFemale"
+					<RadioButton android:id="@+id/rbTerm2"
 								 android:layout_width="0dp"
 								 android:layout_height="wrap_content"
 								 android:layout_weight="1"

@@ -1,5 +1,5 @@
 <resources>
-	<string name="app_name">教学评价系统</string>
+	<string name="app_name">教学评价</string>
 	<string name="wait">请稍后...</string>
 	<string name="rememberPassword">记住密码</string>
 	<string name="login">登录</string>
@@ -34,4 +34,8 @@
 	</string-array>
 	<string name="cancel">取消</string>
 	<string name="chooseColor">选择颜色</string>
+	<string name="close">关闭</string>
+	<string name="title_activity_person_center"></string>
+
+	<string name="newCourseSuccessHint">您已成功新建课程。该课程的详细信息如下：\n课程编号：%1$d\n课程名称：%2$s\n开设时间：%3$d年 %4$s</string>
 </resources>

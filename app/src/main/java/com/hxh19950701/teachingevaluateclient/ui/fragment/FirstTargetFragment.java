@@ -7,10 +7,10 @@ import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.hxh19950701.teachingevaluateclient.Bean.EvaluateThirdTarget;
 import com.hxh19950701.teachingevaluateclient.R;
 import com.hxh19950701.teachingevaluateclient.adapter.SecondTargetAdapter;
 import com.hxh19950701.teachingevaluateclient.base.BaseFragment;
+import com.hxh19950701.teachingevaluateclient.bean.service.EvaluateThirdTarget;
 import com.hxh19950701.teachingevaluateclient.ui.activity.StudentEvaluateActivity;
 
 import java.util.List;
@@ -70,7 +70,7 @@ public class FirstTargetFragment extends BaseFragment {
                                         break;
                                 }
                                 System.out.println(newScore);
-                                ((StudentEvaluateActivity)getActivity()).saveData(v, id, newScore);
+                                ((StudentEvaluateActivity)getActivity()).saveItemScore(v, id, newScore);
                                 return true;
                             }
                         })

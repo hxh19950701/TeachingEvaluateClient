@@ -4,8 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.hxh19950701.teachingevaluateclient.Bean.EvaluateFirstTarget;
-import com.hxh19950701.teachingevaluateclient.Bean.EvaluateThirdTarget;
+import com.hxh19950701.teachingevaluateclient.bean.service.EvaluateFirstTarget;
+import com.hxh19950701.teachingevaluateclient.bean.service.EvaluateThirdTarget;
 import com.hxh19950701.teachingevaluateclient.ui.fragment.FirstTargetFragment;
 
 import java.util.ArrayList;

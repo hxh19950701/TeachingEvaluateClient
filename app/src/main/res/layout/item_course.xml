@@ -7,7 +7,7 @@
 	<TextView android:id="@+id/tvCourseName"
 			  android:layout_width="match_parent"
 			  android:layout_height="wrap_content"
-			  android:singleLine="true"
+			  android:lines="1"
 			  android:text="课程名称"
 			  android:textColor="#000"
 			  android:textSize="20sp"/>

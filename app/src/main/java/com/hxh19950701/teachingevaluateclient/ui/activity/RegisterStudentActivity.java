@@ -19,26 +19,20 @@ import android.widget.Spinner;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.google.gson.Gson;
-import com.hxh19950701.teachingevaluateclient.Bean.ClazzBean;
-import com.hxh19950701.teachingevaluateclient.Bean.HasExistBean;
-import com.hxh19950701.teachingevaluateclient.Bean.RegisterUserBean;
 import com.hxh19950701.teachingevaluateclient.R;
-import com.hxh19950701.teachingevaluateclient.application.TeachingEvaluateClientApplication;
 import com.hxh19950701.teachingevaluateclient.base.BaseActivity;
-import com.hxh19950701.teachingevaluateclient.base.BaseRequestCallBack;
-import com.hxh19950701.teachingevaluateclient.base.BaseRequestParams;
-import com.hxh19950701.teachingevaluateclient.base.BaseTextWatcher;
+import com.hxh19950701.teachingevaluateclient.bean.service.Clazz;
+import com.hxh19950701.teachingevaluateclient.bean.service.Student;
+import com.hxh19950701.teachingevaluateclient.constant.Constant;
+import com.hxh19950701.teachingevaluateclient.impl.TextWatcherImpl;
 import com.hxh19950701.teachingevaluateclient.internet.NetServer;
-import com.hxh19950701.teachingevaluateclient.utils.PrefUtils;
+import com.hxh19950701.teachingevaluateclient.internet.SimpleServiceCallback;
+import com.hxh19950701.teachingevaluateclient.internet.api.DepartmentApi;
+import com.hxh19950701.teachingevaluateclient.internet.api.StudentApi;
 import com.hxh19950701.teachingevaluateclient.utils.SnackBarUtils;
-import com.lidroid.xutils.HttpUtils;
-import com.lidroid.xutils.exception.HttpException;
-import com.lidroid.xutils.http.RequestParams;
-import com.lidroid.xutils.http.ResponseInfo;
-import com.lidroid.xutils.http.client.HttpRequest;
 
 import java.util.HashSet;
+import java.util.List;
 
 public class RegisterStudentActivity extends BaseActivity {
 
@@ -60,7 +54,7 @@ public class RegisterStudentActivity extends BaseActivity {
     protected Spinner spYear;
     protected Spinner spClazz;
 
-    protected ClazzBean data;
+    protected List<Clazz> data;
 
     protected HashSet<String> currentSubject = new HashSet<>();
     protected HashSet<String> currentDepartment = new HashSet<>();
@@ -75,9 +69,9 @@ public class RegisterStudentActivity extends BaseActivity {
         etStudentId = (EditText) findViewById(R.id.etStudentId);
         etName = (EditText) findViewById(R.id.etName);
 
-        rbSexMale = (RadioButton) findViewById(R.id.rbSexMale);
-        rbSexFemale = (RadioButton) findViewById(R.id.rbSexFemale);
-        rgSex = (RadioGroup) findViewById(R.id.rgSex);
+        rbSexMale = (RadioButton) findViewById(R.id.rbTerm1);
+        rbSexFemale = (RadioButton) findViewById(R.id.rbTerm2);
+        rgSex = (RadioGroup) findViewById(R.id.rgTerm);
 
         spDepartment = (Spinner) findViewById(R.id.spDepartment);
         spSubject = (Spinner) findViewById(R.id.spSubject);
@@ -94,7 +88,7 @@ public class RegisterStudentActivity extends BaseActivity {
     protected void initListener() {
         btnSave.setOnClickListener(this);
 
-        etStudentId.addTextChangedListener(new BaseTextWatcher() {
+        etStudentId.addTextChangedListener(new TextWatcherImpl() {
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.length() < 6 || s.length() > 16) {
@@ -107,7 +101,7 @@ public class RegisterStudentActivity extends BaseActivity {
             }
         });
 
-        etName.addTextChangedListener(new BaseTextWatcher() {
+        etName.addTextChangedListener(new TextWatcherImpl() {
             @Override
             public void afterTextChanged(Editable s) {
                 refreshSaveButtonEnable();
@@ -169,7 +163,7 @@ public class RegisterStudentActivity extends BaseActivity {
     }
 
     @Override
-    protected void initDate() {
+    protected void initData() {
         initInfo();
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("完善信息");
@@ -181,8 +175,8 @@ public class RegisterStudentActivity extends BaseActivity {
 
     protected void initDepartment() {
         currentDepartment.clear();
-        for (int i = 0; i < data.getClazzList().size(); ++i) {
-            currentDepartment.add(data.getClazzList().get(i).getSubject().getDepartment().getName());
+        for (int i = 0; i < data.size(); ++i) {
+            currentDepartment.add(data.get(i).getSubject().getDepartment().getName());
         }
         ArrayAdapter departmentAdapter = new ArrayAdapter(getApplication(), R.layout.spinner_item, currentDepartment.toArray());
         departmentAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
@@ -191,9 +185,9 @@ public class RegisterStudentActivity extends BaseActivity {
 
     protected void initSubject() {
         currentSubject.clear();
-        for (int i = 0; i < data.getClazzList().size(); ++i) {
-            if (data.getClazzList().get(i).getSubject().getDepartment().getName().equals(spDepartment.getSelectedItem())) {
-                currentSubject.add(data.getClazzList().get(i).getSubject().getName());
+        for (int i = 0; i < data.size(); ++i) {
+            if (data.get(i).getSubject().getDepartment().getName().equals(spDepartment.getSelectedItem())) {
+                currentSubject.add(data.get(i).getSubject().getName());
             }
         }
         ArrayAdapter subjectAdapter = new ArrayAdapter(getApplication(), R.layout.spinner_item, currentSubject.toArray());
@@ -203,9 +197,9 @@ public class RegisterStudentActivity extends BaseActivity {
 
     protected void initYear() {
         currentYear.clear();
-        for (int i = 0; i < data.getClazzList().size(); ++i) {
-            if (data.getClazzList().get(i).getSubject().getName().equals(spSubject.getSelectedItem())) {
-                currentYear.add(data.getClazzList().get(i).getYear());
+        for (int i = 0; i < data.size(); ++i) {
+            if (data.get(i).getSubject().getName().equals(spSubject.getSelectedItem())) {
+                currentYear.add(data.get(i).getYear());
             }
         }
         ArrayAdapter yearAdapter = new ArrayAdapter(getApplication(), R.layout.spinner_item, currentYear.toArray());
@@ -215,10 +209,10 @@ public class RegisterStudentActivity extends BaseActivity {
 
     protected void initClazz() {
         currentClazz.clear();
-        for (int i = 0; i < data.getClazzList().size(); ++i) {
-            if (data.getClazzList().get(i).getSubject().getName().equals(spSubject.getSelectedItem())
-                    && ((Integer) spYear.getSelectedItem()).equals(data.getClazzList().get(i).getYear())) {
-                currentClazz.add(data.getClazzList().get(i).getName());
+        for (int i = 0; i < data.size(); ++i) {
+            if (data.get(i).getSubject().getName().equals(spSubject.getSelectedItem())
+                    && ((Integer) spYear.getSelectedItem()).equals(data.get(i).getYear())) {
+                currentClazz.add(data.get(i).getName());
             }
         }
         ArrayAdapter clazzAdapter = new ArrayAdapter(getApplication(), R.layout.spinner_item, currentClazz.toArray());
@@ -227,44 +221,26 @@ public class RegisterStudentActivity extends BaseActivity {
     }
 
     protected void initInfo() {
-        if (srlRegister != null) {
-            srlRegister.setRefreshing(true);
-        }
-        RequestParams requestParams = new RequestParams();
-        requestParams.addHeader("cookie", PrefUtils.getString("cookie", ""));
-        requestParams.addQueryStringParameter("action", "getClazzList");
-        HttpUtils httpUtils = new HttpUtils();
-        httpUtils.send(HttpRequest.HttpMethod.GET, TeachingEvaluateClientApplication.getDepartmentManagerURL(),
-                requestParams, new BaseRequestCallBack<String>() {
-                    @Override
-                    public void onSuccess(ResponseInfo<String> responseInfo) {
-                        super.onSuccess(responseInfo);
-                        System.out.println(responseInfo.result);
-                        Gson gson = new Gson();
-                        data = gson.fromJson(responseInfo.result, ClazzBean.class);
-                        if (data.isSuccess()) {
-                            initDepartment();
-                            if (srlRegister != null) {
-                                srlRegister.setRefreshing(false);
-                            }
-                        } else {
-                            NetServer.requireLoginAgain(RegisterStudentActivity.this, "登录身份已过期。");
-                        }
-                        refreshSaveButtonEnable();
-                    }
+        srlRegister.setRefreshing(true);
+        DepartmentApi.getClazzList(new SimpleServiceCallback<List<Clazz>>(clRegister) {
 
-                    @Override
-                    public void onFailure(HttpException e, String s) {
-                        super.onFailure(e, s);
-                        if (srlRegister != null) {
-                            srlRegister.setRefreshing(false);
-                        }
-                        SnackBarUtils.showLong(clRegister, "获取系部信息失败。\n错误代码：" + String.format("0x%06x", e.getExceptionCode()));
-                        refreshSaveButtonEnable();
-                    }
-                }
+            @Override
+            public void onAfter() {
+                srlRegister.setRefreshing(false);
+                refreshSaveButtonEnable();
+            }
 
-        );
+            @Override
+            public void onGetDataSuccess(List<Clazz> clazz) {
+                data = clazz;
+                initDepartment();
+            }
+
+            @Override
+            public void onException(String s) {
+                SnackBarUtils.showLong(clRegister, "获取系部信息失败。");
+            }
+        });
     }
 
     @Override
@@ -275,10 +251,10 @@ public class RegisterStudentActivity extends BaseActivity {
         }
     }
 
-    protected ClazzBean.ClazzListBean getClazz() {
-        for (int i = 0; i < data.getClazzList().size(); ++i) {
-            if (data.getClazzList().get(i).getName().equals(spClazz.getSelectedItem())) {
-                return data.getClazzList().get(i);
+    protected Clazz getClazz() {
+        for (int i = 0; i < data.size(); ++i) {
+            if (data.get(i).getName().equals(spClazz.getSelectedItem())) {
+                return data.get(i);
             }
         }
         return null;
@@ -291,7 +267,7 @@ public class RegisterStudentActivity extends BaseActivity {
         }
         String msg = "\n学号：" + etStudentId.getText().toString()
                 + "\n姓名：" + etName.getText().toString()
-                + "\n性别：" + (rgSex.getCheckedRadioButtonId() == R.id.rbSexMale ? "男" : "女")
+                + "\n性别：" + (rgSex.getCheckedRadioButtonId() == R.id.rbTerm1 ? "男" : "女")
                 + "\n系部：" + spDepartment.getSelectedItem()
                 + "\n专业：" + spSubject.getSelectedItem()
                 + "\n入学年份：" + spYear.getSelectedItem()
@@ -314,68 +290,45 @@ public class RegisterStudentActivity extends BaseActivity {
         final MaterialDialog registerDialog = new MaterialDialog.Builder(this)
                 .title("正在保存信息").content("请稍后...").cancelable(false)
                 .progress(true, 0).progressIndeterminateStyle(false).show();
-        RequestParams requestParams = new RequestParams();
-        requestParams.addHeader("cookie", PrefUtils.getString("cookie", ""));
-        requestParams.addBodyParameter("action", "register");
-        requestParams.addBodyParameter("studentId", etStudentId.getText().toString());
-        requestParams.addBodyParameter("name", etName.getText().toString());
-        requestParams.addBodyParameter("sex", rgSex.getCheckedRadioButtonId() == R.id.rbSexMale ? "0" : "1");
-        requestParams.addBodyParameter("clazz", getClazz().getId() + "");
-        HttpUtils httpUtils = new HttpUtils();
-        httpUtils.send(HttpRequest.HttpMethod.POST, TeachingEvaluateClientApplication.getStudentManagerURL(),
-                requestParams, new BaseRequestCallBack<String>() {
-                    @Override
-                    public void onSuccess(ResponseInfo<String> responseInfo) {
-                        super.onSuccess(responseInfo);
-                        Gson gson = new Gson();
-                        RegisterUserBean registerUserBean = gson.fromJson(responseInfo.result, RegisterUserBean.class);
-                        if (registerUserBean.isSuccess()) {
-                            registerDialog.dismiss();
-                            startActivity(new Intent(getApplication(), StudentMainUiActivity.class));
-                            finish();
-                        } else {
-                            SnackBarUtils.showLong(clRegister, "保存信息失败。");
-                            registerDialog.dismiss();
-                        }
-                    }
+        String studentId = etStudentId.getText().toString();
+        String name = etName.getText().toString();
+        int sex = rgSex.getCheckedRadioButtonId() == R.id.rbTerm1 ? Constant.SEX_MALE : Constant.SEX_FEMALE;
+        int clazzId = getClazz().getId();
 
-                    @Override
-                    public void onFailure(HttpException e, String s) {
-                        super.onFailure(e, s);
-                        SnackBarUtils.showLong(clRegister, "连接服务器失败。\n错误代码：" + String.format("0x%06x", e.getExceptionCode()));
-                        registerDialog.dismiss();
-                    }
-                });
+        StudentApi.register(studentId, name, sex, clazzId, new SimpleServiceCallback<Student>(clRegister) {
+            @Override
+            public void onAfter() {
+                registerDialog.dismiss();
+            }
+
+            @Override
+            public void onGetDataSuccess(Student student) {
+                startActivity(new Intent(getApplication(), StudentMainUiActivity.class));
+                finish();
+            }
+        });
     }
 
     protected void checkStudentId() {
-        RequestParams requestParams = new BaseRequestParams();
-        requestParams.addQueryStringParameter("action", "hasExist");
-        requestParams.addQueryStringParameter("studentId", etStudentId.getText().toString());
-        HttpUtils httpUtils = new HttpUtils();
-        httpUtils.configCurrentHttpCacheExpiry(0);
-        httpUtils.send(HttpRequest.HttpMethod.GET, TeachingEvaluateClientApplication.getStudentManagerURL(),
-                requestParams, new BaseRequestCallBack<String>() {
-                    @Override
-                    public void onSuccess(ResponseInfo<String> responseInfo) {
-                        super.onSuccess(responseInfo);
-                        Gson gson = new Gson();
-                        HasExistBean hasExistBean = gson.fromJson(responseInfo.result, HasExistBean.class);
-                        if (hasExistBean.isExist()) {
-                            tilStudentId.setError("该学号已被使用。");
-                        } else {
-                            tilStudentId.setError("");
-                            tilStudentId.setErrorEnabled(false);
-                            refreshSaveButtonEnable();
-                        }
-                    }
+        String studentId = etStudentId.getText().toString();
+        StudentApi.hasExist(studentId, new SimpleServiceCallback<Boolean>(clRegister) {
 
-                    @Override
-                    public void onFailure(HttpException e, String s) {
-                        super.onFailure(e, s);
-                        tilStudentId.setError("无法检测该学号是否已被使用。");
-                    }
-                });
+            @Override
+            public void onGetDataSuccess(Boolean isExist) {
+                if (isExist) {
+                    tilStudentId.setError("该学号已被使用。");
+                } else {
+                    tilStudentId.setError("");
+                    tilStudentId.setErrorEnabled(false);
+                    refreshSaveButtonEnable();
+                }
+            }
+
+            @Override
+            public void onException(String s) {
+                tilStudentId.setError("无法检测该学号是否已被使用。");
+            }
+        });
     }
 
     @Override

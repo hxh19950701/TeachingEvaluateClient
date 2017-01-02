@@ -1,10 +1,5 @@
 <resources>
 	<string name="app_name">Teaching Evaluate</string>
-	<string name="title_activity_person_center" translatable="false">title_activity_person_center
-	</string>
-	<string name="title_activity_student_evaluate" translatable="false">
-		title_activity_student_evaluate
-	</string>
 	<string name="inputUsername">Input username</string>
 	<string name="inputPassword">Input password</string>
 	<string name="rememberPassword">Remember password</string>

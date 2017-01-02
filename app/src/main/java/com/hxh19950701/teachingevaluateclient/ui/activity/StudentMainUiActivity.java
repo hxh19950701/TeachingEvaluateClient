@@ -14,27 +14,22 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.hxh19950701.teachingevaluateclient.Bean.CourseListBean;
-import com.hxh19950701.teachingevaluateclient.Bean.StudentInfoBean;
 import com.hxh19950701.teachingevaluateclient.R;
 import com.hxh19950701.teachingevaluateclient.adapter.StudentCourseAdapter;
-import com.hxh19950701.teachingevaluateclient.application.TeachingEvaluateClientApplication;
-import com.hxh19950701.teachingevaluateclient.base.BaseActivity;
-import com.hxh19950701.teachingevaluateclient.base.BaseRequestCallBack;
-import com.hxh19950701.teachingevaluateclient.base.BaseRequestParams;
+import com.hxh19950701.teachingevaluateclient.base.BaseMainUiActivity;
+import com.hxh19950701.teachingevaluateclient.bean.service.Student;
+import com.hxh19950701.teachingevaluateclient.bean.service.StudentCourseInfo;
 import com.hxh19950701.teachingevaluateclient.internet.NetServer;
-import com.lidroid.xutils.HttpUtils;
-import com.lidroid.xutils.exception.HttpException;
-import com.lidroid.xutils.http.ResponseInfo;
-import com.lidroid.xutils.http.client.HttpRequest;
+import com.hxh19950701.teachingevaluateclient.internet.SimpleServiceCallback;
+import com.hxh19950701.teachingevaluateclient.internet.api.CourseApi;
+import com.hxh19950701.teachingevaluateclient.internet.api.StudentApi;
 
-public class StudentMainUiActivity extends BaseActivity {
-    protected Toolbar toolbar;
+import java.util.List;
+
+public class StudentMainUiActivity extends BaseMainUiActivity {
+
     protected FloatingActionButton fabAddCourse;
     protected ActionBarDrawerToggle drawerToggle;
-    protected DrawerLayout dlPersonCenter;
     protected TextView tvName;
     protected TextView tvDepartment;
     protected TextView tvLogout;
@@ -43,9 +38,7 @@ public class StudentMainUiActivity extends BaseActivity {
     protected NavigationView nvDrawer;
     protected SwipeRefreshLayout srlCourseList;
 
-    protected CourseListBean data;
-
-    protected StudentCourseAdapter studentCourseAdapter;
+    protected List<StudentCourseInfo> data;
 
     @Override
     public void initView() {
@@ -72,14 +65,7 @@ public class StudentMainUiActivity extends BaseActivity {
                     case R.id.navigationItemLogout:
                         NetServer.requireLoginAgain(StudentMainUiActivity.this, "注销成功。");
                         break;
-                    case R.id.navigationItemChooseAccent:
-                        showColorChooserAccent();
-                        break;
-                    case R.id.navigationItemChoosePrimary:
-                        showColorChooserPrimary();
-                        break;
                 }
-                item.setChecked(true);
                 dlPersonCenter.closeDrawers();
                 return true;
             }
@@ -95,11 +81,11 @@ public class StudentMainUiActivity extends BaseActivity {
         lvCourse.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (data.getCourseList().get(position).getScore() >= 0) {
+                if (data.get(position).getScore() >= 0) {
 
                 } else {
                     Intent intent = new Intent(getApplication(), StudentEvaluateActivity.class);
-                    intent.putExtra("course", data.getCourseList().get(position).getCourse().getId());
+                    intent.putExtra("course", data.get(position).getCourse().getId());
                     startActivity(intent);
                 }
 
@@ -108,81 +94,52 @@ public class StudentMainUiActivity extends BaseActivity {
     }
 
     @Override
-    public void initDate() {
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("课堂评价系统-学生端");
+    public void initData() {
         srlCourseList.setColorSchemeResources(R.color.colorAccent);
-        initDrawerToggle();
         initUserInfo();
+        initStudentCourse();
     }
 
     private void initStudentCourse() {
         srlCourseList.setRefreshing(true);
-        BaseRequestParams requestParams = new BaseRequestParams();
-        requestParams.addQueryStringParameter("action", "getCourseList");
-        HttpUtils httpUtils = new HttpUtils();
-        httpUtils.configCurrentHttpCacheExpiry(0);
-        httpUtils.send(HttpRequest.HttpMethod.GET, TeachingEvaluateClientApplication.getCourseManager(),
-                requestParams, new BaseRequestCallBack<String>() {
-                    public void onSuccess(ResponseInfo<String> responseInfo) {
-                        super.onSuccess(responseInfo);
-                        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-                        data = gson.fromJson(responseInfo.result, CourseListBean.class);
-                        if (data.isSuccess()) {
-                            initCourseList();
-                        } else {
-                            NetServer.requireLoginAgain(StudentMainUiActivity.this, getString(R.string.identityExpired));
-                        }
-                        srlCourseList.setRefreshing(false);
-                    }
+        CourseApi.getStudentCourseList(new SimpleServiceCallback<List<StudentCourseInfo>>(clPersonCenter) {
+            @Override
+            public void onAfter() {
+                srlCourseList.setRefreshing(false);
+            }
 
-                    @Override
-                    public void onFailure(HttpException e, String s) {
-                        super.onFailure(e, s);
-                        srlCourseList.setRefreshing(false);
-                        String.format(getString(R.string.connectServerFail), e.getExceptionCode());
-                    }
-                });
-    }
-
-    private void initCourseList() {
-        studentCourseAdapter = new StudentCourseAdapter(data);
-        lvCourse.setAdapter(studentCourseAdapter);
+            @Override
+            public void onGetDataSuccess(List<StudentCourseInfo> infoList) {
+                data = infoList;
+                StudentCourseAdapter studentCourseAdapter = new StudentCourseAdapter(infoList);
+                lvCourse.setAdapter(studentCourseAdapter);
+            }
+        });
     }
 
     private void initUserInfo() {
-        BaseRequestParams requestParams = new BaseRequestParams();
-        requestParams.addQueryStringParameter("action", "currentUserInfo");
-        HttpUtils httpUtils = new HttpUtils();
-        httpUtils.configCurrentHttpCacheExpiry(0);
-        httpUtils.send(HttpRequest.HttpMethod.GET, TeachingEvaluateClientApplication.getStudentManagerURL(),
-                requestParams, new BaseRequestCallBack<String>() {
-                    public void onSuccess(ResponseInfo<String> responseInfo) {
-                        super.onSuccess(responseInfo);
-                        Gson gson = new Gson();
-                        StudentInfoBean studentInfoBean = gson.fromJson(responseInfo.result, StudentInfoBean.class);
-                        if (studentInfoBean.isSuccess()) {
-                            if (studentInfoBean.getStudent() == null) {
-                                startActivity(new Intent(getApplication(), RegisterStudentActivity.class));
-                                finish();
-                            } else {
-                                tvName.setText(studentInfoBean.getStudent().getName());
-                                tvDepartment.setText(studentInfoBean.getStudent().getClazz().getSubject().getDepartment().getName());
-                                initStudentCourse();
-                            }
-                        } else {
-                            NetServer.requireLoginAgain(StudentMainUiActivity.this, getString(R.string.identityExpired));
-                        }
-                    }
-                });
+        StudentApi.currentStudent(new SimpleServiceCallback<Student>(clPersonCenter) {
+            @Override
+            public void onGetDataSuccess(Student student) {
+                if (student == null) {
+                    requireFillInfo();
+                } else {
+                    setInfo(student.getName(), student.getClazz().getSubject().getDepartment().getName());
+                }
+            }
+
+        });
     }
 
-    private void initDrawerToggle() {
-        getSupportActionBar().setHomeButtonEnabled(true); //设置返回键可用
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        drawerToggle = new ActionBarDrawerToggle(this, dlPersonCenter, toolbar, R.string.app_name, R.string.app_name);
-        drawerToggle.syncState();
-        dlPersonCenter.addDrawerListener(drawerToggle);
+    private void requireFillInfo() {
+        Intent intent = new Intent(this, RegisterStudentActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void setInfo(String name, String otherInfo) {
+        tvName.setText(name);
+        tvDepartment.setText(otherInfo);
     }
 
     @Override

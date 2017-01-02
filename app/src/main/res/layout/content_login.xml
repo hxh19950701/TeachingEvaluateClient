@@ -15,48 +15,64 @@
 	tools:context=".ui.activity.LoginActivity"
 	tools:showIn="@layout/activity_login">
 
-	<android.support.design.widget.TextInputLayout
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_marginTop="20dp">
-
-		<EditText
-			android:id="@+id/etUsername"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:imeOptions="actionNext"
-			android:hint="@string/inputUsername"
-			android:inputType="textEmailAddress"
-			android:digits="0123456789abcdefghigklmnopqrstuvwxyzABCDEFGHIGKLMNOPQRSTUVWXYZ"/>
-	</android.support.design.widget.TextInputLayout>
-
-	<android.support.design.widget.TextInputLayout
+	<android.support.v7.widget.CardView
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content">
 
-		<EditText
-			android:id="@+id/etPassword"
+		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:hint="@string/inputPassword"
-			android:imeOptions="actionDone"
-			android:inputType="textPassword"/>
+			android:orientation="vertical"
+			android:paddingBottom="2dp"
+			android:paddingLeft="6dp"
+			android:paddingRight="6dp"
+			android:paddingTop="6dp">
 
-	</android.support.design.widget.TextInputLayout>
+			<android.support.design.widget.TextInputLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content">
 
-	<CheckBox android:id="@+id/cbRememberPassword"
-			  android:layout_width="wrap_content"
-			  android:layout_height="wrap_content"
-			  android:text="@string/rememberPassword"/>
+				<EditText
+					android:id="@+id/etUsername"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:digits="0123456789abcdefghigklmnopqrstuvwxyzABCDEFGHIGKLMNOPQRSTUVWXYZ"
+					android:hint="@string/inputUsername"
+					android:imeOptions="actionNext"
+					android:inputType="textEmailAddress"/>
+			</android.support.design.widget.TextInputLayout>
 
-	<CheckBox android:id="@+id/cbAutoLogin"
-			  android:layout_width="wrap_content"
-			  android:layout_height="wrap_content"
-			  android:text="@string/autoLogin"/>
+			<android.support.design.widget.TextInputLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content">
 
-	<Button android:id="@+id/btnLogin"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_gravity="right"
-			android:text="@string/login"/>
+				<EditText
+					android:id="@+id/etPassword"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:hint="@string/inputPassword"
+					android:imeOptions="actionDone"
+					android:inputType="textPassword"/>
+
+			</android.support.design.widget.TextInputLayout>
+			<CheckBox android:id="@+id/cbRememberPassword"
+					  android:layout_width="wrap_content"
+					  android:layout_height="wrap_content"
+					  android:text="@string/rememberPassword"/>
+
+			<CheckBox android:id="@+id/cbAutoLogin"
+					  android:layout_width="wrap_content"
+					  android:layout_height="wrap_content"
+					  android:text="@string/autoLogin"/>
+		</LinearLayout>
+	</android.support.v7.widget.CardView>
+
+
+	<android.support.v7.widget.AppCompatButton
+		android:layout_marginTop="10dp"
+		android:id="@+id/btnLogin"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="right"
+		android:text="@string/login"/>
 </LinearLayout>

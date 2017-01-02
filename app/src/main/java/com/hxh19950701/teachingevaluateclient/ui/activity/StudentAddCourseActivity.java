@@ -3,7 +3,6 @@ package com.hxh19950701.teachingevaluateclient.ui.activity;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TextInputLayout;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -11,28 +10,19 @@ import android.widget.Button;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.google.gson.Gson;
-import com.hxh19950701.teachingevaluateclient.Bean.Course;
-import com.hxh19950701.teachingevaluateclient.Bean.CourseBean;
 import com.hxh19950701.teachingevaluateclient.R;
-import com.hxh19950701.teachingevaluateclient.application.TeachingEvaluateClientApplication;
 import com.hxh19950701.teachingevaluateclient.base.BaseActivity;
-import com.hxh19950701.teachingevaluateclient.base.BaseRequestCallBack;
-import com.hxh19950701.teachingevaluateclient.base.BaseRequestParams;
-import com.hxh19950701.teachingevaluateclient.base.BaseTextWatcher;
-import com.hxh19950701.teachingevaluateclient.utils.SnackBarUtils;
-import com.lidroid.xutils.HttpUtils;
-import com.lidroid.xutils.exception.HttpException;
-import com.lidroid.xutils.http.RequestParams;
-import com.lidroid.xutils.http.ResponseInfo;
-import com.lidroid.xutils.http.client.HttpRequest;
+import com.hxh19950701.teachingevaluateclient.bean.service.Course;
+import com.hxh19950701.teachingevaluateclient.impl.TextWatcherImpl;
+import com.hxh19950701.teachingevaluateclient.internet.SimpleServiceCallback;
+import com.hxh19950701.teachingevaluateclient.internet.api.CourseApi;
+import com.hxh19950701.teachingevaluateclient.utils.MD5Utils;
 
 /**
  * Created by hxh19950701 on 2016/7/2.
  */
 public class StudentAddCourseActivity extends BaseActivity {
 
-    protected Toolbar toolbar;
     protected TextInputLayout tilClassId;
     protected TextInputLayout tilClassPassword;
     protected CoordinatorLayout clAddCourse;
@@ -42,16 +32,15 @@ public class StudentAddCourseActivity extends BaseActivity {
     protected void initView() {
         setContentView(R.layout.activity_student_add_course);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
         tilClassId = (TextInputLayout) findViewById(R.id.tilClassId);
-        tilClassPassword = (TextInputLayout) findViewById(R.id.tilClassPassword);
+        tilClassPassword = (TextInputLayout) findViewById(R.id.tilCoursePasswordRetype);
         clAddCourse = (CoordinatorLayout) findViewById(R.id.clAddCourse);
-        btnAddCourse = (Button) findViewById(R.id.btnAddCourse);
+        btnAddCourse = (Button) findViewById(R.id.btnNewCourse);
     }
 
     @Override
     protected void initListener() {
-        TextWatcher textWatcher = new BaseTextWatcher() {
+        TextWatcher textWatcher = new TextWatcherImpl() {
             @Override
             public void afterTextChanged(Editable s) {
                 refreshAddCourseButtonEnable();
@@ -63,9 +52,7 @@ public class StudentAddCourseActivity extends BaseActivity {
     }
 
     @Override
-    protected void initDate() {
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("添加课程");
+    protected void initData() {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         refreshAddCourseButtonEnable();
     }
@@ -91,44 +78,30 @@ public class StudentAddCourseActivity extends BaseActivity {
     }
 
     private void addCourse() {
-        final MaterialDialog addCourseDialog = new MaterialDialog.Builder(this)
+        final MaterialDialog dialog = new MaterialDialog.Builder(this)
                 .title("正在添加").content("请稍后...").cancelable(false)
                 .progress(true, 0).progressIndeterminateStyle(false).show();
-        final RequestParams requestParams = new BaseRequestParams();
-        requestParams.addQueryStringParameter("action", "addCourse");
-        requestParams.addQueryStringParameter("courseId", tilClassId.getEditText().getText().toString());
-        requestParams.addQueryStringParameter("password", tilClassPassword.getEditText().getText().toString());
-        HttpUtils httpUtils = new HttpUtils();
-        httpUtils.configCurrentHttpCacheExpiry(0);
-        httpUtils.send(HttpRequest.HttpMethod.GET, TeachingEvaluateClientApplication.getCourseManager(),
-                requestParams, new BaseRequestCallBack<String>() {
-                    @Override
-                    public void onSuccess(ResponseInfo<String> responseInfo) {
-                        super.onSuccess(responseInfo);
-                        Gson gson = new Gson();
-                        CourseBean courseBean = gson.fromJson(responseInfo.result, CourseBean.class);
-                        if (courseBean.isSuccess()) {
-                            showAddCourseSuccessDialog(courseBean.getCourse());
-                        } else {
-                            SnackBarUtils.showLong(clAddCourse, "课程未找到，或已添加该课程");
-                        }
-                        addCourseDialog.dismiss();
-                    }
+        int courseId = Integer.valueOf(tilClassId.getEditText().getText().toString());
+        String password = MD5Utils.encipher(tilClassPassword.getEditText().getText().toString());
+        CourseApi.addCourse(courseId, password, new SimpleServiceCallback<Course>(clAddCourse) {
 
-                    @Override
-                    public void onFailure(HttpException e, String s) {
-                        super.onFailure(e, s);
-                        SnackBarUtils.showLong(clAddCourse, String.format(getString(R.string.connectServerFail), e.getExceptionCode()));
-                        addCourseDialog.dismiss();
-                    }
-                }
-        );
+            @Override
+            public void onAfter() {
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onGetDataSuccess(Course course) {
+                showAddCourseSuccessDialog(course);
+            }
+
+        });
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btnAddCourse:
+            case R.id.btnNewCourse:
                 addCourse();
                 break;
         }
