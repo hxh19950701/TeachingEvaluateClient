@@ -7,10 +7,6 @@ import com.hxh19950701.teachingevaluateclient.internet.api.StudentApi;
 import com.hxh19950701.teachingevaluateclient.internet.api.TeacherApi;
 import com.hxh19950701.teachingevaluateclient.internet.api.UserApi;
 
-/**
- * Created by hxh19950701 on 2016/11/12.
- */
-
 public class NetService {
 
     private NetService() {

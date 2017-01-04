@@ -9,6 +9,8 @@ import android.view.View;
 
 import com.hxh19950701.teachingevaluateclient.R;
 
+import org.greenrobot.eventbus.EventBus;
+
 /**
  * Created by hxh19950701 on 2016/5/30.
  */
@@ -52,4 +54,16 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         }
     }
 
+    protected void startReceiveEvent() {
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus defaultEventBus = EventBus.getDefault();
+        if (defaultEventBus.isRegistered(this)) {
+            defaultEventBus.unregister(this);
+        }
+    }
 }

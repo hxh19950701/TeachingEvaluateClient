@@ -30,4 +30,8 @@ public class Constant {
     public static final String KEY_COOKIE = "cookie";
     public static final String KEY_SET_COOKIE = "set-cookie";
     public static final String KEY_ACTION = "action";
+    public static final String KEY_SERVER_DOMAIN = "server_domain";
+
+    public static final String PREFIX_SERVER_DOMAIN = "http://";
+    public static final String DEFAULT_SERVER_DOMAIN = "http://192.168.191.1:8080/TeachingEvaluateServer";
 }

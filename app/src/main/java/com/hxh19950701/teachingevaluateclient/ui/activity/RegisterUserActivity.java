@@ -1,7 +1,6 @@
 package com.hxh19950701.teachingevaluateclient.ui.activity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
@@ -16,12 +15,15 @@ import com.hxh19950701.teachingevaluateclient.R;
 import com.hxh19950701.teachingevaluateclient.base.BaseActivity;
 import com.hxh19950701.teachingevaluateclient.bean.service.User;
 import com.hxh19950701.teachingevaluateclient.constant.Constant;
+import com.hxh19950701.teachingevaluateclient.event.UserRegisterCompleteEvent;
 import com.hxh19950701.teachingevaluateclient.impl.TextWatcherImpl;
 import com.hxh19950701.teachingevaluateclient.internet.SimpleServiceCallback;
 import com.hxh19950701.teachingevaluateclient.internet.api.UserApi;
 import com.hxh19950701.teachingevaluateclient.utils.InputMethodUtils;
 import com.hxh19950701.teachingevaluateclient.utils.MD5Utils;
 import com.hxh19950701.teachingevaluateclient.utils.SnackBarUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 public class RegisterUserActivity extends BaseActivity {
 
@@ -178,15 +180,21 @@ public class RegisterUserActivity extends BaseActivity {
     }
 
     protected void register() {
-        final MaterialDialog dialog = new MaterialDialog.Builder(this)
-                .title("正在注册").content("请稍后...").cancelable(false)
-                .progress(true, 0).progressIndeterminateStyle(false).show();
-        String username = etUsername.getText().toString();
-        String password = MD5Utils.encipher(etPassword.getText().toString());
+        final MaterialDialog dialog = new MaterialDialog.Builder(this).title("正在注册").content("请稍后...").cancelable(false)
+                .progress(true, 0).progressIndeterminateStyle(false).build();
+
+        final String username = etUsername.getText().toString();
+        final String password = MD5Utils.encipher(etPassword.getText().toString());
+
         UserApi.registerStudent(username, password, new SimpleServiceCallback<User>(clRegister) {
+
+            @Override
+            public void onStart() {
+                dialog.show();
+            }
+
             @Override
             public void onAfter() {
-                super.onAfter();
                 dialog.dismiss();
             }
 
@@ -198,7 +206,9 @@ public class RegisterUserActivity extends BaseActivity {
 
             @Override
             public void onGetDataSuccess(User user) {
-                returnToLogin();
+                UserRegisterCompleteEvent event = new UserRegisterCompleteEvent(username, password);
+                EventBus.getDefault().post(event);
+                finish();
             }
         });
     }
@@ -218,14 +228,6 @@ public class RegisterUserActivity extends BaseActivity {
                 SnackBarUtils.showLong(clRegister, R.string.systemError);
                 break;
         }
-    }
-
-    private void returnToLogin() {
-        Intent intent = new Intent();
-        intent.putExtra(Constant.KEY_USERNAME, etUsername.getText().toString());
-        intent.putExtra(Constant.KEY_PASSWORD, etPassword.getText().toString());
-        setResult(RESULT_OK, intent);
-        finish();
     }
 
     @Override

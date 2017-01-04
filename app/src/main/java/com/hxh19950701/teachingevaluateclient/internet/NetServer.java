@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 
 import com.hxh19950701.teachingevaluateclient.R;
-import com.hxh19950701.teachingevaluateclient.application.MainApplication;
 import com.hxh19950701.teachingevaluateclient.ui.activity.LoginActivity;
 import com.hxh19950701.teachingevaluateclient.utils.PrefUtils;
 
@@ -19,7 +18,7 @@ public class NetServer {
 
 
     public static void requireLoginAgain(Activity activity, String msg) {
-        Intent intent = new Intent(MainApplication.getApplication(), LoginActivity.class);
+        Intent intent = new Intent(activity, LoginActivity.class);
         intent.putExtra("msg", msg);
         PrefUtils.putBoolean("AutoLogin", false);
         if (activity != null) {

@@ -1,12 +1,13 @@
 package com.hxh19950701.teachingevaluateclient.adapter;
 
+import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
 import com.hxh19950701.teachingevaluateclient.R;
-import com.hxh19950701.teachingevaluateclient.application.MainApplication;
 import com.hxh19950701.teachingevaluateclient.bean.service.EvaluateSecondTarget;
 import com.hxh19950701.teachingevaluateclient.bean.service.EvaluateThirdTarget;
 
@@ -76,9 +77,10 @@ public class SecondTargetAdapter extends BaseExpandableListAdapter {
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView = View.inflate(MainApplication.getApplication(), R.layout.item_second_target, null);
+            Context context = parent.getContext();
+            convertView = LayoutInflater.from(context).inflate(R.layout.item_second_target, parent, false);
         }
-        TextView tvSecondTargetName= (TextView) convertView.findViewById(R.id.tvSecondTargetName);
+        TextView tvSecondTargetName = (TextView) convertView.findViewById(R.id.tvSecondTargetName);
         tvSecondTargetName.setText(second.get(groupPosition).evaluateSecondTarget.getName());
         return convertView;
     }
@@ -86,7 +88,8 @@ public class SecondTargetAdapter extends BaseExpandableListAdapter {
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView = View.inflate(MainApplication.getApplication(), R.layout.item_third_target, null);
+            Context context = parent.getContext();
+            convertView = LayoutInflater.from(context).inflate(R.layout.item_third_target, parent, false);
         }
         float currentScore = score[second.get(groupPosition).third.get(childPosition).getId()];
         TextView tvThirdTargetName = (TextView) convertView.findViewById(R.id.tvThirdTargetName);

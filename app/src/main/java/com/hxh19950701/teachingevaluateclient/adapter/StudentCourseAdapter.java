@@ -1,12 +1,13 @@
 package com.hxh19950701.teachingevaluateclient.adapter;
 
+import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.hxh19950701.teachingevaluateclient.R;
-import com.hxh19950701.teachingevaluateclient.application.MainApplication;
 import com.hxh19950701.teachingevaluateclient.bean.service.StudentCourseInfo;
 
 import java.util.List;
@@ -41,7 +42,8 @@ public class StudentCourseAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView = View.inflate(MainApplication.getApplication(), R.layout.item_course, null);
+            Context context = parent.getContext();
+            convertView = LayoutInflater.from(context).inflate(R.layout.item_course, parent, false);
         }
         ViewHolder viewHolder = getViewHolder(convertView);
         viewHolder.tvCourseName.setText(data.get(position).getCourse().getName());

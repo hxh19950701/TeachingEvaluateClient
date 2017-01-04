@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
+import org.greenrobot.eventbus.EventBus;
+
 public abstract class BaseFragment extends Fragment implements OnClickListener {
 
     public abstract View initView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState);
@@ -26,5 +28,18 @@ public abstract class BaseFragment extends Fragment implements OnClickListener {
         super.onActivityCreated(savedInstanceState);
         initListener();
         initData();
+    }
+
+    protected void startReceiveEvent() {
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus defaultEventBus = EventBus.getDefault();
+        if (defaultEventBus.isRegistered(this)) {
+            defaultEventBus.unregister(this);
+        }
     }
 }

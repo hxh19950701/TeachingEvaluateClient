@@ -1,6 +1,5 @@
 package com.hxh19950701.teachingevaluateclient.ui.activity;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -16,7 +15,7 @@ import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.AnimationSet;
 import android.view.animation.TranslateAnimation;
-import android.view.inputmethod.InputMethodManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -31,14 +30,19 @@ import com.hxh19950701.teachingevaluateclient.application.MainApplication;
 import com.hxh19950701.teachingevaluateclient.base.BaseActivity;
 import com.hxh19950701.teachingevaluateclient.bean.service.User;
 import com.hxh19950701.teachingevaluateclient.constant.Constant;
+import com.hxh19950701.teachingevaluateclient.event.UserRegisterCompleteEvent;
 import com.hxh19950701.teachingevaluateclient.impl.TextWatcherImpl;
 import com.hxh19950701.teachingevaluateclient.internet.SimpleServiceCallback;
 import com.hxh19950701.teachingevaluateclient.internet.api.UserApi;
+import com.hxh19950701.teachingevaluateclient.utils.IntentUtils;
 import com.hxh19950701.teachingevaluateclient.utils.MD5Utils;
 import com.hxh19950701.teachingevaluateclient.utils.PrefUtils;
 import com.hxh19950701.teachingevaluateclient.utils.SnackBarUtils;
 import com.hxh19950701.teachingevaluateclient.utils.ViewUtils;
 import com.lidroid.xutils.http.HttpHandler;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 public class LoginActivity extends BaseActivity {
 
@@ -89,22 +93,19 @@ public class LoginActivity extends BaseActivity {
                     }
                 }
         );
-        etPassword.setOnFocusChangeListener(
-                new View.OnFocusChangeListener() {
-                    @Override
-                    public void onFocusChange(View v, boolean hasFocus) {
-                        if (hasFocus && isMD5) {
-                            isMD5 = false;
-                            etPassword.setText("");
-                        }
-                    }
-                });
+        etPassword.addTextChangedListener(new TextWatcherImpl() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                if (s.length() > 16) {
+                    etPassword.setText("");
+                    isMD5 = false;
+                }
+            }
+        });
         etPassword.setOnEditorActionListener(
                 new TextView.OnEditorActionListener() {
                     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                        if (event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
-                            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                            inputMethodManager.hideSoftInputFromWindow(v.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                        if (actionId == EditorInfo.IME_ACTION_DONE) {
                             startLogin();
                             return true;
                         }
@@ -119,8 +120,8 @@ public class LoginActivity extends BaseActivity {
         initLoginInfo();
         initAnim();
         initMsg();
+        startReceiveEvent();
     }
-
 
     private void initLoginInfo() {
         isMD5 = true;
@@ -151,11 +152,20 @@ public class LoginActivity extends BaseActivity {
         llLogin.startAnimation(animationSet);
     }
 
+    @Subscribe(sticky = false, threadMode = ThreadMode.MAIN)
+    public void onUserRegisterComplete(UserRegisterCompleteEvent event) {
+        etUsername.setText(event.getUsername());
+        etPassword.setText(event.getPassword());
+        cbRememberPassword.setChecked(true);
+        isMD5 = true;
+        SnackBarUtils.showLongPost(clLogin, "注册成功，点击登录按钮立刻登录。");
+    }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.fabRegisterStudent:
-                startActivityForResult(new Intent(this, RegisterUserActivity.class), 1);
+                IntentUtils.startActivity(this, RegisterUserActivity.class);
                 break;
             case R.id.btnLogin:
                 startLogin();
@@ -175,25 +185,24 @@ public class LoginActivity extends BaseActivity {
         final MaterialDialog dialog = new MaterialDialog.Builder(this).title(R.string.loggingIn).content(R.string.wait)
                 .progress(true, 0).progressIndeterminateStyle(true).cancelable(true).build();
         //开始登录
-        final HttpHandler httpHandler = UserApi.login(username, password,
-                new SimpleServiceCallback<User>(clLogin) {
+        final HttpHandler httpHandler = UserApi.login(username, password, new SimpleServiceCallback<User>(clLogin) {
 
-                    @Override
-                    public void onStart() {
-                        dialog.show();
-                    }
+            @Override
+            public void onStart() {
+                dialog.show();
+            }
 
-                    @Override
-                    public void onAfter() {
-                        dialog.dismiss();
-                    }
+            @Override
+            public void onAfter() {
+                dialog.dismiss();
+            }
 
-                    @Override
-                    public void onGetDataSuccess(User user) {
-                        saveDate();
-                        enterApp(user.getIdentity());
-                    }
-                });
+            @Override
+            public void onGetDataSuccess(User user) {
+                saveDate();
+                enterApp(user.getIdentity());
+            }
+        });
         //添加取消登录监听器
         dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
@@ -280,10 +289,10 @@ public class LoginActivity extends BaseActivity {
                 .inputType(InputType.TYPE_TEXT_VARIATION_URI).cancelable(true)
                 .neutralText(R.string.reset).negativeText(R.string.cancel).positiveText(R.string.modify)
                 .alwaysCallInputCallback()
-                .input(null, PrefUtils.getString("serverURL", "http://"), new MaterialDialog.InputCallback() {
+                .input(null, PrefUtils.getString(Constant.KEY_SERVER_DOMAIN, Constant.PREFIX_SERVER_DOMAIN), new MaterialDialog.InputCallback() {
                     @Override
                     public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-                        boolean enable = input.toString().startsWith("http://") && input.length() > 10;
+                        boolean enable = input.toString().startsWith(Constant.PREFIX_SERVER_DOMAIN) && input.length() > 10;
                         dialog.getActionButton(DialogAction.POSITIVE).setEnabled(enable);
                     }
                 })
@@ -291,30 +300,18 @@ public class LoginActivity extends BaseActivity {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         String url = dialog.getInputEditText().getText().toString();
-                        PrefUtils.putString("serverURL", url);
+                        PrefUtils.putString(Constant.KEY_SERVER_DOMAIN, url);
                         application.initServerURL();
                     }
                 })
                 .onNeutral(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        PrefUtils.remove("serverURL");
+                        PrefUtils.remove(Constant.KEY_SERVER_DOMAIN);
                         application.initServerURL();
                     }
                 })
                 .show();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            etUsername.setText(data.getStringExtra(Constant.KEY_USERNAME));
-            etPassword.setText(data.getStringExtra(Constant.KEY_PASSWORD));
-            cbRememberPassword.setChecked(true);
-            isMD5 = false;
-            SnackBarUtils.showLongPost(clLogin, "注册成功，点击登录按钮立刻登录。");
-        }
     }
 
 }
