@@ -172,17 +172,20 @@ public class LoginActivity extends BaseActivity {
         //获取用户名及密码MD5
         final String username = etUsername.getText().toString();
         final String password = isMD5 ? etPassword.getText().toString() : MD5Utils.encipher(etPassword.getText().toString());
-        //显示登录对话框
-        final MaterialDialog loginDialog = new MaterialDialog.Builder(this)
-                .title(R.string.loggingIn).content(R.string.wait)
-                .progress(true, 0).progressIndeterminateStyle(true)
-                .cancelable(true).show();
+        final MaterialDialog dialog = new MaterialDialog.Builder(this).title(R.string.loggingIn).content(R.string.wait)
+                .progress(true, 0).progressIndeterminateStyle(true).cancelable(true).build();
         //开始登录
         final HttpHandler httpHandler = UserApi.login(username, password,
                 new SimpleServiceCallback<User>(clLogin) {
+
+                    @Override
+                    public void onStart() {
+                        dialog.show();
+                    }
+
                     @Override
                     public void onAfter() {
-                        loginDialog.dismiss();
+                        dialog.dismiss();
                     }
 
                     @Override
@@ -192,7 +195,7 @@ public class LoginActivity extends BaseActivity {
                     }
                 });
         //添加取消登录监听器
-        loginDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
                 SnackBarUtils.showLong(clLogin, "登录过程被取消。");

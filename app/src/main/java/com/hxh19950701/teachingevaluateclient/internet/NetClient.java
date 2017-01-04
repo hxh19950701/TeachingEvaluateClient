@@ -2,13 +2,9 @@ package com.hxh19950701.teachingevaluateclient.internet;
 
 import android.util.Log;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.hxh19950701.teachingevaluateclient.base.ResponseData;
 import com.hxh19950701.teachingevaluateclient.constant.Constant;
 import com.hxh19950701.teachingevaluateclient.utils.PrefUtils;
 import com.lidroid.xutils.HttpUtils;
-import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.HttpHandler;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.http.ResponseInfo;
@@ -26,42 +22,13 @@ public class NetClient {
     }
 
     private static final String TAG = NetClient.class.getSimpleName();
+    private static final HttpUtils HTTP_UTILS = new HttpUtils();
 
     public static <Data> HttpHandler<String> sendRequest(
-            HttpRequest.HttpMethod httpMethod, String url, RequestParams requestParams,
+            HttpRequest.HttpMethod httpMethod, String url, final RequestParams requestParams,
             final ServiceCallback<Data> serviceCallback, final Type type) {
-        HttpUtils httpUtils = new HttpUtils();
-        RequestCallBack<String> callBack = new RequestCallBack<String>() {
-
-            @Override
-            public void onSuccess(ResponseInfo<String> responseInfo) {
-                Log.e(TAG, responseInfo.result);
-                saveCookie(responseInfo);
-                if (serviceCallback != null) {
-                    serviceCallback.onAfter();
-                    ResponseData<Data> data = null;
-                    try {
-                        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-                        data = gson.fromJson(responseInfo.result, type);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        serviceCallback.onException(responseInfo.result);
-                    }
-                    serviceCallback.onSuccess(data);
-                }
-            }
-
-            @Override
-            public void onFailure(HttpException e, String s) {
-                e.printStackTrace();
-                Log.e(TAG, s);
-                if (serviceCallback != null) {
-                    serviceCallback.onAfter();
-                    serviceCallback.onFailure(e, s);
-                }
-            }
-        };
-        return httpUtils.send(httpMethod, url, requestParams, callBack);
+        RequestCallBack<String> callBack = new RequestCallBackBuilder<Data>(type, serviceCallback);
+        return HTTP_UTILS.send(httpMethod, url, requestParams, callBack);
     }
 
     public static <Data> HttpHandler<String> sendGetRequest(String url, RequestParams requestParams, final ServiceCallback<Data> serviceCallback, Type type) {
@@ -89,9 +56,10 @@ public class NetClient {
         Header[] headers = responseInfo.getHeaders(Constant.KEY_SET_COOKIE);
         if (headers != null && headers.length > 0) {
             String str = headers[0].getValue();
-            String cookie = str.substring(0, str.lastIndexOf(' ') - 1);
-            if (!PrefUtils.getString(Constant.KEY_COOKIE, " ").equals(cookie)) {
-                PrefUtils.putString(Constant.KEY_COOKIE, cookie);
+            String newCookie = str.substring(0, str.lastIndexOf(' ') - 1);
+            String currentCookie = PrefUtils.getString(Constant.KEY_COOKIE, "");
+            if (!newCookie.equals(currentCookie)) {
+                PrefUtils.putString(Constant.KEY_COOKIE, newCookie);
             }
         }
     }
