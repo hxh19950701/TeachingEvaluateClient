@@ -1,9 +1,5 @@
 package com.hxh19950701.teachingevaluateclient.event;
 
-/**
- * Created by 绪浩 on 2017/1/4.
- */
-
 public class UserRegisterCompleteEvent{
 
     private String username;

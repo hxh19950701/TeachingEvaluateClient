@@ -100,10 +100,25 @@
 						 android:layout_weight="1"
 						 android:text="下学期"/>
 		</RadioGroup>
+
+		<android.support.design.widget.TextInputLayout
+			android:id="@+id/tilPersonCount"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content">
+
+			<EditText android:layout_width="match_parent"
+					  android:layout_height="wrap_content"
+					  android:hint="学生总数"
+					  android:inputType="number"
+					  android:singleLine="true"/>
+		</android.support.design.widget.TextInputLayout>
+
+
 		<Button android:id="@+id/btnNewCourse"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_gravity="right"
 				android:text="新建课程"/>
+
 	</LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

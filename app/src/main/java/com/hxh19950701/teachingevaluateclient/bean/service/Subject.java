@@ -1,14 +1,13 @@
 package com.hxh19950701.teachingevaluateclient.bean.service;
 
-public class Subject {
+import com.hxh19950701.teachingevaluateclient.base.TimeMakableRecord;
+
+public class Subject extends TimeMakableRecord {
 	private int id;
 	private Department department;
 	private String name;
-	private String mark;
 	
 	public Subject(){
-		this.department = null;
-		this.name = "δ����רҵ";
 	}
 	
 	public Subject(Department department, String name) {
@@ -38,13 +37,5 @@ public class Subject {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public String getMark() {
-		return mark;
-	}
-
-	public void setMark(String mark) {
-		this.mark = mark;
 	}
 }

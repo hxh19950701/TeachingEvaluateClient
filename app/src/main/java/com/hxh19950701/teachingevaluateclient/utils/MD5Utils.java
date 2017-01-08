@@ -3,15 +3,13 @@ package com.hxh19950701.teachingevaluateclient.utils;
 import java.security.MessageDigest;
 
 public class MD5Utils {
-    private MD5Utils() {
 
+    private MD5Utils() {
+        throw new UnsupportedOperationException("This class cannot be instantiated, and its methods must be called directly.");
     }
 
     public final static String encipher(String s) {
-        char hexDigits[] = {
-                '0', '1', '2', '3', '4',
-                '5', '6', '7', '8', '9',
-                'A', 'B', 'C', 'D', 'E', 'F'};
+        char hexDigits[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
         try {
             byte[] btInput = s.getBytes();
             MessageDigest mdInst = MessageDigest.getInstance("MD5");

@@ -11,9 +11,7 @@ public class DataFormatThread<Data> extends Thread {
 
     public static interface OnFormattingListener<Data> {
         void onStart(String jsonString, Type type);
-
         void onException(String jsonString, Type type, JsonParseException e);
-
         void onComplete(ResponseData<Data> data);
     }
 

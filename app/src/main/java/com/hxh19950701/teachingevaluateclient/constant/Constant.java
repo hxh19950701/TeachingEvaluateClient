@@ -1,8 +1,9 @@
 package com.hxh19950701.teachingevaluateclient.constant;
 
 public class Constant {
+
     private Constant() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("This class cannot be instantiated, and its methods must be called directly.");
     }
 
     public static final int ITEM_COUNT = 10;
@@ -10,6 +11,7 @@ public class Constant {
     public static final int IDENTITY_STUDENT = 0;
     public static final int IDENTITY_TEACHER = 1;
     public static final int IDENTITY_ADMINISTRATOR = 2;
+    public static final int IDENTITY_COUNT = 3;
 
     public static final int TERM_FIRST = 1;
     public static final int TERM_SECOND = 2;
@@ -31,6 +33,7 @@ public class Constant {
     public static final String KEY_SET_COOKIE = "set-cookie";
     public static final String KEY_ACTION = "action";
     public static final String KEY_SERVER_DOMAIN = "server_domain";
+    public static final String KEY_COURSE_ID = "course_id";
 
     public static final String PREFIX_SERVER_DOMAIN = "http://";
     public static final String DEFAULT_SERVER_DOMAIN = "http://192.168.191.1:8080/TeachingEvaluateServer";

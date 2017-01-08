@@ -1,12 +1,13 @@
 package com.hxh19950701.teachingevaluateclient.bean.service;
 
-public class Teacher {
+import com.hxh19950701.teachingevaluateclient.base.TimeMakableRecord;
+
+public class Teacher  extends TimeMakableRecord {
 	
 	private int id; 
 	private String teacherId; 
 	private String name;
 	private int sex; 
-	private String mark;
 
 	public Teacher() {
 		
@@ -50,14 +51,6 @@ public class Teacher {
 
 	public void setSex(int sex) {
 		this.sex = sex;
-	}
-
-	public String getMark() {
-		return mark;
-	}
-
-	public void setMark(String mark) {
-		this.mark = mark;
 	}
 
 }

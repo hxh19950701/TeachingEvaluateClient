@@ -1,12 +1,13 @@
 package com.hxh19950701.teachingevaluateclient.bean.service;
 
-public class TeacherCourseEvaluate {
+import com.hxh19950701.teachingevaluateclient.base.TimeMakableRecord;
+
+public class TeacherCourseEvaluate  extends TimeMakableRecord {
 	
 	private int id;
-	private Course course;
-	private EvaluateThirdTarget item;
-	private float score;
-	private String mark;
+	private Course course;	//��̵Ŀ�
+	private EvaluateThirdTarget item;//���۵���Ŀ
+	private float score;//����Ŀ��õ�ƽ���
 
 	public int getId() {
 		return id;
@@ -38,14 +39,6 @@ public class TeacherCourseEvaluate {
 
 	public void setScore(float score) {
 		this.score = score;
-	}
-
-	public String getMark() {
-		return mark;
-	}
-
-	public void setMark(String mark) {
-		this.mark = mark;
 	}
 
 }

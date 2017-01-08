@@ -16,7 +16,7 @@ public class CourseApi {
     private static String URL = null;
 
     private CourseApi() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("This class cannot be instantiated, and its methods must be called directly.");
     }
 
     public static void init(String URL) {
@@ -26,49 +26,54 @@ public class CourseApi {
     public static HttpHandler<String> getCourse(int courseId, ServiceCallback<Course> callBack) {
         String action = "getCourse";
         RequestParams requestParams = NetClient.buildRequestParams(action, "courseId", courseId + "");
-        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<Course>>() {
-        }.getType());
+        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<Course>>() {}.getType());
     }
 
     public static HttpHandler<String> getStudentCourseList(ServiceCallback<List<StudentCourseInfo>> callBack) {
         String action = "getStudentCourseList";
         RequestParams requestParams = NetClient.buildRequestParams(action);
-        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<List<StudentCourseInfo>>>() {
-        }.getType());
+        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<List<StudentCourseInfo>>>() {}.getType());
     }
 
-    public static HttpHandler<String> getStudentCourseList(int uid, ServiceCallback<Course> callBack) {
+    public static HttpHandler<String> getStudentCourseList(int uid, ServiceCallback<List<StudentCourseInfo>> callBack) {
         String action = "getStudentCourseList";
         RequestParams requestParams = NetClient.buildRequestParams(action, "uid", uid + "");
-        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<Course>>() {
-        }.getType());
+        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<Course>>() {}.getType());
     }
 
     public static HttpHandler<String> addCourse(int uid, int courseId, ServiceCallback<Course> callBack) {
         String action = "addCourse";
         RequestParams requestParams = NetClient.buildRequestParams(action, "uid", uid + "", "courseId", courseId + "");
-        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<Course>>() {
-        }.getType());
+        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<Course>>() {}.getType());
     }
 
     public static HttpHandler<String> addCourse(int courseId, String password, ServiceCallback<Course> callBack) {
         String action = "addCourse";
         RequestParams requestParams = NetClient.buildRequestParams(action, "courseId", courseId + "", "password", password);
-        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<Course>>() {
-        }.getType());
+        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<Course>>() {}.getType());
     }
 
-    public static HttpHandler<String> newCourse(String courseName, String password, int year, int term, ServiceCallback<Course> callBack) {
+    public static HttpHandler<String> newCourse(String courseName, String password, int year, int term, int personCount, ServiceCallback<Course> callBack) {
         String action = "newCourse";
-        RequestParams requestParams = NetClient.buildRequestParams(action, "courseName", courseName, "password", password, "year", year + "", "term", term + "");
-        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<Course>>() {
-        }.getType());
+        RequestParams requestParams = NetClient.buildRequestParams(action, "courseName", courseName, "password", password, "year", year + "", "term", term + "", "totalPersonCount", personCount + "");
+        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<Course>>() {}.getType());
     }
 
     public static HttpHandler<String> newCourse(int uid, String courseName, String password, int year, int term, ServiceCallback<Course> callBack) {
         String action = "newCourse";
         RequestParams requestParams = NetClient.buildRequestParams(action, "uid", uid + "", "courseName", courseName, "password", password, "year", year + "", "term", term + "");
-        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<Course>>() {
-        }.getType());
+        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<Course>>() {}.getType());
+    }
+
+    public static HttpHandler<String> getTeacherCourseList(ServiceCallback<List<Course>> callBack) {
+        String action = "getTeacherCourseList";
+        RequestParams requestParams = NetClient.buildRequestParams(action);
+        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<List<Course>>>() {}.getType());
+    }
+
+    public static HttpHandler<String> getTeacherCourseList(int uid, ServiceCallback<List<Course>> callBack) {
+        String action = "getTeacherCourseList";
+        RequestParams requestParams = NetClient.buildRequestParams(action, "uid", uid + "");
+        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<List<Course>>>() {}.getType());
     }
 }

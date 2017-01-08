@@ -2,12 +2,11 @@ package com.hxh19950701.teachingevaluateclient.bean.service;
 
 import java.sql.Timestamp;
 
-public class LoginRecord {
+public class LoginRecord{
 	private int id; // ��¼ID
 	private String ip; // ��¼IP
 	private User user; // ��¼�û�
 	private Timestamp time; // ��¼ʱ��
-	private String mark;
 
 	public LoginRecord() {
 		// TODO Auto-generated constructor stub
@@ -51,13 +50,4 @@ public class LoginRecord {
 	public void setTime(Timestamp time) {
 		this.time = time;
 	}
-
-	public String getMark() {
-		return mark;
-	}
-
-	public void setMark(String mark) {
-		this.mark = mark;
-	}
-
 }

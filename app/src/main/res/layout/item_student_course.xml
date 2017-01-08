@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+	android:id="@+id/cvItem"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:layout_margin="4dp"
+	android:clickable="true"
+	android:foreground="?android:attr/selectableItemBackground">
+
+	<LinearLayout android:layout_width="match_parent"
+				  android:layout_height="match_parent"
+				  android:orientation="vertical"
+				  android:padding="10dp">
+
+		<LinearLayout android:layout_width="match_parent"
+					  android:layout_height="wrap_content"
+					  android:orientation="horizontal">
+
+			<LinearLayout android:layout_width="0dp"
+						  android:layout_height="wrap_content"
+						  android:layout_weight="1"
+						  android:orientation="vertical"
+						  android:paddingBottom="3dp">
+
+				<TextView android:id="@+id/tvCourse"
+						  android:layout_width="match_parent"
+						  android:layout_height="wrap_content"
+						  android:lines="1"
+						  android:padding="3dp"
+						  android:text="@string/app_name"
+						  android:textColor="@color/textColor3"
+						  android:textSize="@dimen/text20"/>
+
+				<LinearLayout android:layout_width="match_parent"
+							  android:layout_height="wrap_content"
+							  android:gravity="center_vertical"
+							  android:orientation="horizontal"
+							  android:padding="1dp">
+
+					<ImageView android:layout_width="15dp"
+							   android:layout_height="15dp"
+							   android:background="@mipmap/ic_person_grey600"/>
+
+					<TextView android:id="@+id/tvTeacher"
+							  android:layout_width="match_parent"
+							  android:layout_height="wrap_content"
+							  android:layout_marginLeft="5dp"
+							  android:lines="1"
+							  android:text="@string/app_name"
+							  android:textColor="@color/textColor6"
+							  android:textSize="@dimen/textSmall"/>
+				</LinearLayout>
+
+				<LinearLayout android:layout_width="match_parent"
+							  android:layout_height="wrap_content"
+							  android:gravity="center_vertical"
+							  android:orientation="horizontal"
+							  android:padding="1dp">
+
+					<ImageView android:layout_width="15dp"
+							   android:layout_height="15dp"
+							   android:background="@mipmap/ic_av_timer_grey600"/>
+
+					<TextView android:id="@+id/tvTime"
+							  android:layout_width="match_parent"
+							  android:layout_height="wrap_content"
+							  android:layout_marginLeft="5dp"
+							  android:lines="1"
+							  android:text="@string/app_name"
+							  android:textColor="@color/textColor6"
+							  android:textSize="@dimen/textSmall"/>
+				</LinearLayout>
+
+			</LinearLayout>
+
+			<TextView android:id="@+id/tvScore"
+					  android:layout_width="60dp"
+					  android:layout_height="match_parent"
+					  android:gravity="center"
+					  android:text="0"
+					  android:textColor="@color/colorAccent"
+					  android:textSize="30dp"
+					  android:textStyle="italic|bold"/>
+		</LinearLayout>
+
+		<TextView android:id="@+id/tvComment"
+				  android:layout_width="match_parent"
+				  android:layout_height="wrap_content"
+				  android:layout_marginLeft="5dp"
+				  android:padding="1dp"
+				  android:text="@string/app_name"
+				  android:textColor="@color/textColor6"
+				  android:textSize="@dimen/textSmall"/>
+
+		<TextView android:id="@+id/tvReply"
+				  android:layout_width="match_parent"
+				  android:layout_height="wrap_content"
+				  android:layout_marginLeft="5dp"
+				  android:padding="1dp"
+				  android:text="@string/app_name"
+				  android:textColor="@color/textColor6"
+				  android:textSize="@dimen/textSmall"/>
+	</LinearLayout>
+</android.support.v7.widget.CardView>

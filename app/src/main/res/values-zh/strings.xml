@@ -35,7 +35,10 @@
 	<string name="cancel">取消</string>
 	<string name="chooseColor">选择颜色</string>
 	<string name="close">关闭</string>
+	<string name="complete">完成</string>
 	<string name="title_activity_person_center"></string>
 
-	<string name="newCourseSuccessHint">您已成功新建课程。该课程的详细信息如下：\n课程编号：%1$d\n课程名称：%2$s\n开设时间：%3$d年 %4$s</string>
+	<string name="newCourseSuccessHint">您已成功新建课程。该课程的详细信息如下：\n课程编号：%1$d\n课程名称：%2$s\n开设时间：%3$d年 %4$s\n学生人数：%5$d</string>
+	<string name="courseTime">%3$d年 %4$s</string>
+	<string name="courseInfo">课程的详细信息如下：\n课程名称：%1$s\n开设时间：%2$d年 %3$s\n学生人数：%4$d\n请确认课程信息准确无误。</string>
 </resources>

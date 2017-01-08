@@ -7,15 +7,14 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.hxh19950701.teachingevaluateclient.R;
-import com.hxh19950701.teachingevaluateclient.adapter.StudentCourseAdapter;
+import com.hxh19950701.teachingevaluateclient.adapter.StudentCourseRecyclerViewAdapter;
 import com.hxh19950701.teachingevaluateclient.base.BaseMainUiActivity;
 import com.hxh19950701.teachingevaluateclient.bean.service.Student;
 import com.hxh19950701.teachingevaluateclient.bean.service.StudentCourseInfo;
@@ -23,6 +22,7 @@ import com.hxh19950701.teachingevaluateclient.internet.NetServer;
 import com.hxh19950701.teachingevaluateclient.internet.SimpleServiceCallback;
 import com.hxh19950701.teachingevaluateclient.internet.api.CourseApi;
 import com.hxh19950701.teachingevaluateclient.internet.api.StudentApi;
+import com.hxh19950701.teachingevaluateclient.utils.IntentUtils;
 
 import java.util.List;
 
@@ -34,21 +34,18 @@ public class StudentMainUiActivity extends BaseMainUiActivity {
     protected TextView tvDepartment;
     protected TextView tvLogout;
     protected CoordinatorLayout clPersonCenter;
-    protected ListView lvCourse;
+    protected RecyclerView rvCourse;
     protected NavigationView nvDrawer;
     protected SwipeRefreshLayout srlCourseList;
-
-    protected List<StudentCourseInfo> data;
 
     @Override
     public void initView() {
         setContentView(R.layout.activity_student_main_ui);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
         fabAddCourse = (FloatingActionButton) findViewById(R.id.fabAddCourse);
         dlPersonCenter = (DrawerLayout) findViewById(R.id.dlPersonCenter);
         clPersonCenter = (CoordinatorLayout) findViewById(R.id.clPersonCenter);
         nvDrawer = (NavigationView) findViewById(R.id.nvDrawer);
-        lvCourse = (ListView) findViewById(R.id.lvCourse);
+        rvCourse = (RecyclerView) findViewById(R.id.rvCourse);
         srlCourseList = (SwipeRefreshLayout) findViewById(R.id.srlCourseList);
 
         tvName = (TextView) nvDrawer.getHeaderView(0).findViewById(R.id.tvName);
@@ -77,32 +74,24 @@ public class StudentMainUiActivity extends BaseMainUiActivity {
                 initStudentCourse();
             }
         });
-
-        lvCourse.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (data.get(position).getScore() >= 0) {
-
-                } else {
-                    Intent intent = new Intent(getApplication(), StudentEvaluateActivity.class);
-                    intent.putExtra("course", data.get(position).getCourse().getId());
-                    startActivity(intent);
-                }
-
-            }
-        });
     }
 
     @Override
     public void initData() {
+        rvCourse.setLayoutManager(new LinearLayoutManager(this));
         srlCourseList.setColorSchemeResources(R.color.colorAccent);
         initUserInfo();
         initStudentCourse();
     }
 
     private void initStudentCourse() {
-        srlCourseList.setRefreshing(true);
         CourseApi.getStudentCourseList(new SimpleServiceCallback<List<StudentCourseInfo>>(clPersonCenter) {
+
+            @Override
+            public void onStart() {
+                srlCourseList.setRefreshing(true);
+            }
+
             @Override
             public void onAfter() {
                 srlCourseList.setRefreshing(false);
@@ -110,9 +99,8 @@ public class StudentMainUiActivity extends BaseMainUiActivity {
 
             @Override
             public void onGetDataSuccess(List<StudentCourseInfo> infoList) {
-                data = infoList;
-                StudentCourseAdapter studentCourseAdapter = new StudentCourseAdapter(infoList);
-                lvCourse.setAdapter(studentCourseAdapter);
+                StudentCourseRecyclerViewAdapter studentCourseRecyclerViewAdapter = new StudentCourseRecyclerViewAdapter(infoList);
+                rvCourse.setAdapter(studentCourseRecyclerViewAdapter);
             }
         });
     }
@@ -127,14 +115,11 @@ public class StudentMainUiActivity extends BaseMainUiActivity {
                     setInfo(student.getName(), student.getClazz().getSubject().getDepartment().getName());
                 }
             }
-
         });
     }
 
     private void requireFillInfo() {
-        Intent intent = new Intent(this, RegisterStudentActivity.class);
-        startActivity(intent);
-        finish();
+        IntentUtils.startActivity(this, RegisterStudentActivity.class, Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
     }
 
     private void setInfo(String name, String otherInfo) {

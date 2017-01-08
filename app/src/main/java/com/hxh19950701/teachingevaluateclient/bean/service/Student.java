@@ -1,14 +1,16 @@
 package com.hxh19950701.teachingevaluateclient.bean.service;
 
-public class Student {
-	
-	private int id;			//ѧ����Ӧ���û���ʶ��
-	private String studentId;	//ѧ��
-	private String name;		//����
-	private int sex; 		// 0 Ů 1 ��
-	private Clazz clazz;		//���ڰ༶
-	private String mark;
-	
+
+import com.hxh19950701.teachingevaluateclient.base.TimeMakableRecord;
+
+public class Student extends TimeMakableRecord {
+
+	private int id; // ѧ���Ӧ���û���ʶ��
+	private String studentId; // ѧ��
+	private String name; // ����
+	private int sex; // 0 Ů 1 ��
+	private Clazz clazz; // ���ڰ༶
+
 	public Student() {
 
 	}
@@ -60,13 +62,4 @@ public class Student {
 	public void setClazz(Clazz clazz) {
 		this.clazz = clazz;
 	}
-
-	public String getMark() {
-		return mark;
-	}
-
-	public void setMark(String mark) {
-		this.mark = mark;
-	}
-
 }

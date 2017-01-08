@@ -17,7 +17,7 @@ public class DepartmentApi {
     private static String URL = null;
 
     private DepartmentApi() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("This class cannot be instantiated, and its methods must be called directly.");
     }
 
     public static void init(String URL) {

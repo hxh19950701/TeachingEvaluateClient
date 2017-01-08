@@ -8,25 +8,22 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.hxh19950701.teachingevaluateclient.R;
-import com.hxh19950701.teachingevaluateclient.bean.service.StudentCourseInfo;
+import com.hxh19950701.teachingevaluateclient.bean.service.Course;
+import com.hxh19950701.teachingevaluateclient.constant.Constant;
 
 import java.util.List;
 
-public class StudentCourseAdapter extends BaseAdapter {
+public class TeacherCourseListViewAdapter extends BaseAdapter {
 
-    protected List<StudentCourseInfo> data;
+    private List<Course> data;
 
-    public StudentCourseAdapter(List<StudentCourseInfo> data) {
+    public TeacherCourseListViewAdapter(List<Course> data) {
         this.data = data;
     }
 
     @Override
     public int getCount() {
-        try {
-            return data.size();
-        } catch (Exception e) {
-            return 0;
-        }
+        return data == null ? 0 : data.size();
     }
 
     @Override
@@ -36,19 +33,19 @@ public class StudentCourseAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return position;
+        return 0;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
             Context context = parent.getContext();
-            convertView = LayoutInflater.from(context).inflate(R.layout.item_course, parent, false);
+            convertView = LayoutInflater.from(context).inflate(R.layout.item_teacher_course, parent, false);
         }
         ViewHolder viewHolder = getViewHolder(convertView);
-        viewHolder.tvCourseName.setText(data.get(position).getCourse().getName());
-        viewHolder.tvScore.setText(data.get(position).getScore() < 0 ? "未完成评价" : data.get(position).getScore() + "");
-        viewHolder.tvTeacher.setText(data.get(position).getCourse().getTeacher().getName());
+        viewHolder.tvCourseName.setText(data.get(position).getName());
+        viewHolder.tvScore.setText(data.get(position).getScore() + "");
+        viewHolder.tvCourseInfo.setText(data.get(position).getYear() + "年" + (data.get(position).getTerm() == Constant.TERM_FIRST ? "上学期" : "下学期"));
         return convertView;
     }
 
@@ -63,14 +60,14 @@ public class StudentCourseAdapter extends BaseAdapter {
 
     public static class ViewHolder {
         public final TextView tvCourseName;
-        public final TextView tvTeacher;
+        public final TextView tvCourseInfo;
         public final TextView tvScore;
         public final View root;
 
         public ViewHolder(View root) {
             tvCourseName = (TextView) root.findViewById(R.id.tvCourseName);
             tvScore = (TextView) root.findViewById(R.id.tvScore);
-            tvTeacher = (TextView) root.findViewById(R.id.tvTeacher);
+            tvCourseInfo = (TextView) root.findViewById(R.id.tvCourseInfo);
             this.root = root;
         }
     }

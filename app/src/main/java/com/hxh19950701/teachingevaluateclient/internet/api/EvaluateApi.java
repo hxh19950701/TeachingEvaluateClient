@@ -7,8 +7,10 @@ import com.hxh19950701.teachingevaluateclient.bean.service.StudentCourseEvaluate
 import com.hxh19950701.teachingevaluateclient.bean.service.StudentCourseInfo;
 import com.hxh19950701.teachingevaluateclient.internet.NetClient;
 import com.hxh19950701.teachingevaluateclient.internet.ServiceCallback;
+import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.HttpHandler;
 import com.lidroid.xutils.http.RequestParams;
+import com.lidroid.xutils.http.ResponseStream;
 
 import java.util.List;
 
@@ -17,7 +19,7 @@ public class EvaluateApi {
     private static String URL = null;
 
     private EvaluateApi() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("This class cannot be instantiated, and its methods must be called directly.");
     }
 
     public static void init(String URL) {
@@ -28,6 +30,12 @@ public class EvaluateApi {
         String action = "getAllTargets";
         RequestParams requestParams = NetClient.buildRequestParams(action);
         return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<List<EvaluateThirdTarget>>>(){}.getType());
+    }
+
+    public static ResponseStream getAllTargetsSync() throws HttpException {
+        String action = "getAllTargets";
+        RequestParams requestParams = NetClient.buildRequestParams(action);
+        return NetClient.sendPostRequestSync(URL, requestParams);
     }
 
     public static HttpHandler<String> commitEvaluate(int courseId, ServiceCallback<StudentCourseInfo> callBack) {

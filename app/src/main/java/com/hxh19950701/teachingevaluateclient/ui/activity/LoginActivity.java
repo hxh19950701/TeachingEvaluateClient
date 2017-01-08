@@ -46,6 +46,14 @@ import org.greenrobot.eventbus.ThreadMode;
 
 public class LoginActivity extends BaseActivity {
 
+    private static final Class[] ACTIVITIES = new Class[Constant.IDENTITY_COUNT];
+
+    static {
+        ACTIVITIES[Constant.IDENTITY_STUDENT] = StudentMainUiActivity.class;
+        ACTIVITIES[Constant.IDENTITY_TEACHER] = TeacherMainUiActivity.class;
+        ACTIVITIES[Constant.IDENTITY_ADMINISTRATOR] = AdministratorMainUiActivity.class;
+    }
+
     protected FloatingActionButton fabRegisterStudent;
     protected EditText etUsername;
     protected EditText etPassword;
@@ -96,9 +104,11 @@ public class LoginActivity extends BaseActivity {
         etPassword.addTextChangedListener(new TextWatcherImpl() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                if (s.length() > 16) {
-                    etPassword.setText("");
+                super.beforeTextChanged(s, start, count, after);
+                if (isMD5 && etPassword.hasFocus()) {
+                    System.out.println(s);
                     isMD5 = false;
+                    etPassword.setText("");
                 }
             }
         });
@@ -133,11 +143,9 @@ public class LoginActivity extends BaseActivity {
 
     private void initMsg() {
         Intent intent = getIntent();
-        if (intent != null) {
-            String msg = intent.getStringExtra("msg");
-            if (!TextUtils.isEmpty(msg)) {
-                SnackBarUtils.showLongPost(clLogin, msg);
-            }
+        String msg = intent.getStringExtra("msg");
+        if (!TextUtils.isEmpty(msg)) {
+            SnackBarUtils.showLongPost(clLogin, msg);
         }
     }
 
@@ -216,13 +224,9 @@ public class LoginActivity extends BaseActivity {
     private void enterApp(int identity) {
         switch (identity) {
             case Constant.IDENTITY_STUDENT:
-                startActivity(new Intent(this, StudentMainUiActivity.class));
-                break;
             case Constant.IDENTITY_TEACHER:
-                startActivity(new Intent(this, TeacherMainUiActivity.class));
-                break;
             case Constant.IDENTITY_ADMINISTRATOR:
-                startActivity(new Intent(this, AdministratorMainUiActivity.class));
+                IntentUtils.startActivity(this, ACTIVITIES[identity], Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 break;
             default:
                 SnackBarUtils.showSystemError(clLogin);
@@ -275,7 +279,7 @@ public class LoginActivity extends BaseActivity {
                 showSetServerIpDialog();
                 return true;
             case R.id.action_help:
-                startActivity(new Intent(this, HelpActivity.class));
+                IntentUtils.startActivity(this, HelpActivity.class);
                 return true;
         }
         return super.onOptionsItemSelected(item);

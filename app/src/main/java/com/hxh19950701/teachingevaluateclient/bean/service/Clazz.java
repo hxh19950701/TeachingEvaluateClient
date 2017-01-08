@@ -1,12 +1,13 @@
 package com.hxh19950701.teachingevaluateclient.bean.service;
 
-public class Clazz {
+import com.hxh19950701.teachingevaluateclient.base.TimeMakableRecord;
+
+public class Clazz extends TimeMakableRecord {
 	private int id;				//�༶ID
-	private String name;		//�༶����
+	private String name;		//�༶���
 	private int year;			//�����꼶
 	private Subject subject;	//�༶רҵ
 	private Teacher teacher;	//������
-	private String mark;
 	
 	public Clazz(){ 
 		
@@ -58,13 +59,4 @@ public class Clazz {
 	public void setTeacher(Teacher teacher) {
 		this.teacher = teacher;
 	}
-
-	public String getMark() {
-		return mark;
-	}
-
-	public void setMark(String mark) {
-		this.mark = mark;
-	}
-
 }

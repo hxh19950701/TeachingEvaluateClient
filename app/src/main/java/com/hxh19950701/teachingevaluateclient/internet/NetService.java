@@ -10,7 +10,7 @@ import com.hxh19950701.teachingevaluateclient.internet.api.UserApi;
 public class NetService {
 
     private NetService() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("This class cannot be instantiated, and its methods must be called directly.");
     }
 
     public static void init(String URL) {

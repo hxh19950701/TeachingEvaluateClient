@@ -1,15 +1,14 @@
 package com.hxh19950701.teachingevaluateclient.bean.service;
 
-import java.sql.Timestamp;
 
-public class StudentCourseEvaluate {
+import com.hxh19950701.teachingevaluateclient.base.TimeMakableRecord;
+
+public class StudentCourseEvaluate  extends TimeMakableRecord {
 
 	private int id;
-	private StudentCourseInfo info;//ѧ���γ̶�Ӧ��ϵ
+	private StudentCourseInfo info;//ѧ��γ̶�Ӧ��ϵ
 	private EvaluateThirdTarget item;//���۵���Ŀ
-	private float score;//���÷���
-	private Timestamp time;//���۴����ʱ��
-	private String mark;
+	private float score;//��÷���
 
 	public StudentCourseEvaluate() {
 		// TODO Auto-generated constructor stub
@@ -19,7 +18,6 @@ public class StudentCourseEvaluate {
 		this.info = info;
 		this.item = item;
 		this.score = score;
-		this.time = new Timestamp(System.currentTimeMillis());
 	}
 
 	public int getId() {
@@ -52,22 +50,6 @@ public class StudentCourseEvaluate {
 
 	public void setScore(float score) {
 		this.score = score;
-	}
-
-	public String getMark() {
-		return mark;
-	}
-
-	public void setMark(String mark) {
-		this.mark = mark;
-	}
-
-	public Timestamp getTime() {
-		return time;
-	}
-
-	public void setTime(Timestamp time) {
-		this.time = time;
 	}
 
 }

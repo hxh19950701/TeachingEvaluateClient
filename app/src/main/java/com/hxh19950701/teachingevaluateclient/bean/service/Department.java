@@ -1,12 +1,13 @@
 package com.hxh19950701.teachingevaluateclient.bean.service;
 
-public class Department {
+
+import com.hxh19950701.teachingevaluateclient.base.TimeMakableRecord;
+
+public class Department extends TimeMakableRecord {
 	private int id;
 	private String name;
-	private String mark;
 	
 	public Department(){
-		this.name = "δ����ϵ��";
 	}
 	
 	public Department(String name) {
@@ -28,14 +29,4 @@ public class Department {
 	public void setName(String name) {
 		this.name = name;
 	}
-
-	public String getMark() {
-		return mark;
-	}
-
-	public void setMark(String mark) {
-		this.mark = mark;
-	}
-	
-	
 }

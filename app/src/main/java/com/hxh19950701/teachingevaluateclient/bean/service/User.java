@@ -1,16 +1,14 @@
 package com.hxh19950701.teachingevaluateclient.bean.service;
 
-import java.sql.Timestamp;
+import com.hxh19950701.teachingevaluateclient.base.TimeMakableRecord;
 
-public class User {
+public class User extends TimeMakableRecord {
 
-	private int id; // �û�id
-	private String username; // �û���
-	private String password; // ����MD5
-	private int identity; // �û���� 0ѧ�� 1��ʦ 2����Ա
-	private Timestamp registerTime; // ע��ʱ��
-	private String mark;
-
+	private int id;
+	private String username;
+	private String password;
+	private int identity;
+	
 	public User() {
 
 	}
@@ -19,7 +17,6 @@ public class User {
 		this.username = username;
 		this.password = password;
 		this.identity = identity;
-		registerTime = new Timestamp(System.currentTimeMillis());
 	}
 
 	public int getId() {
@@ -46,14 +43,6 @@ public class User {
 		this.password = password;
 	}
 
-	public Timestamp getRegisterTime() {
-		return registerTime;
-	}
-
-	public void setRegisterTime(Timestamp registerTime) {
-		this.registerTime = registerTime;
-	}
-
 	public int getIdentity() {
 		return identity;
 	}
@@ -61,13 +50,4 @@ public class User {
 	public void setIdentity(int identity) {
 		this.identity = identity;
 	}
-
-	public String getMark() {
-		return mark;
-	}
-
-	public void setMark(String mark) {
-		this.mark = mark;
-	}
-
 }

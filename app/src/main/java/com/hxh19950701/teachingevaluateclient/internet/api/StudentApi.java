@@ -2,7 +2,6 @@ package com.hxh19950701.teachingevaluateclient.internet.api;
 
 import com.google.gson.reflect.TypeToken;
 import com.hxh19950701.teachingevaluateclient.base.ResponseData;
-import com.hxh19950701.teachingevaluateclient.bean.service.Course;
 import com.hxh19950701.teachingevaluateclient.bean.service.Student;
 import com.hxh19950701.teachingevaluateclient.internet.NetClient;
 import com.hxh19950701.teachingevaluateclient.internet.ServiceCallback;
@@ -14,10 +13,10 @@ public class StudentApi {
     private static String URL = null;
 
     private StudentApi() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("This class cannot be instantiated, and its methods must be called directly.");
     }
 
-     public static void init(String URL) {
+    public static void init(String URL) {
         StudentApi.URL = URL + "/studentManager.action";
     }
 

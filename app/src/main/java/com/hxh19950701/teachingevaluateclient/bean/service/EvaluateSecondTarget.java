@@ -1,10 +1,11 @@
 package com.hxh19950701.teachingevaluateclient.bean.service;
 
-public class EvaluateSecondTarget {
+import com.hxh19950701.teachingevaluateclient.base.TimeMakableRecord;
+
+public class EvaluateSecondTarget extends TimeMakableRecord {
 	private int id;
 	private String name;
 	private EvaluateFirstTarget firstTarget;
-	private String mark;
 
 	public int getId() {
 		return id;
@@ -29,13 +30,4 @@ public class EvaluateSecondTarget {
 	public void setFirstTarget(EvaluateFirstTarget firstTarget) {
 		this.firstTarget = firstTarget;
 	}
-
-	public String getMark() {
-		return mark;
-	}
-
-	public void setMark(String mark) {
-		this.mark = mark;
-	}
-
 }

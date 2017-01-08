@@ -14,11 +14,11 @@
 
 	<TextView android:layout_width="wrap_content"
 			  android:layout_height="wrap_content"
-			  android:id="@+id/tvTeacher"
+			  android:id="@+id/tvCourseInfo"
 			  android:layout_below="@id/tvCourseName"
 			  android:layout_marginTop="5dp"
 			  android:textColor="#9000"
-			  android:text="任课老师"/>
+			  android:text="课程信息"/>
 
 	<TextView android:layout_width="wrap_content"
 			  android:layout_height="wrap_content"

@@ -4,13 +4,18 @@ import android.content.Intent;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.widget.ListView;
 
 import com.hxh19950701.teachingevaluateclient.R;
+import com.hxh19950701.teachingevaluateclient.adapter.TeacherCourseListViewAdapter;
 import com.hxh19950701.teachingevaluateclient.base.BaseMainUiActivity;
+import com.hxh19950701.teachingevaluateclient.bean.service.Course;
+import com.hxh19950701.teachingevaluateclient.internet.SimpleServiceCallback;
+import com.hxh19950701.teachingevaluateclient.internet.api.CourseApi;
+
+import java.util.List;
 
 public class TeacherMainUiActivity extends BaseMainUiActivity {
 
@@ -28,7 +33,6 @@ public class TeacherMainUiActivity extends BaseMainUiActivity {
         fabNewCourse = (FloatingActionButton) findViewById(R.id.fabNewCourse);
         clPersonCenter = (CoordinatorLayout) findViewById(R.id.clPersonCenter);
         nvDrawer = (NavigationView) findViewById(R.id.nvDrawer);
-        dlPersonCenter = (DrawerLayout) findViewById(R.id.dlPersonCenter);
     }
 
     @Override
@@ -38,6 +42,12 @@ public class TeacherMainUiActivity extends BaseMainUiActivity {
 
     @Override
     protected void initData() {
+        CourseApi.getTeacherCourseList(new SimpleServiceCallback<List<Course>>(clPersonCenter) {
+            @Override
+            public void onGetDataSuccess(List<Course> courses) {
+                lvCourse.setAdapter(new TeacherCourseListViewAdapter(courses));
+            }
+        });
     }
 
     @Override

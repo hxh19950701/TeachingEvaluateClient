@@ -14,6 +14,7 @@ public abstract class BaseMainUiActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initDrawerToggle();
+        dlPersonCenter = (DrawerLayout) findViewById(R.id.dlPersonCenter);
     }
 
     private void initDrawerToggle() {

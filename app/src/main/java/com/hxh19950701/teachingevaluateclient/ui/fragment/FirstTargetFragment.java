@@ -15,9 +15,6 @@ import com.hxh19950701.teachingevaluateclient.ui.activity.StudentEvaluateActivit
 
 import java.util.List;
 
-/**
- * Created by hxh19950701 on 2016/7/13.
- */
 public class FirstTargetFragment extends BaseFragment {
 
     protected ExpandableListView elvFirstTarget;
@@ -31,7 +28,7 @@ public class FirstTargetFragment extends BaseFragment {
 
     @Override
     public View initView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.item_first_target, null);
+        View view = inflater.inflate(R.layout.item_first_target, container, false);
         elvFirstTarget = (ExpandableListView) view.findViewById(R.id.elvFirstTarget);
         return view;
     }
@@ -70,7 +67,7 @@ public class FirstTargetFragment extends BaseFragment {
                                         break;
                                 }
                                 System.out.println(newScore);
-                                ((StudentEvaluateActivity)getActivity()).saveItemScore(v, id, newScore);
+                                ((StudentEvaluateActivity) getActivity()).updateItemScore(v, id, newScore);
                                 return true;
                             }
                         })
@@ -80,7 +77,6 @@ public class FirstTargetFragment extends BaseFragment {
             }
         });
     }
-
 
 
     @Override

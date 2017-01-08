@@ -20,18 +20,24 @@ import com.hxh19950701.teachingevaluateclient.bean.service.Course;
 import com.hxh19950701.teachingevaluateclient.bean.service.EvaluateThirdTarget;
 import com.hxh19950701.teachingevaluateclient.bean.service.StudentCourseEvaluate;
 import com.hxh19950701.teachingevaluateclient.bean.service.StudentCourseInfo;
+import com.hxh19950701.teachingevaluateclient.constant.Constant;
 import com.hxh19950701.teachingevaluateclient.internet.SimpleServiceCallback;
 import com.hxh19950701.teachingevaluateclient.internet.api.CourseApi;
 import com.hxh19950701.teachingevaluateclient.internet.api.EvaluateApi;
 import com.hxh19950701.teachingevaluateclient.utils.SnackBarUtils;
 import com.lidroid.xutils.exception.HttpException;
+import com.lidroid.xutils.http.HttpHandler;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class StudentEvaluateActivity extends BaseActivity {
 
-    protected Toolbar toolbar;
+    private static final String TAG = StudentEvaluateActivity.class.getSimpleName();
+    private static final int STATUS_LOADING = 0;
+    private static final int STATUS_LOAD_FAIL = 1;
+    private static final int STATUS_LOAD_SUCCESS = 2;
+
     protected CoordinatorLayout clEvaluate;
     protected TextView tvLoading;
     protected TextView tvLoadFail;
@@ -39,7 +45,6 @@ public class StudentEvaluateActivity extends BaseActivity {
     protected TabLayout tlFirstTarget;
     protected ViewPager vpFirstTarget;
 
-    protected int courseId;
     protected float[] scoreData;
     protected int currentStatus = -1;
 
@@ -47,9 +52,8 @@ public class StudentEvaluateActivity extends BaseActivity {
     protected List<EvaluateThirdTarget> item;
     protected List<StudentCourseEvaluate> evaluatedItem;
 
-    private static final int STATUS_LOADING = 0;
-    private static final int STATUS_LOAD_FAIL = 1;
-    private static final int STATUS_LOAD_SUCCESS = 2;
+    private HttpHandler<String> loadCourseHandler;
+    private HttpHandler<String> loadEvaluatedItemHandler;
 
     @Override
     protected void initView() {
@@ -68,83 +72,31 @@ public class StudentEvaluateActivity extends BaseActivity {
         tvLoadFail.setOnClickListener(this);
     }
 
-    protected void showResultDialog() {
-        if (currentStatus == STATUS_LOAD_SUCCESS) {
-            float totalScore = 0.0f;
-            for (int i = 0; i < scoreData.length; ++i) {
-                if (scoreData[i] < 0) {
-                    SnackBarUtils.showLong(clEvaluate, "存在未评价的项目。");
-                    return;
-                }
-                totalScore += scoreData[i];
-            }
-            StringBuilder content = new StringBuilder();
-            content.append("课程：").append(course.getName()).append("\n");
-            content.append("得分：").append(totalScore);
-            new MaterialDialog.Builder(this)
-                    .title("结果").content(content)
-                    .positiveText("提交").onPositive(new MaterialDialog.SingleButtonCallback() {
-                @Override
-                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                    commitScore();
-                }
-            }).show();
-        }
-    }
-
-    protected void commitScore() {
-        final MaterialDialog commitDialog = new MaterialDialog.Builder(this)
-                .title("正在提交").content("请稍后...").cancelable(false)
-                .progress(true, 0).progressIndeterminateStyle(false).show();
-        EvaluateApi.commitEvaluate(courseId, new SimpleServiceCallback<StudentCourseInfo>(clEvaluate) {
-
-            @Override
-            public void onAfter() {
-                commitDialog.dismiss();
-            }
-
-            @Override
-            public void onGetDataSuccess(StudentCourseInfo studentCourseInfo) {
-                finish();
-            }
-        });
-    }
-
     @Override
     protected void initData() {
-        courseId = getIntent().getIntExtra("course", 0);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("教学评价");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        initCourse();
+        loadCourse();
+        loadEvaluatedItem();
     }
 
-    private void initCourse() {
-        setStatus(STATUS_LOADING);
+
+    private void loadCourse() {
+        final int courseId = getIntent().getIntExtra(Constant.KEY_COURSE_ID, -1);
         if (courseId > 0) {
-            CourseApi.getCourse(courseId, new SimpleServiceCallback<Course>(clEvaluate) {
+            loadCourseHandler = CourseApi.getCourse(
+                    courseId, new SimpleServiceCallback<Course>(clEvaluate) {
 
-                @Override
-                public void onGetDataSuccess(Course course) {
-                    initItem();
-                }
+                        @Override
+                        public void onAfter() {
+                            refreshStatus();
+                        }
 
-                @Override
-                public void onGetDataFailure(int code, String msg) {
-                    super.onGetDataFailure(code, msg);
-                    setStatus(STATUS_LOAD_FAIL);
-                }
-
-                @Override
-                public void onException(String s) {
-                    setStatus(STATUS_LOAD_FAIL);
-                }
-
-                @Override
-                public void onFailure(HttpException e, String s) {
-                    setStatus(STATUS_LOAD_FAIL);
-                }
-            });
+                        @Override
+                        public void onGetDataSuccess(Course data) {
+                            course = data;
+                            setTitle("正在评价：" + course.getName());
+                        }
+                    });
         }
     }
 
@@ -156,7 +108,7 @@ public class StudentEvaluateActivity extends BaseActivity {
             public void onGetDataSuccess(List<EvaluateThirdTarget> data) {
                 item = data;
                 scoreData = new float[item.size()];
-                initEvaluatedItem();
+                //initEvaluatedItem();
             }
 
             @Override
@@ -177,43 +129,53 @@ public class StudentEvaluateActivity extends BaseActivity {
         });
     }
 
-    protected void initEvaluatedItem() {
-        setStatus(STATUS_LOADING);
-        EvaluateApi.getStudentAllEvaluatedItemsByCourse(courseId, new SimpleServiceCallback<List<StudentCourseEvaluate>>(clEvaluate) {
-            @Override
-            public void onGetDataSuccess(List<StudentCourseEvaluate> data) {
-                evaluatedItem = data;
-                Arrays.fill(scoreData, -1);
-                if (evaluatedItem != null && evaluatedItem.size() != 0) {
-                    for (int i = 0; i < evaluatedItem.size(); ++i) {
-                        try {
-                            scoreData[evaluatedItem.get(i).getItem().getId()] = evaluatedItem.get(i).getScore();
-                        } catch (NullPointerException e) {
-                            e.printStackTrace();
+    private void loadEvaluatedItem() {
+        final int courseId = getIntent().getIntExtra(Constant.KEY_COURSE_ID, -1);
+        if (courseId > 0) {
+            loadEvaluatedItemHandler = EvaluateApi.getStudentAllEvaluatedItemsByCourse(
+                    courseId, new SimpleServiceCallback<List<StudentCourseEvaluate>>(clEvaluate) {
+
+                        @Override
+                        public void onAfter() {
+                            refreshStatus();
                         }
-                    }
-                }
-                vpFirstTarget.setAdapter(new FirstTargetAdapter(getSupportFragmentManager(), item, scoreData));
-                tlFirstTarget.setupWithViewPager(vpFirstTarget);
-                setStatus(STATUS_LOAD_SUCCESS);
-            }
 
-            @Override
-            public void onGetDataFailure(int code, String msg) {
-                super.onGetDataFailure(code, msg);
-                setStatus(STATUS_LOAD_FAIL);
-            }
+                        @Override
+                        public void onGetDataSuccess(List<StudentCourseEvaluate> data) {
+                            evaluatedItem = data;
+                            Arrays.fill(scoreData, -1);
+                            if (evaluatedItem != null && evaluatedItem.size() != 0) {
+                                for (int i = 0; i < evaluatedItem.size(); ++i) {
+                                    try {
+                                        scoreData[evaluatedItem.get(i).getItem().getId()] = evaluatedItem.get(i).getScore();
+                                    } catch (NullPointerException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                            vpFirstTarget.setAdapter(new FirstTargetAdapter(getSupportFragmentManager(), item, scoreData));
+                            tlFirstTarget.setupWithViewPager(vpFirstTarget);
+                        }
+                    });
+        } else {
+            refreshStatus();
+        }
+    }
 
-            @Override
-            public void onFailure(HttpException e, String s) {
-                setStatus(STATUS_LOAD_FAIL);
-            }
-
-            @Override
-            public void onException(String s) {
-                setStatus(STATUS_LOAD_FAIL);
-            }
-        });
+    private void refreshStatus() {
+        if (loadCourseHandler == null && loadEvaluatedItemHandler == null) {
+            setStatus(STATUS_LOAD_FAIL);
+        } else if (loadCourseHandler == null || loadEvaluatedItemHandler == null) {
+            setStatus(STATUS_LOADING);
+        } else if (loadCourseHandler.getState() == HttpHandler.State.FAILURE
+                || loadEvaluatedItemHandler.getState() == HttpHandler.State.FAILURE) {
+            setStatus(STATUS_LOAD_FAIL);
+        } else if (loadCourseHandler.getState() == HttpHandler.State.SUCCESS
+                && loadEvaluatedItemHandler.getState() == HttpHandler.State.SUCCESS) {
+            setStatus(STATUS_LOAD_SUCCESS);
+        } else {
+            setStatus(STATUS_LOADING);
+        }
     }
 
     private void setStatus(int status) {
@@ -229,37 +191,89 @@ public class StudentEvaluateActivity extends BaseActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tvLoadFail:
-                initCourse();
+                loadCourse();
+                loadEvaluatedItem();
                 break;
         }
     }
 
     public int getCourseId() {
-        return courseId;
+        return course == null ? -1 : course.getId();
     }
 
     public CoordinatorLayout getClEvaluate() {
         return clEvaluate;
     }
 
-    public void saveItemScore(final View view, final long itemId, final float newScore) {
-        final int pos = (int) itemId;
-        if (scoreData[pos] != newScore) {
-            EvaluateApi.updateItemScore(courseId, (int) itemId, newScore, new SimpleServiceCallback<StudentCourseEvaluate>(clEvaluate) {
-                @Override
-                public void onGetDataSuccess(StudentCourseEvaluate data) {
-                    scoreData[pos] = newScore;
-                    TextView tv = (TextView) view.findViewById(R.id.tvScore);
-                    tv.setText(newScore + "分");
-                }
-
-                @Override
-                public void onFailure(HttpException e, String s) {
-                    SnackBarUtils.showLong(clEvaluate, "很抱歉，由于服务器故障等原因，您的评价没有保存成功。");
-                }
-            });
+    public void updateItemScore(final View view, final int itemId, final float newScore) {
+        if (scoreData[itemId] != newScore) {
+            EvaluateApi.updateItemScore(course.getId(), itemId, newScore,
+                    new SimpleServiceCallback<StudentCourseEvaluate>(clEvaluate) {
+                        @Override
+                        public void onGetDataSuccess(StudentCourseEvaluate data) {
+                            scoreData[itemId] = newScore;
+                            TextView tv = (TextView) view.findViewById(R.id.tvScore);
+                            tv.setText(newScore + "分");
+                        }
+                    });
         }
     }
+
+    private float getTotalScore() {
+        float totalScore = 0.0f;
+        for (float score : scoreData) {
+            if (score < 0.0f) {
+                return Float.MIN_VALUE;
+            }
+            totalScore += score;
+        }
+        return totalScore;
+    }
+
+    protected void showResultDialog() {
+        if (currentStatus == STATUS_LOAD_SUCCESS) {
+            float totalScore = getTotalScore();
+            if (totalScore >= 0.0f) {
+                StringBuilder content = new StringBuilder();
+                content.append("课程：").append(course.getName()).append("\n");
+                content.append("得分：").append(totalScore);
+                new MaterialDialog.Builder(this)
+                        .title("结果").content(content)
+                        .positiveText("提交").onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        commitScore();
+                    }
+                }).show();
+            } else {
+                SnackBarUtils.showLong(clEvaluate, "存在未评价的项目。");
+            }
+        }
+    }
+
+    protected void commitScore() {
+        final MaterialDialog dialog = new MaterialDialog.Builder(this)
+                .title("正在提交").content("请稍后...").cancelable(false)
+                .progress(true, 0).progressIndeterminateStyle(false).build();
+        EvaluateApi.commitEvaluate(course.getId(), new SimpleServiceCallback<StudentCourseInfo>(clEvaluate) {
+
+            @Override
+            public void onStart() {
+                dialog.show();
+            }
+
+            @Override
+            public void onAfter() {
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onGetDataSuccess(StudentCourseInfo studentCourseInfo) {
+                finish();
+            }
+        });
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

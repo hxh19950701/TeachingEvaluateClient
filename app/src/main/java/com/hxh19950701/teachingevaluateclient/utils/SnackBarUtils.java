@@ -7,12 +7,10 @@ import android.view.View;
 
 import com.hxh19950701.teachingevaluateclient.R;
 
-/**
- * Created by hxh19950701 on 2016/5/31.
- */
 public class SnackBarUtils {
+
     private SnackBarUtils() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("This class cannot be instantiated, and its methods must be called directly.");
     }
 
     public static void showLong(View container, CharSequence msg) {
