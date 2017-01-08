@@ -11,10 +11,12 @@ import com.hxh19950701.teachingevaluateclient.R;
 
 import org.greenrobot.eventbus.EventBus;
 
-/**
- * Created by hxh19950701 on 2016/5/30.
- */
 public abstract class BaseActivity extends AppCompatActivity implements View.OnClickListener {
+    
+    protected abstract void initView();
+    protected abstract void initListener();
+    protected abstract void initData();
+    public abstract void onClick(View view);
 
     protected Toolbar toolbar;
 
@@ -26,14 +28,6 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         initListener();
         initData();
     }
-
-    protected abstract void initView();
-
-    protected abstract void initListener();
-
-    protected abstract void initData();
-
-    public abstract void onClick(View view);
 
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -55,7 +49,10 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
     }
 
     protected void startReceiveEvent() {
-        EventBus.getDefault().register(this);
+        EventBus defaultEventBus = EventBus.getDefault();
+        if (!defaultEventBus.isRegistered(this)) {
+            defaultEventBus.register(this);
+        }
     }
 
     @Override

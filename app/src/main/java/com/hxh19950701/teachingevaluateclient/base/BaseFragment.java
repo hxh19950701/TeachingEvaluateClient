@@ -31,7 +31,10 @@ public abstract class BaseFragment extends Fragment implements OnClickListener {
     }
 
     protected void startReceiveEvent() {
-        EventBus.getDefault().register(this);
+        EventBus defaultEventBus = EventBus.getDefault();
+        if (!defaultEventBus.isRegistered(this)) {
+            defaultEventBus.register(this);
+        }
     }
 
     @Override
