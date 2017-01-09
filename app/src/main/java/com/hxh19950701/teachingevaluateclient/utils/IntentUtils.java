@@ -33,5 +33,4 @@ public class IntentUtils {
         }
         context.startActivity(intent);
     }
-
-}  
+}

@@ -1,11 +1,10 @@
-package com.hxh19950701.teachingevaluateclient.ui.activity;
+package com.hxh19950701.teachingevaluateclient.activity;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
@@ -36,7 +35,6 @@ import java.util.List;
 
 public class RegisterStudentActivity extends BaseActivity {
 
-    protected Toolbar toolbar;
     protected Button btnSave;
     protected CoordinatorLayout clRegister;
     protected TextInputLayout tilStudentId;
@@ -65,7 +63,6 @@ public class RegisterStudentActivity extends BaseActivity {
     protected void initView() {
         setContentView(R.layout.activity_register_student);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
         etStudentId = (EditText) findViewById(R.id.etStudentId);
         etName = (EditText) findViewById(R.id.etName);
 
@@ -164,13 +161,10 @@ public class RegisterStudentActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        initInfo();
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("完善信息");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        initInfo();
         btnSave.setEnabled(false);
         srlRegister.setColorSchemeResources(R.color.colorAccent);
-        btnSave.setEnabled(false);
     }
 
     protected void initDepartment() {

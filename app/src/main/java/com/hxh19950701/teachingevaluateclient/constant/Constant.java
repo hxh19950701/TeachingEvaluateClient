@@ -19,7 +19,7 @@ public class Constant {
     public static final int SEX_MALE = 1;
     public static final int SEX_FEMALE = 0;
 
-    public static final int ERROR_UNKNOWN = 0;
+    public static final int CODE_SUCCESS = 200;
     public static final int ERROR_NO_SUCH_USERNAME = -101;
     public static final int ERROR_INVALID_USERNAME = -103;
     public static final int ERROR_INVALID_PASSWORD = -104;

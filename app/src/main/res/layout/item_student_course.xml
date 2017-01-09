@@ -41,7 +41,7 @@
 
 					<ImageView android:layout_width="15dp"
 							   android:layout_height="15dp"
-							   android:background="@mipmap/ic_person_grey600"/>
+							   android:background="@drawable/ic_person_grey600"/>
 
 					<TextView android:id="@+id/tvTeacher"
 							  android:layout_width="match_parent"
@@ -61,7 +61,7 @@
 
 					<ImageView android:layout_width="15dp"
 							   android:layout_height="15dp"
-							   android:background="@mipmap/ic_av_timer_grey600"/>
+							   android:background="@drawable/ic_av_timer_grey600"/>
 
 					<TextView android:id="@+id/tvTime"
 							  android:layout_width="match_parent"

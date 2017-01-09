@@ -1,4 +1,4 @@
-package com.hxh19950701.teachingevaluateclient.ui.activity;
+package com.hxh19950701.teachingevaluateclient.activity;
 
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
@@ -18,9 +18,6 @@ import com.hxh19950701.teachingevaluateclient.internet.SimpleServiceCallback;
 import com.hxh19950701.teachingevaluateclient.internet.api.CourseApi;
 import com.hxh19950701.teachingevaluateclient.utils.MD5Utils;
 
-/**
- * Created by hxh19950701 on 2016/7/2.
- */
 public class StudentAddCourseActivity extends BaseActivity {
 
     protected TextInputLayout tilClassId;

@@ -22,4 +22,8 @@
 	<style name="MyActivityTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 	<style name="MyActivityTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
+	<style name="SplashTheme" parent="AppTheme.NoActionBar">
+		<item name="android:windowBackground">@drawable/img_splash</item>
+		<item name="android:windowNoTitle">true</item>
+	</style>
 </resources>

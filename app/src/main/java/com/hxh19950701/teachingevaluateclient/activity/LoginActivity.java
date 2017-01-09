@@ -1,4 +1,4 @@
-package com.hxh19950701.teachingevaluateclient.ui.activity;
+package com.hxh19950701.teachingevaluateclient.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,17 +35,17 @@ import com.hxh19950701.teachingevaluateclient.event.UserRegisterCompleteEvent;
 import com.hxh19950701.teachingevaluateclient.impl.TextWatcherImpl;
 import com.hxh19950701.teachingevaluateclient.internet.SimpleServiceCallback;
 import com.hxh19950701.teachingevaluateclient.internet.api.UserApi;
+import com.hxh19950701.teachingevaluateclient.utils.DisplayUtils;
 import com.hxh19950701.teachingevaluateclient.utils.IntentUtils;
 import com.hxh19950701.teachingevaluateclient.utils.MD5Utils;
 import com.hxh19950701.teachingevaluateclient.utils.PrefUtils;
 import com.hxh19950701.teachingevaluateclient.utils.SnackBarUtils;
-import com.hxh19950701.teachingevaluateclient.utils.ViewUtils;
 import com.lidroid.xutils.http.HttpHandler;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-public class LoginActivity extends BaseActivity {
+public class LoginActivity extends BaseActivity implements CompoundButton.OnCheckedChangeListener {
 
     private static final Class[] ACTIVITIES = new Class[Constant.IDENTITY_COUNT];
 
@@ -65,6 +66,25 @@ public class LoginActivity extends BaseActivity {
 
     protected boolean isMD5;
 
+    private TextWatcher usernameWatcher = new TextWatcherImpl() {
+        @Override
+        public void afterTextChanged(Editable s) {
+            super.afterTextChanged(s);
+            etPassword.setText("");
+        }
+    };
+
+    private TextWatcher passwordWatcher = new TextWatcherImpl() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            super.beforeTextChanged(s, start, count, after);
+            if (isMD5 && etPassword.hasFocus()) {
+                isMD5 = false;
+                etPassword.setText("");
+            }
+        }
+    };
+
     @Override
     public void initView() {
         setContentView(R.layout.activity_login);
@@ -82,36 +102,9 @@ public class LoginActivity extends BaseActivity {
     public void initListener() {
         fabRegisterStudent.setOnClickListener(this);
         btnLogin.setOnClickListener(this);
-        etUsername.addTextChangedListener(new TextWatcherImpl() {
-            @Override
-            public void afterTextChanged(Editable s) {
-                etPassword.setText("");
-            }
-        });
-        cbAutoLogin.setOnCheckedChangeListener(
-                new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        if (isChecked) {
-                            cbRememberPassword.setChecked(true);
-                            cbRememberPassword.setEnabled(false);
-                        } else {
-                            cbRememberPassword.setEnabled(true);
-                        }
-                    }
-                }
-        );
-        etPassword.addTextChangedListener(new TextWatcherImpl() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                super.beforeTextChanged(s, start, count, after);
-                if (isMD5 && etPassword.hasFocus()) {
-                    System.out.println(s);
-                    isMD5 = false;
-                    etPassword.setText("");
-                }
-            }
-        });
+        cbAutoLogin.setOnCheckedChangeListener(this);
+        etUsername.addTextChangedListener(usernameWatcher);
+        etPassword.addTextChangedListener(passwordWatcher);
         etPassword.setOnEditorActionListener(
                 new TextView.OnEditorActionListener() {
                     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -150,7 +143,7 @@ public class LoginActivity extends BaseActivity {
     }
 
     public void initAnim() {
-        TranslateAnimation translateAnimation = new TranslateAnimation(0, 0, ViewUtils.getScreenHeight(), 0);
+        TranslateAnimation translateAnimation = new TranslateAnimation(0, 0, DisplayUtils.getScreenHeight(), 0);
         translateAnimation.setDuration(1000);
         AlphaAnimation alphaAnimation = new AlphaAnimation(0f, 1f);
         alphaAnimation.setDuration(2000);
@@ -166,7 +159,6 @@ public class LoginActivity extends BaseActivity {
         etPassword.setText(event.getPassword());
         cbRememberPassword.setChecked(true);
         isMD5 = true;
-        SnackBarUtils.showLongPost(clLogin, "注册成功，点击登录按钮立刻登录。");
     }
 
     @Override
@@ -177,6 +169,16 @@ public class LoginActivity extends BaseActivity {
                 break;
             case R.id.btnLogin:
                 startLogin();
+                break;
+        }
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        switch (buttonView.getId()) {
+            case R.id.cbAutoLogin:
+                cbRememberPassword.setChecked(isChecked);
+                cbRememberPassword.setEnabled(!isChecked);
                 break;
         }
     }
@@ -210,6 +212,11 @@ public class LoginActivity extends BaseActivity {
                 saveDate();
                 enterApp(user.getIdentity());
             }
+
+            @Override
+            public void onGetDataFailure(int code, String msg) {
+                showErrorMsg(code);
+            }
         });
         //添加取消登录监听器
         dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
@@ -242,6 +249,7 @@ public class LoginActivity extends BaseActivity {
                 break;
             case Constant.ERROR_INCORRECT_PASSWORD:
             case Constant.ERROR_INVALID_PASSWORD:
+                etPassword.setText("");
                 SnackBarUtils.showLong(clLogin, R.string.errorPassword);
                 break;
             default:
@@ -317,5 +325,6 @@ public class LoginActivity extends BaseActivity {
                 })
                 .show();
     }
+
 
 }

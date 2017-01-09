@@ -1,44 +1,33 @@
 package com.hxh19950701.teachingevaluateclient.bean.service;
 
-import com.hxh19950701.teachingevaluateclient.base.TimeMakableRecord;
+public class TeacherCourseEvaluate extends TimeMakableRecord {
 
-public class TeacherCourseEvaluate  extends TimeMakableRecord {
-	
-	private int id;
-	private Course course;	//��̵Ŀ�
-	private EvaluateThirdTarget item;//���۵���Ŀ
-	private float score;//����Ŀ��õ�ƽ���
+    private Course course;
+    private EvaluateThirdTarget item;
+    private float score;
 
-	public int getId() {
-		return id;
-	}
+    public Course getCourse() {
+        return course;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public void setCourse(Course course) {
+        this.course = course;
+    }
 
-	public Course getCourse() {
-		return course;
-	}
+    public EvaluateThirdTarget getItem() {
+        return item;
+    }
 
-	public void setCourse(Course course) {
-		this.course = course;
-	}
+    public void setItem(EvaluateThirdTarget item) {
+        this.item = item;
+    }
 
-	public EvaluateThirdTarget getItem() {
-		return item;
-	}
+    public float getScore() {
+        return score;
+    }
 
-	public void setItem(EvaluateThirdTarget item) {
-		this.item = item;
-	}
-
-	public float getScore() {
-		return score;
-	}
-
-	public void setScore(float score) {
-		this.score = score;
-	}
+    public void setScore(float score) {
+        this.score = score;
+    }
 
 }

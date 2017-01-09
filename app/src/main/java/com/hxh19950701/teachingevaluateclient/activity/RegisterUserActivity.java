@@ -1,4 +1,4 @@
-package com.hxh19950701.teachingevaluateclient.ui.activity;
+package com.hxh19950701.teachingevaluateclient.activity;
 
 import android.content.Context;
 import android.support.design.widget.CoordinatorLayout;

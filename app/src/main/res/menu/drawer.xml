@@ -5,15 +5,15 @@
 	<group android:checkableBehavior="single">
 		<item
 			android:id="@+id/navigationItemChoosePrimary"
-			android:icon="@mipmap/ic_color_lens"
+			android:icon="@drawable/ic_color_lens"
 			android:title="设置主色调" />
 		<item
 			android:id="@+id/navigationItemChooseAccent"
-			android:icon="@mipmap/ic_border_color"
+			android:icon="@drawable/ic_border_color"
 			android:title="设置辅色调" />
 		<item
 			android:id="@+id/navigationItemLogout"
-			android:icon="@mipmap/ic_exit"
+			android:icon="@drawable/ic_exit"
 			android:title="@string/logout" />
 	</group>
 </menu>

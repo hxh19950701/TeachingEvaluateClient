@@ -9,7 +9,7 @@ public abstract class ServiceCallback<Data> {
 
     }
 
-    public abstract void onSuccess(ResponseData<Data> bean);
+    public abstract void onSuccess(ResponseData<Data> data);
 
     public void onFailure(HttpException e, String s) {
     }

@@ -27,28 +27,28 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content">
 
-				<EditText
-					android:id="@+id/etUsername"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:digits="0123456789abcdefghigklmnopqrstuvwxyzABCDEFGHIGKLMNOPQRSTUVWXYZ"
-					android:hint="@string/inputUsername"
-					android:imeOptions="actionNext"
-					android:inputType="textEmailAddress"
-					android:singleLine="true"/>
+				<EditText android:id="@+id/etUsername"
+						  android:layout_width="match_parent"
+						  android:layout_height="wrap_content"
+						  android:digits="0123456789abcdefghigklmnopqrstuvwxyzABCDEFGHIGKLMNOPQRSTUVWXYZ"
+						  android:hint="@string/inputUsername"
+						  android:imeOptions="actionNext"
+						  android:inputType="textEmailAddress"
+						  android:maxLength="16"
+						  android:singleLine="true"/>
 			</android.support.design.widget.TextInputLayout>
 
 			<android.support.design.widget.TextInputLayout
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content">
 
-				<EditText
-					android:id="@+id/etPassword"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:hint="@string/inputPassword"
-					android:imeOptions="actionDone"
-					android:inputType="textPassword"/>
+				<EditText android:id="@+id/etPassword"
+						  android:layout_width="match_parent"
+						  android:layout_height="wrap_content"
+						  android:hint="@string/inputPassword"
+						  android:imeOptions="actionDone"
+						  android:inputType="textPassword"
+						  android:maxLength="25"/>
 
 			</android.support.design.widget.TextInputLayout>
 			<CheckBox android:id="@+id/cbRememberPassword"

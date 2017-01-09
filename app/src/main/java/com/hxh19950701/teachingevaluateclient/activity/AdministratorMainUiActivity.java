@@ -1,8 +1,10 @@
-package com.hxh19950701.teachingevaluateclient.ui.activity;
+package com.hxh19950701.teachingevaluateclient.activity;
 
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.hxh19950701.teachingevaluateclient.R;
@@ -34,5 +36,10 @@ public class AdministratorMainUiActivity extends BaseMainUiActivity {
     @Override
     public void onClick(View view) {
 
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        return false;
     }
 }

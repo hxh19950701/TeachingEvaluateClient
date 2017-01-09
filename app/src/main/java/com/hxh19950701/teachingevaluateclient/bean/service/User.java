@@ -1,10 +1,7 @@
 package com.hxh19950701.teachingevaluateclient.bean.service;
 
-import com.hxh19950701.teachingevaluateclient.base.TimeMakableRecord;
-
 public class User extends TimeMakableRecord {
 
-	private int id;
 	private String username;
 	private String password;
 	private int identity;
@@ -17,14 +14,6 @@ public class User extends TimeMakableRecord {
 		this.username = username;
 		this.password = password;
 		this.identity = identity;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public String getUsername() {

@@ -1,33 +1,34 @@
 package com.hxh19950701.teachingevaluateclient.bean.service;
 
-import com.hxh19950701.teachingevaluateclient.base.TimeMakableRecord;
+import java.util.List;
 
 public class EvaluateSecondTarget extends TimeMakableRecord {
-	private int id;
-	private String name;
-	private EvaluateFirstTarget firstTarget;
 
-	public int getId() {
-		return id;
-	}
+    private String name;
+    private EvaluateFirstTarget firstTarget;
+    private List<EvaluateThirdTarget> thirdTargets;
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public EvaluateFirstTarget getFirstTarget() {
+        return firstTarget;
+    }
 
-	public EvaluateFirstTarget getFirstTarget() {
-		return firstTarget;
-	}
+    public void setFirstTarget(EvaluateFirstTarget firstTarget) {
+        this.firstTarget = firstTarget;
+    }
 
-	public void setFirstTarget(EvaluateFirstTarget firstTarget) {
-		this.firstTarget = firstTarget;
-	}
+    public List<EvaluateThirdTarget> getThirdTargets() {
+        return thirdTargets;
+    }
+
+    public void setThirdTargets(List<EvaluateThirdTarget> thirdTargets) {
+        this.thirdTargets = thirdTargets;
+    }
 }

@@ -3,10 +3,9 @@ package com.hxh19950701.teachingevaluateclient.internet;
 import android.view.View;
 
 import com.hxh19950701.teachingevaluateclient.base.ResponseData;
+import com.hxh19950701.teachingevaluateclient.constant.Constant;
 import com.hxh19950701.teachingevaluateclient.utils.SnackBarUtils;
 import com.lidroid.xutils.exception.HttpException;
-
-import java.net.HttpURLConnection;
 
 public abstract class SimpleServiceCallback<Data> extends ServiceCallback<Data> {
 
@@ -18,7 +17,7 @@ public abstract class SimpleServiceCallback<Data> extends ServiceCallback<Data> 
 
     @Override
     public void onSuccess(ResponseData<Data> data) {
-        if (data.getCode() == HttpURLConnection.HTTP_OK) {
+        if (data.getCode() == Constant.CODE_SUCCESS) {
             onGetDataSuccess(data.getData());
         } else {
             onGetDataFailure(data.getCode(), data.getMsg());

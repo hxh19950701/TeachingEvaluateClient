@@ -8,10 +8,6 @@ import com.lidroid.xutils.http.callback.RequestCallBack;
 
 import java.lang.reflect.Type;
 
-/**
- * Created by 绪浩 on 2017/1/4.
- */
-
 public class RequestCallBackBuilder<Data> extends RequestCallBack<String> {
 
     public static final String TAG = RequestCallBackBuilder.class.getSimpleName();

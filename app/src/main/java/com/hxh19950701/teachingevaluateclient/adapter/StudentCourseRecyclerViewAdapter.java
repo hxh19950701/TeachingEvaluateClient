@@ -14,7 +14,7 @@ import com.hxh19950701.teachingevaluateclient.R;
 import com.hxh19950701.teachingevaluateclient.bean.service.Course;
 import com.hxh19950701.teachingevaluateclient.bean.service.StudentCourseInfo;
 import com.hxh19950701.teachingevaluateclient.constant.Constant;
-import com.hxh19950701.teachingevaluateclient.ui.activity.StudentEvaluateActivity;
+import com.hxh19950701.teachingevaluateclient.activity.StudentEvaluateActivity;
 import com.hxh19950701.teachingevaluateclient.utils.CourseUtils;
 
 import java.util.List;

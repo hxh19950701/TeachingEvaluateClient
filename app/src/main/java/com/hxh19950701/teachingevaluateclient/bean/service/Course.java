@@ -1,11 +1,8 @@
 package com.hxh19950701.teachingevaluateclient.bean.service;
 
 
-import com.hxh19950701.teachingevaluateclient.base.TimeMakableRecord;
-
 public class Course extends TimeMakableRecord {
-	
-	private int id;
+
 	private String name;
 	private Teacher teacher;
 	private int year;
@@ -27,14 +24,6 @@ public class Course extends TimeMakableRecord {
 		this.term = term;
 		this.password = password;
 		this.totalPersonCount = totalPersonCount;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public Teacher getTeacher() {

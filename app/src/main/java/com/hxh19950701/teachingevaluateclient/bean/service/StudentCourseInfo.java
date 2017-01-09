@@ -1,18 +1,17 @@
 package com.hxh19950701.teachingevaluateclient.bean.service;
 
-import com.hxh19950701.teachingevaluateclient.base.StringMakableRecord;
-
 import java.sql.Timestamp;
 
 public class StudentCourseInfo  extends StringMakableRecord {
+
 	private int id;
-	private Student student;// ѧ��
-	private Course course;// �γ�
-	private int score;// ѧ��Ըÿγ��������ܷ�
-	private String comment;// ѧ��Ըÿε����ۼ�����
-	private Timestamp completeTime;//�������ʱ��
-	private String reply;// ��ʦ�Ļظ�
-	private Timestamp replyTime;//�ظ�ʱ��
+	private Student student;
+	private Course course;
+	private int score;
+	private String comment;
+	private Timestamp completeTime;
+	private String reply;
+	private Timestamp replyTime;
 
 	public StudentCourseInfo() {
 
@@ -23,14 +22,6 @@ public class StudentCourseInfo  extends StringMakableRecord {
 		this.student = student;
 		this.course = course;
 		this.score = -1;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public Student getStudent() {

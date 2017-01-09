@@ -1,4 +1,4 @@
-package com.hxh19950701.teachingevaluateclient.ui.activity;
+package com.hxh19950701.teachingevaluateclient.activity;
 
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hxh19950701.teachingevaluateclient.R;
-import com.hxh19950701.teachingevaluateclient.adapter.FirstTargetAdapter;
+import com.hxh19950701.teachingevaluateclient.adapter.FirstTargetViewPagerAdapter;
 import com.hxh19950701.teachingevaluateclient.base.BaseActivity;
 import com.hxh19950701.teachingevaluateclient.bean.service.Course;
 import com.hxh19950701.teachingevaluateclient.bean.service.EvaluateThirdTarget;
@@ -30,6 +30,7 @@ import com.lidroid.xutils.http.HttpHandler;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class StudentEvaluateActivity extends BaseActivity {
 
@@ -38,15 +39,15 @@ public class StudentEvaluateActivity extends BaseActivity {
     private static final int STATUS_LOAD_FAIL = 1;
     private static final int STATUS_LOAD_SUCCESS = 2;
 
-    protected CoordinatorLayout clEvaluate;
-    protected TextView tvLoading;
-    protected TextView tvLoadFail;
-    protected LinearLayout llEvaluate;
-    protected TabLayout tlFirstTarget;
-    protected ViewPager vpFirstTarget;
+    private CoordinatorLayout clEvaluate;
+    private TextView tvLoading;
+    private TextView tvLoadFail;
+    private LinearLayout llEvaluate;
+    private TabLayout tlFirstTarget;
+    private ViewPager vpFirstTarget;
 
-    protected float[] scoreData;
-    protected int currentStatus = -1;
+    private Map<Integer, Float> score;
+    private int currentStatus = -1;
 
     protected Course course;
     protected List<EvaluateThirdTarget> item;
@@ -153,7 +154,7 @@ public class StudentEvaluateActivity extends BaseActivity {
                                     }
                                 }
                             }
-                            vpFirstTarget.setAdapter(new FirstTargetAdapter(getSupportFragmentManager(), item, scoreData));
+                            vpFirstTarget.setAdapter(new FirstTargetViewPagerAdapter(getSupportFragmentManager(), scoreData));
                             tlFirstTarget.setupWithViewPager(vpFirstTarget);
                         }
                     });

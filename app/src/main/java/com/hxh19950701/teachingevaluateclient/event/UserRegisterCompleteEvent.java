@@ -1,6 +1,6 @@
 package com.hxh19950701.teachingevaluateclient.event;
 
-public class UserRegisterCompleteEvent{
+public class UserRegisterCompleteEvent {
 
     private String username;
     private String password;

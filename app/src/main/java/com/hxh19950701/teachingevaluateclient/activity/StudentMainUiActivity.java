@@ -1,6 +1,7 @@
-package com.hxh19950701.teachingevaluateclient.ui.activity;
+package com.hxh19950701.teachingevaluateclient.activity;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -55,25 +56,24 @@ public class StudentMainUiActivity extends BaseMainUiActivity {
     @Override
     public void initListener() {
         fabAddCourse.setOnClickListener(this);
-        nvDrawer.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.navigationItemLogout:
-                        NetServer.requireLoginAgain(StudentMainUiActivity.this, "注销成功。");
-                        break;
-                }
-                dlPersonCenter.closeDrawers();
-                return true;
-            }
-        });
-
+        nvDrawer.setNavigationItemSelectedListener(this);
         srlCourseList.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 initStudentCourse();
             }
         });
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.navigationItemLogout:
+                NetServer.requireLoginAgain(this, "注销成功。");
+                break;
+        }
+        dlPersonCenter.closeDrawers();
+        return true;
     }
 
     @Override
@@ -143,4 +143,5 @@ public class StudentMainUiActivity extends BaseMainUiActivity {
             initStudentCourse();
         }
     }
+
 }

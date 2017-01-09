@@ -1,7 +1,5 @@
 package com.hxh19950701.teachingevaluateclient.bean.service;
 
-import com.hxh19950701.teachingevaluateclient.base.TimeMakableRecord;
-
 public class Teacher  extends TimeMakableRecord {
 	
 	private int id; 
@@ -19,14 +17,6 @@ public class Teacher  extends TimeMakableRecord {
 		this.teacherId = teacherId;
 		this.name = name;
 		this.sex = sex;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public String getTeacherId() {

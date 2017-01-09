@@ -1,11 +1,11 @@
-package com.hxh19950701.teachingevaluateclient.base;
+package com.hxh19950701.teachingevaluateclient.bean.service;
 
 import java.sql.Timestamp;
 
 public class TimeMakableRecord extends StringMakableRecord {
 
-	private Timestamp createTime;
-	private Timestamp updateTime;
+	protected Timestamp createTime;
+	protected Timestamp updateTime;
 
 	public final Timestamp getCreateTime() {
 		return createTime;

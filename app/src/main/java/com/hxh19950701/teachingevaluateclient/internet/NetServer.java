@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 
 import com.hxh19950701.teachingevaluateclient.R;
-import com.hxh19950701.teachingevaluateclient.ui.activity.LoginActivity;
+import com.hxh19950701.teachingevaluateclient.activity.LoginActivity;
 import com.hxh19950701.teachingevaluateclient.utils.PrefUtils;
 
 /**

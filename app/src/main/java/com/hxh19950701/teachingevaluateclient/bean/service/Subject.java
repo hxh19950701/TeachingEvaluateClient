@@ -1,7 +1,5 @@
 package com.hxh19950701.teachingevaluateclient.bean.service;
 
-import com.hxh19950701.teachingevaluateclient.base.TimeMakableRecord;
-
 public class Subject extends TimeMakableRecord {
 	private int id;
 	private Department department;
@@ -13,14 +11,6 @@ public class Subject extends TimeMakableRecord {
 	public Subject(Department department, String name) {
 		this.department = department;
 		this.name = name;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public Department getDepartment() {
