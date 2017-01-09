@@ -1,12 +1,13 @@
 package com.hxh19950701.teachingevaluateclient.bean.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class EvaluateSecondTarget extends TimeMakableRecord {
 
     private String name;
     private EvaluateFirstTarget firstTarget;
-    private List<EvaluateThirdTarget> thirdTargets;
+    private List<EvaluateThirdTarget> thirdTargets = new ArrayList<>();
 
     public String getName() {
         return name;

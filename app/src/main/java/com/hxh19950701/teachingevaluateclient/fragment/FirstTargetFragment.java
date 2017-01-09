@@ -16,21 +16,19 @@ import com.hxh19950701.teachingevaluateclient.bean.service.EvaluateFirstTarget;
 import com.hxh19950701.teachingevaluateclient.bean.service.EvaluateThirdTarget;
 import com.hxh19950701.teachingevaluateclient.manager.EvaluateTargetManager;
 
-import java.util.Map;
-
 public class FirstTargetFragment extends BaseFragment implements ExpandableListView.OnChildClickListener {
 
     public interface OnItemScoreUpdateListener {
-        void onItemScoreUpdate(TextView textView, int itemId, float score);
+        void onItemScoreUpdate(TextView textView, int itemId, float newScore);
     }
 
     private ExpandableListView elvFirstTarget;
 
     private EvaluateFirstTarget firstTarget;
-    private Map<Integer, Float> score;
+    private float[] score;
     private OnItemScoreUpdateListener listener;
 
-    public FirstTargetFragment(EvaluateFirstTarget firstTarget, Map<Integer, Float> score, @NonNull OnItemScoreUpdateListener listener) {
+    public FirstTargetFragment(EvaluateFirstTarget firstTarget, float[] score, @NonNull OnItemScoreUpdateListener listener) {
         this.firstTarget = firstTarget;
         this.score = score;
         this.listener = listener;
@@ -60,7 +58,7 @@ public class FirstTargetFragment extends BaseFragment implements ExpandableListV
     }
 
     public int getCheckedId(int itemId) {
-        float itemScore = score.get(itemId);
+        float itemScore = score[itemId];
         float totalScore = EvaluateTargetManager.getThirdTargetById(itemId).getTotalScore();
         if (itemScore == totalScore) {
             return 0;
@@ -90,7 +88,7 @@ public class FirstTargetFragment extends BaseFragment implements ExpandableListV
     @Override
     public boolean onChildClick(ExpandableListView parent, final View v, int groupPosition, int childPosition, final long id) {
         SecondTargetExpandableListViewAdapter adapter = (SecondTargetExpandableListViewAdapter) parent.getExpandableListAdapter();
-        EvaluateThirdTarget thirdTarget =  adapter.getChild(groupPosition, childPosition);
+        EvaluateThirdTarget thirdTarget = adapter.getChild(groupPosition, childPosition);
         final int itemId = thirdTarget.getId();
         int checkedId = getCheckedId(itemId);
         new MaterialDialog.Builder(getContext()).title("评价该项").items(R.array.checkItem)

@@ -13,13 +13,13 @@ public class FirstTargetViewPagerAdapter extends FragmentStatePagerAdapter {
 
     private int firstTargetCount = EvaluateTargetManager.getFirstTargets().size();
     private Fragment[] fragments = new Fragment[firstTargetCount];
-    private Map<Integer, Float> score;
+    private float[] score;
 
-    public FirstTargetViewPagerAdapter(FragmentManager fm, Map<Integer, Float> score) {
+    public FirstTargetViewPagerAdapter(FragmentManager fm, float[] score, FirstTargetFragment.OnItemScoreUpdateListener listener) {
         super(fm);
         this.score = score;
         for (int counter = 0; counter < firstTargetCount; ++counter) {
-            fragments[counter] = new FirstTargetFragment(EvaluateTargetManager.getFirstTargets().get(counter), score);
+            fragments[counter] = new FirstTargetFragment(EvaluateTargetManager.getFirstTargets().get(counter), score, listener);
         }
     }
 

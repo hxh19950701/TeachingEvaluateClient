@@ -11,40 +11,21 @@
 
 	<include layout="@layout/widget_toolbar"/>
 
-	<FrameLayout android:layout_width="match_parent"
-				 android:layout_height="match_parent"
-				 app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-		<LinearLayout android:id="@+id/llEvaluate"
-					  android:layout_width="match_parent"
-					  android:layout_height="match_parent"
-					  android:orientation="vertical">
-
-			<android.support.design.widget.TabLayout
-				android:id="@+id/tlFirstTarget"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"/>
-
-			<android.support.v4.view.ViewPager
-				android:id="@+id/vpFirstTarget"
-				android:layout_width="match_parent"
-				android:layout_height="match_parent"/>
-
-		</LinearLayout>
-
-		<TextView android:id="@+id/tvLoading"
+	<LinearLayout android:id="@+id/llEvaluate"
 				  android:layout_width="match_parent"
 				  android:layout_height="match_parent"
-				  android:gravity="center"
-				  android:text="正在加载数据..."
-				  android:textSize="15sp"/>
+				  android:orientation="vertical"
+				  app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-		<TextView android:id="@+id/tvLoadFail"
-				  android:layout_width="match_parent"
-				  android:layout_height="match_parent"
-				  android:gravity="center"
-				  android:text="加载数据失败\n点击屏幕重试"
-				  android:textSize="15sp"/>
+		<android.support.design.widget.TabLayout
+			android:id="@+id/tlFirstTarget"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"/>
 
-	</FrameLayout>
+		<android.support.v4.view.ViewPager
+			android:id="@+id/vpFirstTarget"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"/>
+
+	</LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

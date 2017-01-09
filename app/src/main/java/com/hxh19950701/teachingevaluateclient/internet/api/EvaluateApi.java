@@ -2,6 +2,7 @@ package com.hxh19950701.teachingevaluateclient.internet.api;
 
 import com.google.gson.reflect.TypeToken;
 import com.hxh19950701.teachingevaluateclient.base.ResponseData;
+import com.hxh19950701.teachingevaluateclient.bean.response.CourseAndEvaluatedItem;
 import com.hxh19950701.teachingevaluateclient.bean.service.EvaluateThirdTarget;
 import com.hxh19950701.teachingevaluateclient.bean.service.StudentCourseEvaluate;
 import com.hxh19950701.teachingevaluateclient.bean.service.StudentCourseInfo;
@@ -50,9 +51,9 @@ public class EvaluateApi {
         return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<StudentCourseEvaluate>>(){}.getType());
     }
 
-    public static HttpHandler<String> getStudentAllEvaluatedItemsByCourse(int courseId, ServiceCallback<List<StudentCourseEvaluate>> callBack) {
+    public static HttpHandler<String> getStudentAllEvaluatedItemsByCourse(int courseId, ServiceCallback<CourseAndEvaluatedItem> callBack) {
         String action = "getStudentAllEvaluatedItemsByCourse";
         RequestParams requestParams = NetClient.buildRequestParams(action, "courseId", courseId + "");
-        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<List<StudentCourseEvaluate>>>(){}.getType());
+        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<CourseAndEvaluatedItem>>(){}.getType());
     }
 }

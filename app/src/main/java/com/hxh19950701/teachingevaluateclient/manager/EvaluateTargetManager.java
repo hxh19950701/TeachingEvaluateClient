@@ -2,6 +2,7 @@ package com.hxh19950701.teachingevaluateclient.manager;
 
 import android.content.Context;
 import android.os.Handler;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -21,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EvaluateTargetManager {
+
+    private static final String TAG = EvaluateTargetManager.class.getSimpleName();
 
     private static final String KEY = "4C14A42286964298654B147CFF57EA9E";
     private static final String FILE_NAME = "EvaluateTarget.json";
@@ -45,7 +48,8 @@ public class EvaluateTargetManager {
     private static class Initializer extends Thread implements InitializeListener {
 
         private static final Handler HANDLER = new Handler();
-        private static final Type TYPE = new TypeToken<ResponseData<List<EvaluateThirdTarget>>>() {}.getType();
+        private static final Type TYPE = new TypeToken<ResponseData<List<EvaluateThirdTarget>>>() {
+        }.getType();
         private static final Gson GSON = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 
         private Context context = null;
@@ -96,18 +100,30 @@ public class EvaluateTargetManager {
             SECOND_TARGETS.clear();
             THIRD_TARGETS.clear();
             for (EvaluateThirdTarget thirdTarget : data) {
-                EvaluateSecondTarget secondTarget = thirdTarget.getSecondTarget();
-                EvaluateFirstTarget firstTarget = secondTarget.getFirstTarget();
-                secondTarget.getThirdTargets().add(thirdTarget);
-                firstTarget.getSecondTargets().add(secondTarget);
-                if (getFirstTargetById(firstTarget.getId()) == null) {
-                    FIRST_TARGETS.add(firstTarget);
-                }
-                if (getSecondTargetById(secondTarget.getId()) == null) {
+                THIRD_TARGETS.add(thirdTarget);
+
+                int secondTargetId = thirdTarget.getSecondTarget().getId();
+                EvaluateSecondTarget secondTarget = getSecondTargetById(secondTargetId);
+                if (secondTarget == null) {
+                    System.out.println(secondTargetId + "----");
+                    secondTarget = thirdTarget.getSecondTarget();
+                    secondTarget.setThirdTargets(new ArrayList<EvaluateThirdTarget>(7));
                     SECOND_TARGETS.add(secondTarget);
                 }
-                THIRD_TARGETS.add(thirdTarget);
+                secondTarget.getThirdTargets().add(thirdTarget);
+
+                int firstTargetId = thirdTarget.getSecondTarget().getFirstTarget().getId();
+                EvaluateFirstTarget firstTarget = getFirstTargetById(firstTargetId);
+                if (firstTarget == null) {
+                    firstTarget = thirdTarget.getSecondTarget().getFirstTarget();
+                    firstTarget.setSecondTargets(new ArrayList<EvaluateSecondTarget>(15));
+                    FIRST_TARGETS.add(firstTarget);
+                }
+                if (findTarget(firstTarget.getSecondTargets(), secondTargetId) == null) {
+                    firstTarget.getSecondTargets().add(secondTarget);
+                }
             }
+            Log.e(TAG, FIRST_TARGETS.size() + "---" + SECOND_TARGETS.size() + "---" + THIRD_TARGETS.size());
         }
 
         public void initFromLocal() throws Exception {
@@ -183,7 +199,7 @@ public class EvaluateTargetManager {
     }
 
     public static EvaluateFirstTarget getFirstTargetById(int id) {
-        return (EvaluateFirstTarget) findTarget(THIRD_TARGETS, id);
+        return (EvaluateFirstTarget) findTarget(FIRST_TARGETS, id);
     }
 
     public static List<EvaluateFirstTarget> getFirstTargets() {
@@ -196,5 +212,17 @@ public class EvaluateTargetManager {
 
     public static List<EvaluateThirdTarget> getThirdTargets() {
         return THIRD_TARGETS;
+    }
+
+    public static void printAllTargets() {
+        for (EvaluateFirstTarget firstTarget : FIRST_TARGETS) {
+            Log.d(TAG, firstTarget.getName());
+            for (EvaluateSecondTarget secondTarget : firstTarget.getSecondTargets()) {
+                Log.d(TAG, " " + secondTarget.getName());
+                for (EvaluateThirdTarget thirdTarget : secondTarget.getThirdTargets()) {
+                    Log.d(TAG, "  " + thirdTarget.getName());
+                }
+            }
+        }
     }
 }

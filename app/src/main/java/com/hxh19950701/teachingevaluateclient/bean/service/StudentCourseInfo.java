@@ -4,7 +4,6 @@ import java.sql.Timestamp;
 
 public class StudentCourseInfo  extends StringMakableRecord {
 
-	private int id;
 	private Student student;
 	private Course course;
 	private int score;

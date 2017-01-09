@@ -1,6 +1,7 @@
 package com.hxh19950701.teachingevaluateclient.application;
 
 import android.app.Application;
+import android.widget.Toast;
 
 import com.hxh19950701.teachingevaluateclient.constant.Constant;
 import com.hxh19950701.teachingevaluateclient.internet.NetService;
@@ -34,12 +35,13 @@ public class MainApplication extends Application {
         EvaluateTargetManager.setInitializeListener(new EvaluateTargetManager.InitializeListener() {
             @Override
             public void onSuccess(boolean fromCache) {
-
+                Toast.makeText(MainApplication.this, "更新评价条目成功", Toast.LENGTH_SHORT).show();
+                EvaluateTargetManager.printAllTargets();
             }
 
             @Override
             public void onFailure(Exception e) {
-                System.out.println("更新地区数据失败");
+                Toast.makeText(MainApplication.this, "更新评价条目失败", Toast.LENGTH_SHORT).show();
             }
         });
         EvaluateTargetManager.init(this);

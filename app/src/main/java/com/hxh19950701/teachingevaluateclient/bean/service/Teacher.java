@@ -1,8 +1,7 @@
 package com.hxh19950701.teachingevaluateclient.bean.service;
 
 public class Teacher  extends TimeMakableRecord {
-	
-	private int id; 
+
 	private String teacherId; 
 	private String name;
 	private int sex; 

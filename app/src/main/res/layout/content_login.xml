@@ -48,7 +48,7 @@
 						  android:hint="@string/inputPassword"
 						  android:imeOptions="actionDone"
 						  android:inputType="textPassword"
-						  android:maxLength="25"/>
+						  android:maxLength="32"/>
 
 			</android.support.design.widget.TextInputLayout>
 			<CheckBox android:id="@+id/cbRememberPassword"

@@ -12,14 +12,12 @@ import com.hxh19950701.teachingevaluateclient.bean.service.EvaluateFirstTarget;
 import com.hxh19950701.teachingevaluateclient.bean.service.EvaluateSecondTarget;
 import com.hxh19950701.teachingevaluateclient.bean.service.EvaluateThirdTarget;
 
-import java.util.Map;
-
 public class SecondTargetExpandableListViewAdapter extends BaseExpandableListAdapter {
 
     private EvaluateFirstTarget firstTarget;
-    private Map<Integer, Float> score;
+    private float[] score;
 
-    public SecondTargetExpandableListViewAdapter(EvaluateFirstTarget firstTarget, Map<Integer, Float> score) {
+    public SecondTargetExpandableListViewAdapter(EvaluateFirstTarget firstTarget, float[] score) {
         this.firstTarget = firstTarget;
         this.score = score;
     }
@@ -80,8 +78,8 @@ public class SecondTargetExpandableListViewAdapter extends BaseExpandableListAda
         }
         ChildViewHolder holder = (ChildViewHolder) convertView.getTag();
         EvaluateThirdTarget thirdTarget = firstTarget.getSecondTargets().get(groupPosition).getThirdTargets().get(childPosition);
-        Float currentScore = score.get(thirdTarget.getId());
-        holder.bindData(thirdTarget, currentScore == null ? -1 : currentScore);
+        float currentScore = score[thirdTarget.getId()];
+        holder.bindData(thirdTarget, currentScore);
         return convertView;
     }
 
@@ -109,13 +107,13 @@ public class SecondTargetExpandableListViewAdapter extends BaseExpandableListAda
         private TextView tvScore;
 
         public ChildViewHolder(View itemView) {
-            TextView tvThirdTargetName = (TextView) itemView.findViewById(R.id.tvThirdTargetName);
-            TextView tvScore = (TextView) itemView.findViewById(R.id.tvScore);
+            tvThirdTargetName = (TextView) itemView.findViewById(R.id.tvThirdTargetName);
+            tvScore = (TextView) itemView.findViewById(R.id.tvScore);
         }
 
         public void bindData(EvaluateThirdTarget thirdTarget, float score) {
             tvThirdTargetName.setText(thirdTarget.getName());
-            tvScore.setText(score == -1 ? "未评价" : score + "分");
+            tvScore.setText(score == -1.0f ? "未评价" : score + "分");
         }
     }
 }

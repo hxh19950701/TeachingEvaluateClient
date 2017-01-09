@@ -12,7 +12,7 @@ import com.hxh19950701.teachingevaluateclient.R;
 import org.greenrobot.eventbus.EventBus;
 
 public abstract class BaseActivity extends AppCompatActivity implements View.OnClickListener {
-    
+
     protected abstract void initView();
     protected abstract void initListener();
     protected abstract void initData();

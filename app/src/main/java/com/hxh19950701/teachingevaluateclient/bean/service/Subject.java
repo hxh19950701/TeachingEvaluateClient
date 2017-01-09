@@ -1,7 +1,7 @@
 package com.hxh19950701.teachingevaluateclient.bean.service;
 
 public class Subject extends TimeMakableRecord {
-	private int id;
+
 	private Department department;
 	private String name;
 	
