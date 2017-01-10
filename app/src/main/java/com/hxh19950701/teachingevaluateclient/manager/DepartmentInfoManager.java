@@ -8,10 +8,15 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.hxh19950701.teachingevaluateclient.base.ResponseData;
+import com.hxh19950701.teachingevaluateclient.bean.service.Clazz;
+import com.hxh19950701.teachingevaluateclient.bean.service.Department;
 import com.hxh19950701.teachingevaluateclient.bean.service.EvaluateFirstTarget;
 import com.hxh19950701.teachingevaluateclient.bean.service.EvaluateSecondTarget;
 import com.hxh19950701.teachingevaluateclient.bean.service.EvaluateThirdTarget;
+import com.hxh19950701.teachingevaluateclient.bean.service.IdRecord;
+import com.hxh19950701.teachingevaluateclient.bean.service.Subject;
 import com.hxh19950701.teachingevaluateclient.interfaces.ManagerInitializeListener;
+import com.hxh19950701.teachingevaluateclient.internet.api.DepartmentApi;
 import com.hxh19950701.teachingevaluateclient.internet.api.EvaluateApi;
 import com.hxh19950701.teachingevaluateclient.utils.IdRecordUtils;
 
@@ -22,28 +27,29 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EvaluateTargetManager {
+public class DepartmentInfoManager {
+
 
     private static final String TAG = EvaluateTargetManager.class.getSimpleName();
 
     private static final String KEY = "4C14A42286964298654B147CFF57EA9E";
     private static final String FILE_NAME = "EvaluateTarget.json";
 
-    private EvaluateTargetManager() {
+    private DepartmentInfoManager() {
         throw new UnsupportedOperationException("This class cannot be instantiated, and its methods must be called directly.");
     }
 
     private static final Initializer INITIALIZER = new Initializer();
-    private static final List<EvaluateFirstTarget> FIRST_TARGETS = new ArrayList<>(4);
-    private static final List<EvaluateSecondTarget> SECOND_TARGETS = new ArrayList<>(20);
-    private static final List<EvaluateThirdTarget> THIRD_TARGETS = new ArrayList<>(50);
+    private static final List<Department> DEPARTMENTS = new ArrayList<>(30);
+    private static final List<Subject> SUBJECTS = new ArrayList<>(7);
+    private static final List<Clazz> CLASSES = new ArrayList<>(5);
 
     private static ManagerInitializeListener initializeListener = null;
 
     private static class Initializer extends Thread implements ManagerInitializeListener {
 
         private static final Handler HANDLER = new Handler();
-        private static final Type TYPE = new TypeToken<ResponseData<List<EvaluateThirdTarget>>>() {}.getType();
+        private static final Type TYPE = new TypeToken<ResponseData<List<Clazz>>>() {}.getType();
         private static final Gson GSON = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 
         private Context context = null;
@@ -60,8 +66,8 @@ public class EvaluateTargetManager {
 
         public void initFromServer(boolean allowCache) {
             try {
-                String jsonString = EvaluateApi.getAllTargetsSync().readString();
-                ResponseData<List<EvaluateThirdTarget>> response = GSON.fromJson(jsonString, TYPE);
+                String jsonString = DepartmentApi.getClazzListSync().readString();
+                ResponseData<List<Clazz>> response = GSON.fromJson(jsonString, TYPE);
                 if (response.getData() == null) {
                     initFromLocal();                                                        //数据已是最新，使用缓存
                 } else {
@@ -89,17 +95,17 @@ public class EvaluateTargetManager {
             }
         }
 
-        private void initData(List<EvaluateThirdTarget> data) {
-            FIRST_TARGETS.clear();
-            SECOND_TARGETS.clear();
-            THIRD_TARGETS.clear();
-            for (EvaluateThirdTarget thirdTarget : data) {
-                THIRD_TARGETS.add(thirdTarget);
+        private void initData(List<Clazz> data) {
+            DEPARTMENTS.clear();
+            SUBJECTS.clear();
+            CLASSES.clear();
+            for (Clazz clazz : data) {
+                CLASSES.add(clazz);
 
-                int secondTargetId = thirdTarget.getSecondTarget().getId();
-                EvaluateSecondTarget secondTarget = getSecondTargetById(secondTargetId);
-                if (secondTarget == null) {
-                    secondTarget = thirdTarget.getSecondTarget();
+                int secondTargetId = clazz.getSubject().getId();
+                Subject subject = getSubjectById(secondTargetId);
+                if (subject == null) {
+                    subject = clazz.getSubject();
                     secondTarget.setThirdTargets(new ArrayList<EvaluateThirdTarget>(7));
                     SECOND_TARGETS.add(secondTarget);
                 }
@@ -113,7 +119,7 @@ public class EvaluateTargetManager {
                     firstTarget.setSecondTargets(new ArrayList<EvaluateSecondTarget>(15));
                     FIRST_TARGETS.add(firstTarget);
                 }
-                if (IdRecordUtils.findIdRecord(firstTarget.getSecondTargets(), secondTargetId) == null) {
+                if (findTarget(firstTarget.getSecondTargets(), secondTargetId) == null) {
                     firstTarget.getSecondTargets().add(secondTarget);
                     secondTarget.setFirstTarget(firstTarget);
                 }
@@ -122,7 +128,7 @@ public class EvaluateTargetManager {
 
         public void initFromLocal() throws Exception {
             String jsonString = getLocalJson();
-            ResponseData<List<EvaluateThirdTarget>> response = GSON.fromJson(jsonString, TYPE);
+            ResponseData<List<Clazz>> response = GSON.fromJson(jsonString, TYPE);
             initData(response.getData());
         }
 
@@ -171,40 +177,40 @@ public class EvaluateTargetManager {
     }
 
     public static void setInitializeListener(ManagerInitializeListener initializeListener) {
-        EvaluateTargetManager.initializeListener = initializeListener;
+        DepartmentInfoManager.initializeListener = initializeListener;
     }
 
-    public static EvaluateThirdTarget getThirdTargetById(int id) {
-        return (EvaluateThirdTarget) IdRecordUtils.findIdRecord(THIRD_TARGETS, id);
+    public static Clazz getClazzById(int id) {
+        return (Clazz) IdRecordUtils.findIdRecord(CLASSES, id);
     }
 
-    public static EvaluateSecondTarget getSecondTargetById(int id) {
-        return (EvaluateSecondTarget) IdRecordUtils.findIdRecord(SECOND_TARGETS, id);
+    public static Subject getSubjectById(int id) {
+        return (Subject) IdRecordUtils.findIdRecord(SUBJECTS, id);
     }
 
-    public static EvaluateFirstTarget getFirstTargetById(int id) {
-        return (EvaluateFirstTarget) IdRecordUtils.findIdRecord(FIRST_TARGETS, id);
+    public static Department getDepartmentById(int id) {
+        return (Department) IdRecordUtils.findIdRecord(DEPARTMENTS, id);
     }
 
-    public static List<EvaluateFirstTarget> getFirstTargets() {
-        return FIRST_TARGETS;
+    public static List<Clazz> getCLASSES() {
+        return CLASSES;
     }
 
-    public static List<EvaluateSecondTarget> getSecondTargets() {
-        return SECOND_TARGETS;
+    public static List<Subject> getSUBJECTS() {
+        return SUBJECTS;
     }
 
-    public static List<EvaluateThirdTarget> getThirdTargets() {
-        return THIRD_TARGETS;
+    public static List<Department> getDEPARTMENTS() {
+        return DEPARTMENTS;
     }
 
-    public static void printAllTargets() {
-        for (EvaluateFirstTarget firstTarget : FIRST_TARGETS) {
-            Log.d(TAG, firstTarget.getName());
-            for (EvaluateSecondTarget secondTarget : firstTarget.getSecondTargets()) {
-                Log.d(TAG, " " + secondTarget.getName());
-                for (EvaluateThirdTarget thirdTarget : secondTarget.getThirdTargets()) {
-                    Log.d(TAG, "  " + thirdTarget.getName());
+    public static void printAllClasses() {
+        for (Department department : DEPARTMENTS) {
+            Log.d(TAG, department.getName());
+            for (Subject subject : department.getSubjects()) {
+                Log.d(TAG, " " + subject.getName());
+                for (Clazz clazz : subject.getClasses()) {
+                    Log.d(TAG, "  " + clazz.getName());
                 }
             }
         }

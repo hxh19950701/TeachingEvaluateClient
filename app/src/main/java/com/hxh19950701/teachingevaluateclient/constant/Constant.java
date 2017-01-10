@@ -34,6 +34,7 @@ public class Constant {
     public static final String KEY_ACTION = "action";
     public static final String KEY_SERVER_DOMAIN = "server_domain";
     public static final String KEY_COURSE_ID = "course_id";
+    public static final String KEY_MASSAGE = "massage";
 
     public static final String PREFIX_SERVER_DOMAIN = "http://";
     public static final String DEFAULT_SERVER_DOMAIN = "http://192.168.0.25:8080/TeachingEvaluateServer";

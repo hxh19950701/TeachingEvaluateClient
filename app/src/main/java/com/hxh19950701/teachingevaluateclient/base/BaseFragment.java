@@ -5,12 +5,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
 import org.greenrobot.eventbus.EventBus;
 
-public abstract class BaseFragment extends Fragment implements OnClickListener {
+public abstract class BaseFragment extends Fragment implements View.OnClickListener {
 
     public abstract View initView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState);
     public abstract void initListener();

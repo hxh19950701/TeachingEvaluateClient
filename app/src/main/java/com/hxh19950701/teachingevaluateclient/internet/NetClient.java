@@ -59,6 +59,7 @@ public class NetClient {
         String cookie = PrefUtils.getString(Constant.KEY_COOKIE, "");
         requestParams.addHeader(Constant.KEY_COOKIE, cookie);
         requestParams.addBodyParameter(Constant.KEY_ACTION, action);
+        Log.d(TAG, "action = [" + action + "].");
         for (int i = 0; i < args.length; i += 2) {
             Log.d(TAG, args[i] + " = [" + args[i + 1] + "].");
             requestParams.addBodyParameter(args[i], args[i + 1]);

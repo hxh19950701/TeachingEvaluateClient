@@ -27,10 +27,11 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hxh19950701.teachingevaluateclient.R;
-import com.hxh19950701.teachingevaluateclient.application.MainApplication;
 import com.hxh19950701.teachingevaluateclient.base.BaseActivity;
 import com.hxh19950701.teachingevaluateclient.bean.service.User;
 import com.hxh19950701.teachingevaluateclient.constant.Constant;
+import com.hxh19950701.teachingevaluateclient.event.ServerUrlChangedEvent;
+import com.hxh19950701.teachingevaluateclient.event.UserLoginSuccessEvent;
 import com.hxh19950701.teachingevaluateclient.event.UserRegisterCompleteEvent;
 import com.hxh19950701.teachingevaluateclient.impl.TextWatcherImpl;
 import com.hxh19950701.teachingevaluateclient.internet.SimpleServiceCallback;
@@ -42,6 +43,7 @@ import com.hxh19950701.teachingevaluateclient.utils.PrefUtils;
 import com.hxh19950701.teachingevaluateclient.utils.SnackBarUtils;
 import com.lidroid.xutils.http.HttpHandler;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -136,7 +138,7 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
 
     private void initMsg() {
         Intent intent = getIntent();
-        String msg = intent.getStringExtra("msg");
+        String msg = intent.getStringExtra(Constant.KEY_MASSAGE);
         if (!TextUtils.isEmpty(msg)) {
             SnackBarUtils.showLongPost(clLogin, msg);
         }
@@ -209,7 +211,7 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
 
             @Override
             public void onGetDataSuccess(User user) {
-                saveDate();
+                EventBus.getDefault().post(new UserLoginSuccessEvent(username, password, cbRememberPassword.isChecked(), cbAutoLogin.isChecked()));
                 enterApp(user.getIdentity());
             }
 
@@ -258,22 +260,6 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
         }
     }
 
-    private void saveDate() {
-        final String username = etUsername.getText().toString();
-        final String password = isMD5 ? etPassword.getText().toString() : MD5Utils.encipher(etPassword.getText().toString());
-        if (cbRememberPassword.isChecked()) {
-            PrefUtils.putString(Constant.KEY_USERNAME, username);
-            PrefUtils.putString(Constant.KEY_PASSWORD, password);
-            PrefUtils.putBoolean(Constant.KEY_REMEMBER_PASSWORD, true);
-            PrefUtils.putBoolean(Constant.KEY_AUTO_LOGIN, cbAutoLogin.isChecked());
-        } else {
-            PrefUtils.putString(Constant.KEY_USERNAME, username);
-            PrefUtils.putString(Constant.KEY_PASSWORD, "");
-            PrefUtils.putBoolean(Constant.KEY_REMEMBER_PASSWORD, false);
-            PrefUtils.putBoolean(Constant.KEY_AUTO_LOGIN, false);
-        }
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_login, menu);
@@ -294,7 +280,6 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
     }
 
     private void showSetServerIpDialog() {
-        final MainApplication application = (MainApplication) getApplication();
         new MaterialDialog.Builder(this)
                 .title(R.string.setServerAddress)
                 .content(R.string.setServerAddressHint)
@@ -313,14 +298,14 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         String url = dialog.getInputEditText().getText().toString();
                         PrefUtils.putString(Constant.KEY_SERVER_DOMAIN, url);
-                        application.initServerURL();
+                        EventBus.getDefault().post(new ServerUrlChangedEvent(url));
                     }
                 })
                 .onNeutral(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         PrefUtils.remove(Constant.KEY_SERVER_DOMAIN);
-                        application.initServerURL();
+                        EventBus.getDefault().post(new ServerUrlChangedEvent(""));
                     }
                 })
                 .show();

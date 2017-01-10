@@ -1,16 +1,38 @@
 package com.hxh19950701.teachingevaluateclient.application;
 
 import android.app.Application;
-import android.widget.Toast;
 
 import com.hxh19950701.teachingevaluateclient.constant.Constant;
+import com.hxh19950701.teachingevaluateclient.event.ServerUrlChangedEvent;
+import com.hxh19950701.teachingevaluateclient.event.UserLoginSuccessEvent;
+import com.hxh19950701.teachingevaluateclient.interfaces.ManagerInitializeListener;
 import com.hxh19950701.teachingevaluateclient.internet.NetService;
 import com.hxh19950701.teachingevaluateclient.manager.EvaluateTargetManager;
+import com.hxh19950701.teachingevaluateclient.service.EvaluateTargetUpdateService;
 import com.hxh19950701.teachingevaluateclient.utils.DisplayUtils;
 import com.hxh19950701.teachingevaluateclient.utils.InputMethodUtils;
+import com.hxh19950701.teachingevaluateclient.utils.IntentUtils;
 import com.hxh19950701.teachingevaluateclient.utils.PrefUtils;
+import com.hxh19950701.teachingevaluateclient.utils.ToastUtils;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 public class MainApplication extends Application {
+
+    private ManagerInitializeListener evaluateTargetManagerInitializeListener = new ManagerInitializeListener() {
+
+        @Override
+        public void onSuccess(boolean fromCache) {
+            EvaluateTargetManager.printAllTargets();
+        }
+
+        @Override
+        public void onFailure(Exception e) {
+            ToastUtils.show("更新评价条目失败，软件可能工作不正常");
+        }
+    };
 
     @Override
     public void onCreate() {
@@ -18,12 +40,15 @@ public class MainApplication extends Application {
         initUtils();
         initServerURL();
         initManager();
+        startServices();
+        EventBus.getDefault().register(this);
     }
 
     public void initUtils() {
         PrefUtils.init(this);
         InputMethodUtils.init(this);
         DisplayUtils.init(this);
+        ToastUtils.init(this);
     }
 
     public void initServerURL() {
@@ -32,18 +57,36 @@ public class MainApplication extends Application {
     }
 
     public void initManager() {
-        EvaluateTargetManager.setInitializeListener(new EvaluateTargetManager.InitializeListener() {
-            @Override
-            public void onSuccess(boolean fromCache) {
-                Toast.makeText(MainApplication.this, "更新评价条目成功", Toast.LENGTH_SHORT).show();
-                EvaluateTargetManager.printAllTargets();
-            }
+        EvaluateTargetManager.setInitializeListener(evaluateTargetManagerInitializeListener);
+    }
 
-            @Override
-            public void onFailure(Exception e) {
-                Toast.makeText(MainApplication.this, "更新评价条目失败", Toast.LENGTH_SHORT).show();
-            }
-        });
-        EvaluateTargetManager.init(this);
+    public void startServices() {
+        IntentUtils.startService(this, EvaluateTargetUpdateService.class);
+    }
+
+    public void stopServices() {
+        IntentUtils.stopService(this, EvaluateTargetUpdateService.class);
+    }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        stopServices();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(sticky = false, threadMode = ThreadMode.BACKGROUND)
+    public void onServerUrlChanged(ServerUrlChangedEvent event) {
+        System.out.println("服务器地址改变，正在重新初始化API");
+        initServerURL();
+    }
+
+    @Subscribe(sticky = false, threadMode = ThreadMode.BACKGROUND)
+    public void onUserLoginSuccess(UserLoginSuccessEvent event) {
+        System.out.println("用户" + event.getUsername() + "登录成功");
+        PrefUtils.putString(Constant.KEY_USERNAME, event.getUsername());
+        PrefUtils.putString(Constant.KEY_PASSWORD, event.isRememberPassword() ? event.getPassword() : "");
+        PrefUtils.putBoolean(Constant.KEY_REMEMBER_PASSWORD, event.isRememberPassword());
+        PrefUtils.putBoolean(Constant.KEY_AUTO_LOGIN, event.isAutoLoginEnable());
     }
 }

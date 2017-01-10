@@ -7,8 +7,10 @@ import com.hxh19950701.teachingevaluateclient.bean.service.Department;
 import com.hxh19950701.teachingevaluateclient.bean.service.Subject;
 import com.hxh19950701.teachingevaluateclient.internet.NetClient;
 import com.hxh19950701.teachingevaluateclient.internet.ServiceCallback;
+import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.HttpHandler;
 import com.lidroid.xutils.http.RequestParams;
+import com.lidroid.xutils.http.ResponseStream;
 
 import java.util.List;
 
@@ -52,6 +54,12 @@ public class DepartmentApi {
         String action = "getClazzListBySubject";
         RequestParams requestParams = NetClient.buildRequestParams(action, "id", id + "");
         return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<List<Clazz>>>(){}.getType());
+    }
+
+    public static ResponseStream getClazzListSync() throws HttpException {
+        String action = "getClazzList";
+        RequestParams requestParams = NetClient.buildRequestParams(action);
+        return NetClient.sendPostRequestSync(URL, requestParams);
     }
 }
 

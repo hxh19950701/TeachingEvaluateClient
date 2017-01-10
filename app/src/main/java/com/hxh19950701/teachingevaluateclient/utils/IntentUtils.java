@@ -33,4 +33,14 @@ public class IntentUtils {
         }
         context.startActivity(intent);
     }
+
+    public static void startService(Context context, Class<?> cls) {
+        Intent intent = new Intent(context, cls);
+        context.startService(intent);
+    }
+
+    public static void stopService(Context context, Class<?> cls) {
+        Intent intent = new Intent(context, cls);
+        context.stopService(intent);
+    }
 }
