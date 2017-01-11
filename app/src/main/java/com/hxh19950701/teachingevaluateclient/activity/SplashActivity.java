@@ -16,14 +16,6 @@ import com.lidroid.xutils.exception.HttpException;
 
 public class SplashActivity extends AppCompatActivity {
 
-    private static final Class[] ACTIVITIES = new Class[Constant.IDENTITY_COUNT];
-
-    static {
-        ACTIVITIES[Constant.IDENTITY_STUDENT] = StudentMainUiActivity.class;
-        ACTIVITIES[Constant.IDENTITY_TEACHER] = TeacherMainUiActivity.class;
-        ACTIVITIES[Constant.IDENTITY_ADMINISTRATOR] = AdministratorMainUiActivity.class;
-    }
-
     private static final int LOGIN_SUCCESS = 1;
     private static final int LOGIN_PROCEED = 2;
     private static final int LOGIN_NOT_START = 3;
@@ -39,7 +31,7 @@ public class SplashActivity extends AppCompatActivity {
     private boolean isTimeUp = false;
     private int identity = -1;
 
-    private class SplashThread extends Thread {
+    private Thread splashTimerThread = new Thread() {
         @Override
         public void run() {
             super.run();
@@ -47,26 +39,26 @@ public class SplashActivity extends AppCompatActivity {
             isTimeUp = true;
             requireDismiss();
         }
-    }
+    };
 
-    private class DelayFinishThread extends Thread {
+    private Thread delayFinishThread = new Thread() {
         @Override
         public void run() {
             super.run();
             SystemClock.sleep(DELAY_FINISH_DURATION);
             finish();
         }
-    }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        splashTimerThread.start();
         if (PrefUtils.getBoolean(Constant.KEY_AUTO_LOGIN, false)) {
             loginAuto();
         } else {
             loginStatus = LOGIN_NOT_START;
         }
-        new SplashThread().start();
     }
 
     private void loginAuto() {
@@ -138,8 +130,8 @@ public class SplashActivity extends AppCompatActivity {
             case Constant.IDENTITY_STUDENT:
             case Constant.IDENTITY_TEACHER:
             case Constant.IDENTITY_ADMINISTRATOR:
-                IntentUtils.startActivity(this, ACTIVITIES[identity], Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                new DelayFinishThread().start();
+                IntentUtils.startActivity(this, Constant.IDENTITY_ACTIVITY[identity], Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                delayFinishThread.start();
                 break;
             default:
                 enterLogin();
@@ -148,6 +140,6 @@ public class SplashActivity extends AppCompatActivity {
 
     private void enterLogin() {
         IntentUtils.startActivity(this, LoginActivity.class);
-        new DelayFinishThread().start();
+        delayFinishThread.start();
     }
 }

@@ -49,14 +49,6 @@ import org.greenrobot.eventbus.ThreadMode;
 
 public class LoginActivity extends BaseActivity implements CompoundButton.OnCheckedChangeListener {
 
-    private static final Class[] ACTIVITIES = new Class[Constant.IDENTITY_COUNT];
-
-    static {
-        ACTIVITIES[Constant.IDENTITY_STUDENT] = StudentMainUiActivity.class;
-        ACTIVITIES[Constant.IDENTITY_TEACHER] = TeacherMainUiActivity.class;
-        ACTIVITIES[Constant.IDENTITY_ADMINISTRATOR] = AdministratorMainUiActivity.class;
-    }
-
     protected FloatingActionButton fabRegisterStudent;
     protected EditText etUsername;
     protected EditText etPassword;
@@ -86,7 +78,7 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
             }
         }
     };
-
+    
     @Override
     public void initView() {
         setContentView(R.layout.activity_login);
@@ -235,7 +227,7 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
             case Constant.IDENTITY_STUDENT:
             case Constant.IDENTITY_TEACHER:
             case Constant.IDENTITY_ADMINISTRATOR:
-                IntentUtils.startActivity(this, ACTIVITIES[identity], Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                IntentUtils.startActivity(this, Constant.IDENTITY_ACTIVITY[identity], Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 break;
             default:
                 SnackBarUtils.showSystemError(clLogin);

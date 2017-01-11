@@ -27,7 +27,7 @@ import com.hxh19950701.teachingevaluateclient.utils.IntentUtils;
 
 import java.util.List;
 
-public class StudentMainUiActivity extends BaseMainUiActivity {
+public class StudentMainUiActivity extends BaseMainUiActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     protected FloatingActionButton fabAddCourse;
     protected ActionBarDrawerToggle drawerToggle;
@@ -57,12 +57,7 @@ public class StudentMainUiActivity extends BaseMainUiActivity {
     public void initListener() {
         fabAddCourse.setOnClickListener(this);
         nvDrawer.setNavigationItemSelectedListener(this);
-        srlCourseList.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                initStudentCourse();
-            }
-        });
+        srlCourseList.setOnRefreshListener(this);
     }
 
     @Override
@@ -81,6 +76,11 @@ public class StudentMainUiActivity extends BaseMainUiActivity {
         rvCourse.setLayoutManager(new LinearLayoutManager(this));
         srlCourseList.setColorSchemeResources(R.color.colorAccent);
         initUserInfo();
+        initStudentCourse();
+    }
+
+    @Override
+    public void onRefresh() {
         initStudentCourse();
     }
 
