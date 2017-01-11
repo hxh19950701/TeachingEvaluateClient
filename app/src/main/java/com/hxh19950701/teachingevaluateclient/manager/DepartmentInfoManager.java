@@ -10,14 +10,9 @@ import com.google.gson.reflect.TypeToken;
 import com.hxh19950701.teachingevaluateclient.base.ResponseData;
 import com.hxh19950701.teachingevaluateclient.bean.service.Clazz;
 import com.hxh19950701.teachingevaluateclient.bean.service.Department;
-import com.hxh19950701.teachingevaluateclient.bean.service.EvaluateFirstTarget;
-import com.hxh19950701.teachingevaluateclient.bean.service.EvaluateSecondTarget;
-import com.hxh19950701.teachingevaluateclient.bean.service.EvaluateThirdTarget;
-import com.hxh19950701.teachingevaluateclient.bean.service.IdRecord;
 import com.hxh19950701.teachingevaluateclient.bean.service.Subject;
 import com.hxh19950701.teachingevaluateclient.interfaces.ManagerInitializeListener;
 import com.hxh19950701.teachingevaluateclient.internet.api.DepartmentApi;
-import com.hxh19950701.teachingevaluateclient.internet.api.EvaluateApi;
 import com.hxh19950701.teachingevaluateclient.utils.IdRecordUtils;
 
 import java.io.FileInputStream;
@@ -28,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DepartmentInfoManager {
-
 
     private static final String TAG = EvaluateTargetManager.class.getSimpleName();
 
@@ -102,26 +96,26 @@ public class DepartmentInfoManager {
             for (Clazz clazz : data) {
                 CLASSES.add(clazz);
 
-                int secondTargetId = clazz.getSubject().getId();
-                Subject subject = getSubjectById(secondTargetId);
+                int subjectId = clazz.getSubject().getId();
+                Subject subject = getSubjectById(subjectId);
                 if (subject == null) {
                     subject = clazz.getSubject();
-                    secondTarget.setThirdTargets(new ArrayList<EvaluateThirdTarget>(7));
-                    SECOND_TARGETS.add(secondTarget);
+                    subject.setClasses(new ArrayList<Clazz>(7));
+                    SUBJECTS.add(subject);
                 }
-                secondTarget.getThirdTargets().add(thirdTarget);
-                thirdTarget.setSecondTarget(secondTarget);
+                subject.getClasses().add(clazz);
+                clazz.setSubject(subject);
 
-                int firstTargetId = thirdTarget.getSecondTarget().getFirstTarget().getId();
-                EvaluateFirstTarget firstTarget = getFirstTargetById(firstTargetId);
-                if (firstTarget == null) {
-                    firstTarget = thirdTarget.getSecondTarget().getFirstTarget();
-                    firstTarget.setSecondTargets(new ArrayList<EvaluateSecondTarget>(15));
-                    FIRST_TARGETS.add(firstTarget);
+                int departmentId = clazz.getSubject().getDepartment().getId();
+                Department department = getDepartmentById(departmentId);
+                if (department == null) {
+                    department = clazz.getSubject().getDepartment();
+                    department.setSubjects(new ArrayList<Subject>(7));
+                    DEPARTMENTS.add(department);
                 }
-                if (findTarget(firstTarget.getSecondTargets(), secondTargetId) == null) {
-                    firstTarget.getSecondTargets().add(secondTarget);
-                    secondTarget.setFirstTarget(firstTarget);
+                if (IdRecordUtils.findIdRecord(department.getSubjects(), subjectId) == null) {
+                    department.getSubjects().add(subject);
+                    subject.setDepartment(department);
                 }
             }
         }
@@ -192,15 +186,15 @@ public class DepartmentInfoManager {
         return (Department) IdRecordUtils.findIdRecord(DEPARTMENTS, id);
     }
 
-    public static List<Clazz> getCLASSES() {
+    public static List<Clazz> getClasses() {
         return CLASSES;
     }
 
-    public static List<Subject> getSUBJECTS() {
+    public static List<Subject> getSubjects() {
         return SUBJECTS;
     }
 
-    public static List<Department> getDEPARTMENTS() {
+    public static List<Department> getDepartments() {
         return DEPARTMENTS;
     }
 

@@ -30,4 +30,9 @@ public class Department extends TimeMakableRecord {
     public void setSubjects(List<Subject> subjects) {
         this.subjects = subjects;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

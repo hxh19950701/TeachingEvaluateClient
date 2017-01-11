@@ -21,19 +21,22 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.hxh19950701.teachingevaluateclient.R;
 import com.hxh19950701.teachingevaluateclient.base.BaseActivity;
 import com.hxh19950701.teachingevaluateclient.bean.service.Clazz;
+import com.hxh19950701.teachingevaluateclient.bean.service.Department;
 import com.hxh19950701.teachingevaluateclient.bean.service.Student;
+import com.hxh19950701.teachingevaluateclient.bean.service.Subject;
 import com.hxh19950701.teachingevaluateclient.constant.Constant;
 import com.hxh19950701.teachingevaluateclient.impl.TextWatcherImpl;
 import com.hxh19950701.teachingevaluateclient.internet.NetServer;
 import com.hxh19950701.teachingevaluateclient.internet.SimpleServiceCallback;
 import com.hxh19950701.teachingevaluateclient.internet.api.DepartmentApi;
 import com.hxh19950701.teachingevaluateclient.internet.api.StudentApi;
+import com.hxh19950701.teachingevaluateclient.manager.DepartmentInfoManager;
 import com.hxh19950701.teachingevaluateclient.utils.SnackBarUtils;
 
 import java.util.HashSet;
 import java.util.List;
 
-public class RegisterStudentActivity extends BaseActivity {
+public class RegisterStudentActivity extends BaseActivity implements AdapterView.OnItemSelectedListener {
 
     protected Button btnSave;
     protected CoordinatorLayout clRegister;
@@ -162,9 +165,25 @@ public class RegisterStudentActivity extends BaseActivity {
     @Override
     protected void initData() {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        initInfo();
         btnSave.setEnabled(false);
         srlRegister.setColorSchemeResources(R.color.colorAccent);
+        spDepartment.setAdapter(new ArrayAdapter<Department>(this, R.layout.spinner_item, DepartmentInfoManager.getDepartments()));
+        spSubject.setAdapter(new ArrayAdapter<Subject>(this, R.layout.spinner_item));
+        spYear.setAdapter(new ArrayAdapter<Integer>(this, R.layout.spinner_item));
+        spClazz.setAdapter(new ArrayAdapter<Clazz>(this, R.layout.spinner_item));
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        switch (view.getId()) {
+            case R.id.spDepartment://系部变更，就重新初始化
+
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 
     protected void initDepartment() {
@@ -172,7 +191,7 @@ public class RegisterStudentActivity extends BaseActivity {
         for (int i = 0; i < data.size(); ++i) {
             currentDepartment.add(data.get(i).getSubject().getDepartment().getName());
         }
-        ArrayAdapter departmentAdapter = new ArrayAdapter(getApplication(), R.layout.spinner_item, currentDepartment.toArray());
+        ArrayAdapter departmentAdapter = new ArrayAdapter(getApplication(), );
         departmentAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         spDepartment.setAdapter(departmentAdapter);
     }
@@ -212,29 +231,6 @@ public class RegisterStudentActivity extends BaseActivity {
         ArrayAdapter clazzAdapter = new ArrayAdapter(getApplication(), R.layout.spinner_item, currentClazz.toArray());
         clazzAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         spClazz.setAdapter(clazzAdapter);
-    }
-
-    protected void initInfo() {
-        srlRegister.setRefreshing(true);
-        DepartmentApi.getClazzList(new SimpleServiceCallback<List<Clazz>>(clRegister) {
-
-            @Override
-            public void onAfter() {
-                srlRegister.setRefreshing(false);
-                refreshSaveButtonEnable();
-            }
-
-            @Override
-            public void onGetDataSuccess(List<Clazz> clazz) {
-                data = clazz;
-                initDepartment();
-            }
-
-            @Override
-            public void onException(String s) {
-                SnackBarUtils.showLong(clRegister, "获取系部信息失败。");
-            }
-        });
     }
 
     @Override
@@ -350,4 +346,6 @@ public class RegisterStudentActivity extends BaseActivity {
             btnSave.setEnabled(true);
         }
     }
+
+
 }

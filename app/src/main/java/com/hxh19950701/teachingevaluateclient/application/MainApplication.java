@@ -8,7 +8,7 @@ import com.hxh19950701.teachingevaluateclient.event.UserLoginSuccessEvent;
 import com.hxh19950701.teachingevaluateclient.interfaces.ManagerInitializeListener;
 import com.hxh19950701.teachingevaluateclient.internet.NetService;
 import com.hxh19950701.teachingevaluateclient.manager.EvaluateTargetManager;
-import com.hxh19950701.teachingevaluateclient.service.EvaluateTargetUpdateService;
+import com.hxh19950701.teachingevaluateclient.service.DataUpdateService;
 import com.hxh19950701.teachingevaluateclient.utils.DisplayUtils;
 import com.hxh19950701.teachingevaluateclient.utils.InputMethodUtils;
 import com.hxh19950701.teachingevaluateclient.utils.IntentUtils;
@@ -61,11 +61,11 @@ public class MainApplication extends Application {
     }
 
     public void startServices() {
-        IntentUtils.startService(this, EvaluateTargetUpdateService.class);
+        IntentUtils.startService(this, DataUpdateService.class);
     }
 
     public void stopServices() {
-        IntentUtils.stopService(this, EvaluateTargetUpdateService.class);
+        IntentUtils.stopService(this, DataUpdateService.class);
     }
 
     @Override

@@ -62,7 +62,7 @@
 		</activity>
 
 		<service
-			android:name=".service.EvaluateTargetUpdateService"
+			android:name=".service.DataUpdateService"
 			android:enabled="true"
 			android:exported="true">
 		</service>

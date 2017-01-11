@@ -47,7 +47,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-public class LoginActivity extends BaseActivity implements CompoundButton.OnCheckedChangeListener {
+public class LoginActivity extends BaseActivity implements CompoundButton.OnCheckedChangeListener, TextView.OnEditorActionListener {
 
     protected FloatingActionButton fabRegisterStudent;
     protected EditText etUsername;
@@ -78,7 +78,7 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
             }
         }
     };
-    
+
     @Override
     public void initView() {
         setContentView(R.layout.activity_login);
@@ -99,17 +99,7 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
         cbAutoLogin.setOnCheckedChangeListener(this);
         etUsername.addTextChangedListener(usernameWatcher);
         etPassword.addTextChangedListener(passwordWatcher);
-        etPassword.setOnEditorActionListener(
-                new TextView.OnEditorActionListener() {
-                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                        if (actionId == EditorInfo.IME_ACTION_DONE) {
-                            startLogin();
-                            return true;
-                        }
-                        return false;
-                    }
-                }
-        );
+        etPassword.setOnEditorActionListener(this);
     }
 
     @Override
@@ -171,10 +161,19 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         switch (buttonView.getId()) {
             case R.id.cbAutoLogin:
-                cbRememberPassword.setChecked(isChecked);
+                cbRememberPassword.setChecked(true);
                 cbRememberPassword.setEnabled(!isChecked);
                 break;
         }
+    }
+
+    @Override
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        if (actionId == EditorInfo.IME_ACTION_DONE) {
+            startLogin();
+            return true;
+        }
+        return false;
     }
 
     private void startLogin() {

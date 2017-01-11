@@ -9,16 +9,15 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 
 import com.hxh19950701.teachingevaluateclient.manager.EvaluateTargetManager;
-import com.hxh19950701.teachingevaluateclient.receiver.EvaluateItemUpdateReceiver;
+import com.hxh19950701.teachingevaluateclient.receiver.DataUpdateReceiver;
 
-public class EvaluateTargetUpdateService extends Service {
+public class DataUpdateService extends Service {
 
-    private BroadcastReceiver receiver;
+    private BroadcastReceiver receiver = new DataUpdateReceiver();
 
     @Override
     public void onCreate() {
         super.onCreate();
-        receiver = new EvaluateItemUpdateReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(receiver, filter);
