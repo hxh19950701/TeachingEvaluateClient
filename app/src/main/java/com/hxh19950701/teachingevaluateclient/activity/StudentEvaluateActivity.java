@@ -11,7 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -81,8 +80,8 @@ public class StudentEvaluateActivity extends BaseActivity implements FirstTarget
 
     private void initCourseAndEvaluatedItem(CourseAndEvaluatedItem data) {
         course = data.getCourse();
+        Arrays.fill(score, -1.0f);
         if (data.getItem() != null) {
-            Arrays.fill(score, -1.0f);
             for (StudentCourseEvaluate item : data.getItem()) {
                 score[item.getItem().getId()] = item.getScore();
             }
@@ -101,7 +100,6 @@ public class StudentEvaluateActivity extends BaseActivity implements FirstTarget
         float totalScore = 0.0f;
         for (float itemScore : score) {
             if (itemScore < 0.0f) {
-                Toast.makeText(this, "有ITEM小于0", Toast.LENGTH_SHORT).show();
                 return -1.0f;
             }
             totalScore += itemScore;

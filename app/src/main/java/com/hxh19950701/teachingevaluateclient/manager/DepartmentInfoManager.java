@@ -204,7 +204,7 @@ public class DepartmentInfoManager {
             for (Subject subject : department.getSubjects()) {
                 Log.d(TAG, " " + subject.getName());
                 for (Clazz clazz : subject.getClasses()) {
-                    Log.d(TAG, "  " + clazz.getName());
+                    Log.d(TAG, "  " + clazz.getName() + clazz.getYear());
                 }
             }
         }

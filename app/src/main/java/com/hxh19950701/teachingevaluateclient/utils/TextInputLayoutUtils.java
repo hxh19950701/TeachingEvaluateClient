@@ -1,6 +1,7 @@
 package com.hxh19950701.teachingevaluateclient.utils;
 
 import android.support.design.widget.TextInputLayout;
+import android.text.TextUtils;
 
 public class TextInputLayoutUtils {
 
@@ -13,5 +14,12 @@ public class TextInputLayoutUtils {
             textInputLayout.setError(null);
         }
         textInputLayout.setErrorEnabled(enable);
+    }
+
+    public static boolean isInputComplete(TextInputLayout textInputLayout) {
+        boolean isInputted = !TextUtils.isEmpty(textInputLayout.getEditText().getText());
+        boolean isError = !TextUtils.isEmpty(textInputLayout.getError());
+        boolean isEnable = textInputLayout.getEditText().isEnabled();
+        return isInputted && !isError && isEnable;
     }
 }

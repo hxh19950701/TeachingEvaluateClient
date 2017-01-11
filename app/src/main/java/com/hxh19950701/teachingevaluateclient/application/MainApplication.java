@@ -7,6 +7,7 @@ import com.hxh19950701.teachingevaluateclient.event.ServerUrlChangedEvent;
 import com.hxh19950701.teachingevaluateclient.event.UserLoginSuccessEvent;
 import com.hxh19950701.teachingevaluateclient.interfaces.ManagerInitializeListener;
 import com.hxh19950701.teachingevaluateclient.internet.NetService;
+import com.hxh19950701.teachingevaluateclient.manager.DepartmentInfoManager;
 import com.hxh19950701.teachingevaluateclient.manager.EvaluateTargetManager;
 import com.hxh19950701.teachingevaluateclient.service.DataUpdateService;
 import com.hxh19950701.teachingevaluateclient.utils.DisplayUtils;
@@ -34,6 +35,19 @@ public class MainApplication extends Application {
         }
     };
 
+    private ManagerInitializeListener departmentInfoManagerInitializeListener = new ManagerInitializeListener() {
+
+        @Override
+        public void onSuccess(boolean fromCache) {
+            DepartmentInfoManager.printAllClasses();
+        }
+
+        @Override
+        public void onFailure(Exception e) {
+            ToastUtils.show("更新系部班级信息失败，软件可能工作不正常");
+        }
+    };
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -58,6 +72,7 @@ public class MainApplication extends Application {
 
     public void initManager() {
         EvaluateTargetManager.setInitializeListener(evaluateTargetManagerInitializeListener);
+        DepartmentInfoManager.setInitializeListener(departmentInfoManagerInitializeListener);
     }
 
     public void startServices() {

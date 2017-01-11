@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -60,6 +59,7 @@ public class RegisterUserActivity extends BaseActivity {
                     checkUsernameExistence();
                 } else {
                     setupUsernameExistence(exist);
+                    refreshOperationEnable();
                 }
             }
         }
@@ -206,17 +206,12 @@ public class RegisterUserActivity extends BaseActivity {
         InputMethodUtils.hideSoftInputFromWindow(clRegister.getWindowToken());
     }
 
-    private static boolean isInputComplete(TextInputLayout textInputLayout) {
-        boolean isInputted = !TextUtils.isEmpty(textInputLayout.getEditText().getText());
-        boolean isError = !TextUtils.isEmpty(textInputLayout.getError());
-        boolean isEnable = textInputLayout.getEditText().isEnabled();
-        return isInputted && !isError && isEnable;
-    }
-
     private void refreshOperationEnable() {
-        final String password = tilUsername.getEditText().getText().toString();
+        final String password = tilPassword.getEditText().getText().toString();
         final String passwordRetype = tilPasswordRetype.getEditText().getText().toString();
-        btnRegister.setEnabled(isInputComplete(tilUsername) && isInputComplete(tilPassword)
-                && isInputComplete(tilPasswordRetype) && password.equals(passwordRetype));
+        btnRegister.setEnabled(TextInputLayoutUtils.isInputComplete(tilUsername)
+                && TextInputLayoutUtils.isInputComplete(tilPassword)
+                && TextInputLayoutUtils.isInputComplete(tilPasswordRetype)
+                && password.equals(passwordRetype));
     }
 }

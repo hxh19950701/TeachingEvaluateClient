@@ -32,4 +32,4 @@ dependencies {
     compile "me.zhanghai.android.materialprogressbar:library:1.1.6"
 }
 
-apply from: 'file:///D:/txt.txt'
+apply from: 'build.txt'
