@@ -14,8 +14,8 @@ import com.hxh19950701.teachingevaluateclient.R;
 import com.hxh19950701.teachingevaluateclient.base.BaseActivity;
 import com.hxh19950701.teachingevaluateclient.bean.service.Course;
 import com.hxh19950701.teachingevaluateclient.impl.TextWatcherImpl;
-import com.hxh19950701.teachingevaluateclient.internet.SimpleServiceCallback;
-import com.hxh19950701.teachingevaluateclient.internet.api.CourseApi;
+import com.hxh19950701.teachingevaluateclient.network.SimpleServiceCallback;
+import com.hxh19950701.teachingevaluateclient.network.api.CourseApi;
 import com.hxh19950701.teachingevaluateclient.utils.MD5Utils;
 
 public class StudentAddCourseActivity extends BaseActivity {

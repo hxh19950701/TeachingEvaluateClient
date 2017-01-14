@@ -1,7 +1,7 @@
 package com.hxh19950701.teachingevaluateclient.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +28,7 @@ public class FirstTargetFragment extends BaseFragment implements ExpandableListV
     private float[] score;
     private OnItemScoreUpdateListener listener;
 
-    public FirstTargetFragment(EvaluateFirstTarget firstTarget, float[] score, @NonNull OnItemScoreUpdateListener listener) {
+    public FirstTargetFragment(EvaluateFirstTarget firstTarget, float[] score, @Nullable OnItemScoreUpdateListener listener) {
         this.firstTarget = firstTarget;
         this.score = score;
         this.listener = listener;
@@ -64,7 +64,7 @@ public class FirstTargetFragment extends BaseFragment implements ExpandableListV
             return 0;
         } else if (itemScore == 0.0) {
             return 1;
-        } else if (itemId > 0) {
+        } else if (itemScore > 0) {
             return 2;
         } else {
             return -1;
@@ -97,7 +97,9 @@ public class FirstTargetFragment extends BaseFragment implements ExpandableListV
                     public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
                         float newScore = getCheckedScore(itemId, which);
                         TextView tvScore = (TextView) v.findViewById(R.id.tvScore);
-                        listener.onItemScoreUpdate(tvScore, itemId, newScore);
+                        if (listener != null) {
+                            listener.onItemScoreUpdate(tvScore, itemId, newScore);
+                        }
                         return true;
                     }
                 }).show();

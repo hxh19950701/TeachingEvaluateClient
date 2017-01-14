@@ -1,4 +1,4 @@
-package com.hxh19950701.teachingevaluateclient.internet;
+package com.hxh19950701.teachingevaluateclient.network;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

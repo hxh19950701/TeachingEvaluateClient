@@ -1,12 +1,12 @@
-package com.hxh19950701.teachingevaluateclient.internet.api;
+package com.hxh19950701.teachingevaluateclient.network.api;
 
 import com.google.gson.reflect.TypeToken;
 import com.hxh19950701.teachingevaluateclient.base.ResponseData;
 import com.hxh19950701.teachingevaluateclient.bean.service.Clazz;
 import com.hxh19950701.teachingevaluateclient.bean.service.Department;
 import com.hxh19950701.teachingevaluateclient.bean.service.Subject;
-import com.hxh19950701.teachingevaluateclient.internet.NetClient;
-import com.hxh19950701.teachingevaluateclient.internet.ServiceCallback;
+import com.hxh19950701.teachingevaluateclient.network.NetClient;
+import com.hxh19950701.teachingevaluateclient.network.ServiceCallback;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.HttpHandler;
 import com.lidroid.xutils.http.RequestParams;

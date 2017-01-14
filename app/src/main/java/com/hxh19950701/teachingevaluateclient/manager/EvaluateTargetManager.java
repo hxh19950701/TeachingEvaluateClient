@@ -12,7 +12,7 @@ import com.hxh19950701.teachingevaluateclient.bean.service.EvaluateFirstTarget;
 import com.hxh19950701.teachingevaluateclient.bean.service.EvaluateSecondTarget;
 import com.hxh19950701.teachingevaluateclient.bean.service.EvaluateThirdTarget;
 import com.hxh19950701.teachingevaluateclient.interfaces.ManagerInitializeListener;
-import com.hxh19950701.teachingevaluateclient.internet.api.EvaluateApi;
+import com.hxh19950701.teachingevaluateclient.network.api.DepartmentApi;
 import com.hxh19950701.teachingevaluateclient.utils.IdRecordUtils;
 
 import java.io.FileInputStream;
@@ -55,37 +55,35 @@ public class EvaluateTargetManager {
         }
 
         public void init() {
-            initFromServer(true);
+            Exception initException = initFromLocal();
+            Exception updateException = update();
+            if (updateException == null) {
+                onSuccess(false);
+            } else if (initException == null && updateException != null) {
+                onSuccess(true);
+            } else {
+                onFailure(initException, updateException);
+            }
         }
 
-        public void initFromServer(boolean allowCache) {
+        private Exception update() {
             try {
-                String jsonString = EvaluateApi.getAllTargetsSync().readString();
+                String jsonString = DepartmentApi.getClazzListSync().readString();
                 ResponseData<List<EvaluateThirdTarget>> response = GSON.fromJson(jsonString, TYPE);
                 if (response.getData() == null) {
-                    initFromLocal();                                                        //数据已是最新，使用缓存
+                    return null;
                 } else {
                     initData(response.getData());
                     try {
                         saveJsonToLocal(jsonString);                                        //缓存到本地，缓存失败的话，版本号也不会变
                         //PrefUtils.putString(Constant.KEY_AREA_UP_KEY, areaData.data.upkey); //更新版本号
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        Log.e(TAG, "已更新到最新，但是缓存失败");
                     }
+                    return null;
                 }
-                onSuccess(false);
             } catch (Exception e) {
-                e.printStackTrace();
-                if (allowCache) {
-                    try {
-                        initFromLocal();
-                        onSuccess(true);
-                    } catch (Exception e1) {
-                        onFailure(e1);
-                    }
-                } else {
-                    onFailure(e);
-                }
+                return e;
             }
         }
 
@@ -120,10 +118,15 @@ public class EvaluateTargetManager {
             }
         }
 
-        public void initFromLocal() throws Exception {
-            String jsonString = getLocalJson();
-            ResponseData<List<EvaluateThirdTarget>> response = GSON.fromJson(jsonString, TYPE);
-            initData(response.getData());
+        public Exception initFromLocal() {
+            try {
+                String jsonString = getLocalJson();
+                ResponseData<List<EvaluateThirdTarget>> response = GSON.fromJson(jsonString, TYPE);
+                initData(response.getData());
+                return null;
+            } catch (Exception e) {
+                return e;
+            }
         }
 
         private void saveJsonToLocal(String jsonString) throws IOException {
@@ -153,12 +156,13 @@ public class EvaluateTargetManager {
             }
         }
 
-        public void onFailure(final Exception e) {
+        @Override
+        public void onFailure(final Exception initException, final Exception updateException) {
             if (initializeListener != null) {
                 HANDLER.post(new Runnable() {
                     @Override
                     public void run() {
-                        initializeListener.onFailure(e);
+                        initializeListener.onFailure(initException, updateException);
                     }
                 });
             }

@@ -14,8 +14,8 @@ import com.hxh19950701.teachingevaluateclient.R;
 import com.hxh19950701.teachingevaluateclient.adapter.TeacherCourseListViewAdapter;
 import com.hxh19950701.teachingevaluateclient.base.BaseMainUiActivity;
 import com.hxh19950701.teachingevaluateclient.bean.service.Course;
-import com.hxh19950701.teachingevaluateclient.internet.SimpleServiceCallback;
-import com.hxh19950701.teachingevaluateclient.internet.api.CourseApi;
+import com.hxh19950701.teachingevaluateclient.network.SimpleServiceCallback;
+import com.hxh19950701.teachingevaluateclient.network.api.CourseApi;
 
 import java.util.List;
 

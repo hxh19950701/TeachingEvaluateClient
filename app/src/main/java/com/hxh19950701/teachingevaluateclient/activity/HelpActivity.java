@@ -11,8 +11,8 @@ import com.hxh19950701.teachingevaluateclient.base.BaseActivity;
 
 public class HelpActivity extends BaseActivity {
 
-    protected WebView wvHelp;
-    protected CoordinatorLayout clHelp;
+    private CoordinatorLayout clHelp;
+    private WebView wvHelp;
 
     @Override
     protected void initView() {
@@ -46,7 +46,7 @@ public class HelpActivity extends BaseActivity {
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if ((keyCode == KeyEvent.KEYCODE_BACK) && wvHelp.canGoBack()) {
-            wvHelp.goBack(); //goBack()表示返回WebView的上一页面
+            wvHelp.goBack();
             return true;
         }
         return super.onKeyDown(keyCode, event);

@@ -1,4 +1,4 @@
-package com.hxh19950701.teachingevaluateclient.internet.api;
+package com.hxh19950701.teachingevaluateclient.network.api;
 
 import com.google.gson.reflect.TypeToken;
 import com.hxh19950701.teachingevaluateclient.base.ResponseData;
@@ -6,8 +6,9 @@ import com.hxh19950701.teachingevaluateclient.bean.response.CourseAndEvaluatedIt
 import com.hxh19950701.teachingevaluateclient.bean.service.EvaluateThirdTarget;
 import com.hxh19950701.teachingevaluateclient.bean.service.StudentCourseEvaluate;
 import com.hxh19950701.teachingevaluateclient.bean.service.StudentCourseInfo;
-import com.hxh19950701.teachingevaluateclient.internet.NetClient;
-import com.hxh19950701.teachingevaluateclient.internet.ServiceCallback;
+import com.hxh19950701.teachingevaluateclient.bean.service.TeacherCourseEvaluate;
+import com.hxh19950701.teachingevaluateclient.network.NetClient;
+import com.hxh19950701.teachingevaluateclient.network.ServiceCallback;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.HttpHandler;
 import com.lidroid.xutils.http.RequestParams;
@@ -55,5 +56,11 @@ public class EvaluateApi {
         String action = "getStudentAllEvaluatedItemsByCourse";
         RequestParams requestParams = NetClient.buildRequestParams(action, "courseId", courseId + "");
         return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<CourseAndEvaluatedItem>>(){}.getType());
+    }
+
+    public static HttpHandler<String> getTeacherAllEvaluatedItemsByCourse(int courseId, ServiceCallback<List<TeacherCourseEvaluate>> callBack) {
+        String action = "getTeacherAllEvaluatedItemsByCourse";
+        RequestParams requestParams = NetClient.buildRequestParams(action, "courseId", courseId + "");
+        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<List<TeacherCourseEvaluate>>>(){}.getType());
     }
 }

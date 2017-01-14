@@ -19,10 +19,10 @@ import com.hxh19950701.teachingevaluateclient.adapter.StudentCourseRecyclerViewA
 import com.hxh19950701.teachingevaluateclient.base.BaseMainUiActivity;
 import com.hxh19950701.teachingevaluateclient.bean.service.Student;
 import com.hxh19950701.teachingevaluateclient.bean.service.StudentCourseInfo;
-import com.hxh19950701.teachingevaluateclient.internet.NetServer;
-import com.hxh19950701.teachingevaluateclient.internet.SimpleServiceCallback;
-import com.hxh19950701.teachingevaluateclient.internet.api.CourseApi;
-import com.hxh19950701.teachingevaluateclient.internet.api.StudentApi;
+import com.hxh19950701.teachingevaluateclient.network.NetServer;
+import com.hxh19950701.teachingevaluateclient.network.SimpleServiceCallback;
+import com.hxh19950701.teachingevaluateclient.network.api.CourseApi;
+import com.hxh19950701.teachingevaluateclient.network.api.StudentApi;
 import com.hxh19950701.teachingevaluateclient.utils.IntentUtils;
 
 import java.util.List;

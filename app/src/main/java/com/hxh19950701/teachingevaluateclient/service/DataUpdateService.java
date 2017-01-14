@@ -15,12 +15,11 @@ import com.hxh19950701.teachingevaluateclient.receiver.DataUpdateReceiver;
 public class DataUpdateService extends Service {
 
     private BroadcastReceiver receiver = new DataUpdateReceiver();
+    private IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
 
     @Override
     public void onCreate() {
         super.onCreate();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(receiver, filter);
     }
 

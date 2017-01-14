@@ -10,8 +10,6 @@ public class Constant {
         throw new UnsupportedOperationException("This class cannot be instantiated, and its methods must be called directly.");
     }
 
-
-
     public static final int ITEM_COUNT = 10;
 
     public static final int IDENTITY_STUDENT = 0;
@@ -48,7 +46,9 @@ public class Constant {
     public static final String KEY_SERVER_DOMAIN = "server_domain";
     public static final String KEY_COURSE_ID = "course_id";
     public static final String KEY_MASSAGE = "massage";
+    public static final String KEY_IDENTITY = "identity";
+    public static final String KEY_READ_ONLY = "read_only";
 
     public static final String PREFIX_SERVER_DOMAIN = "http://";
-    public static final String DEFAULT_SERVER_DOMAIN = "http://192.168.0.25:8080/TeachingEvaluateServer";
+    public static final String DEFAULT_SERVER_DOMAIN = "http://192.168.56.1:8080/TeachingEvaluateServer";
 }

@@ -6,7 +6,7 @@ import com.hxh19950701.teachingevaluateclient.constant.Constant;
 import com.hxh19950701.teachingevaluateclient.event.ServerUrlChangedEvent;
 import com.hxh19950701.teachingevaluateclient.event.UserLoginSuccessEvent;
 import com.hxh19950701.teachingevaluateclient.interfaces.ManagerInitializeListener;
-import com.hxh19950701.teachingevaluateclient.internet.NetService;
+import com.hxh19950701.teachingevaluateclient.network.NetService;
 import com.hxh19950701.teachingevaluateclient.manager.DepartmentInfoManager;
 import com.hxh19950701.teachingevaluateclient.manager.EvaluateTargetManager;
 import com.hxh19950701.teachingevaluateclient.service.DataUpdateService;
@@ -30,9 +30,10 @@ public class MainApplication extends Application {
         }
 
         @Override
-        public void onFailure(Exception e) {
+        public void onFailure(Exception initException, Exception updateException) {
             ToastUtils.show("更新评价条目失败，软件可能工作不正常");
         }
+
     };
 
     private ManagerInitializeListener departmentInfoManagerInitializeListener = new ManagerInitializeListener() {
@@ -43,7 +44,7 @@ public class MainApplication extends Application {
         }
 
         @Override
-        public void onFailure(Exception e) {
+        public void onFailure(Exception initException, Exception updateException) {
             ToastUtils.show("更新系部班级信息失败，软件可能工作不正常");
         }
     };

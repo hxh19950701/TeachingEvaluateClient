@@ -15,8 +15,8 @@ import com.hxh19950701.teachingevaluateclient.base.BaseActivity;
 import com.hxh19950701.teachingevaluateclient.bean.service.User;
 import com.hxh19950701.teachingevaluateclient.event.UserRegisterCompleteEvent;
 import com.hxh19950701.teachingevaluateclient.impl.TextWatcherImpl;
-import com.hxh19950701.teachingevaluateclient.internet.SimpleServiceCallback;
-import com.hxh19950701.teachingevaluateclient.internet.api.UserApi;
+import com.hxh19950701.teachingevaluateclient.network.SimpleServiceCallback;
+import com.hxh19950701.teachingevaluateclient.network.api.UserApi;
 import com.hxh19950701.teachingevaluateclient.utils.InputMethodUtils;
 import com.hxh19950701.teachingevaluateclient.utils.MD5Utils;
 import com.hxh19950701.teachingevaluateclient.utils.TextInputLayoutUtils;
@@ -116,7 +116,7 @@ public class RegisterUserActivity extends BaseActivity {
 
     @Override
     public void initData() {
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        displayHomeAsUp();
         tilPasswordRetype.getEditText().setEnabled(false);
         refreshOperationEnable();
         //弹出键盘

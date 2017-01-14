@@ -41,8 +41,13 @@
 			android:label="教学评价学生端">
 		</activity>
 		<activity
-			android:name=".activity.StudentEvaluateActivity"
+			android:name=".activity.EvaluateActivity"
 			android:label="教学评价">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN"/>
+
+				<category android:name="android.intent.category.LAUNCHER"/>
+			</intent-filter>
 		</activity>
 		<activity
 			android:name=".activity.HelpActivity"
@@ -66,6 +71,9 @@
 			android:enabled="true"
 			android:exported="true">
 		</service>
+
+		<activity android:name=".activity.StudentCommentActivity">
+		</activity>
 	</application>
 
 </manifest>

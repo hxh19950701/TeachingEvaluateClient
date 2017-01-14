@@ -1,4 +1,4 @@
-package com.hxh19950701.teachingevaluateclient.internet;
+package com.hxh19950701.teachingevaluateclient.network;
 
 import android.view.View;
 

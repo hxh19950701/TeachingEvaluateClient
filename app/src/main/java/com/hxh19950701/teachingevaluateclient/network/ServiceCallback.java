@@ -1,4 +1,4 @@
-package com.hxh19950701.teachingevaluateclient.internet;
+package com.hxh19950701.teachingevaluateclient.network;
 
 import com.hxh19950701.teachingevaluateclient.base.ResponseData;
 import com.lidroid.xutils.exception.HttpException;

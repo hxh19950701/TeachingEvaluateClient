@@ -1,25 +1,27 @@
 package com.hxh19950701.teachingevaluateclient.adapter;
 
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import com.hxh19950701.teachingevaluateclient.bean.service.EvaluateFirstTarget;
 import com.hxh19950701.teachingevaluateclient.fragment.FirstTargetFragment;
 import com.hxh19950701.teachingevaluateclient.manager.EvaluateTargetManager;
 
-import java.util.Map;
-
 public class FirstTargetViewPagerAdapter extends FragmentStatePagerAdapter {
 
-    private int firstTargetCount = EvaluateTargetManager.getFirstTargets().size();
-    private Fragment[] fragments = new Fragment[firstTargetCount];
+    private final int FIRST_TARGET_COUNT = EvaluateTargetManager.getFirstTargets().size();
+
+    private Fragment[] fragments = new Fragment[FIRST_TARGET_COUNT];
     private float[] score;
 
-    public FirstTargetViewPagerAdapter(FragmentManager fm, float[] score, FirstTargetFragment.OnItemScoreUpdateListener listener) {
+    public FirstTargetViewPagerAdapter(FragmentManager fm, float[] score, @Nullable FirstTargetFragment.OnItemScoreUpdateListener listener) {
         super(fm);
         this.score = score;
-        for (int counter = 0; counter < firstTargetCount; ++counter) {
-            fragments[counter] = new FirstTargetFragment(EvaluateTargetManager.getFirstTargets().get(counter), score, listener);
+        for (int counter = 0; counter < FIRST_TARGET_COUNT; ++counter) {
+            EvaluateFirstTarget firstTarget = EvaluateTargetManager.getFirstTargets().get(counter);
+            fragments[counter] = new FirstTargetFragment(firstTarget, score, listener);
         }
     }
 
@@ -30,7 +32,7 @@ public class FirstTargetViewPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return firstTargetCount;
+        return FIRST_TARGET_COUNT;
     }
 
     @Override
