@@ -12,7 +12,7 @@ import com.hxh19950701.teachingevaluateclient.bean.service.EvaluateFirstTarget;
 import com.hxh19950701.teachingevaluateclient.bean.service.EvaluateSecondTarget;
 import com.hxh19950701.teachingevaluateclient.bean.service.EvaluateThirdTarget;
 import com.hxh19950701.teachingevaluateclient.interfaces.ManagerInitializeListener;
-import com.hxh19950701.teachingevaluateclient.network.api.DepartmentApi;
+import com.hxh19950701.teachingevaluateclient.network.api.EvaluateApi;
 import com.hxh19950701.teachingevaluateclient.utils.IdRecordUtils;
 
 import java.io.FileInputStream;
@@ -68,8 +68,9 @@ public class EvaluateTargetManager {
 
         private Exception update() {
             try {
-                String jsonString = DepartmentApi.getClazzListSync().readString();
+                String jsonString = EvaluateApi.getAllTargetsSync().readString();
                 ResponseData<List<EvaluateThirdTarget>> response = GSON.fromJson(jsonString, TYPE);
+                Log.i(TAG, jsonString);
                 if (response.getData() == null) {
                     return null;
                 } else {

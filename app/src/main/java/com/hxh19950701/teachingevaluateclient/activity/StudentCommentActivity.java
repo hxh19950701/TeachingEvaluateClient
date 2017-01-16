@@ -14,7 +14,7 @@ public class StudentCommentActivity extends BaseActivity {
         if (courseId < 0) {
             throw new IllegalArgumentException("Course id can not be negative : " + courseId);
         }
-        Intent intent = new Intent(context, EvaluateActivity.class);
+        Intent intent = new Intent(context, StudentCommentActivity.class);
         intent.putExtra(Constant.KEY_COURSE_ID, courseId);
         return intent;
     }

@@ -24,6 +24,7 @@ public class SecondTargetExpandableListViewAdapter extends BaseExpandableListAda
     public SecondTargetExpandableListViewAdapter(EvaluateFirstTarget firstTarget, float[] score) {
         this.firstTarget = firstTarget;
         this.score = score;
+        this.averageScore = new float[score.length];
         this.isReadOnly = false;
         Arrays.fill(averageScore, -1.0f);
     }
@@ -31,6 +32,7 @@ public class SecondTargetExpandableListViewAdapter extends BaseExpandableListAda
     public SecondTargetExpandableListViewAdapter(EvaluateFirstTarget firstTarget, float[] score, boolean isReadOnly) {
         this.firstTarget = firstTarget;
         this.score = score;
+        this.averageScore = new float[score.length];
         this.isReadOnly = isReadOnly;
         Arrays.fill(averageScore, -1.0f);
     }
@@ -128,12 +130,12 @@ public class SecondTargetExpandableListViewAdapter extends BaseExpandableListAda
 
         public ChildViewHolder(View itemView) {
             tvThirdTargetName = (TextView) itemView.findViewById(R.id.tvThirdTargetName);
+            tvAverageScore = (TextView) itemView.findViewById(R.id.tvAverageScore);
             tvScore = (TextView) itemView.findViewById(R.id.tvScore);
         }
 
         public void bindData(EvaluateThirdTarget thirdTarget, float score, float averageScore, boolean isReadOnly) {
             tvThirdTargetName.setText(thirdTarget.getName());
-            tvScore.setVisibility(isReadOnly ? View.INVISIBLE : View.VISIBLE);
             tvScore.setText(score < 0.0f ? "未评价" : score + "分");
             tvAverageScore.setVisibility(averageScore < 0 ? View.GONE : View.VISIBLE);
             tvAverageScore.setText("平均：" + averageScore + "分");

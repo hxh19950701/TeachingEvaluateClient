@@ -123,7 +123,7 @@ public class EvaluateActivity extends BaseActivity implements FirstTargetFragmen
                 score[item.getItem().getId()] = item.getScore();
             }
         }
-        vpFirstTarget.setAdapter(new FirstTargetViewPagerAdapter(getSupportFragmentManager(), score, this));
+        vpFirstTarget.setAdapter(new FirstTargetViewPagerAdapter(getSupportFragmentManager(), score, isReadOnly, this));
         vpFirstTarget.setOffscreenPageLimit(EvaluateTargetManager.getFirstTargets().size());
         tlFirstTarget.setupWithViewPager(vpFirstTarget);
     }
@@ -167,7 +167,7 @@ public class EvaluateActivity extends BaseActivity implements FirstTargetFragmen
 
     private void commitScore() {
         final MaterialDialog dialog = new MaterialDialog.Builder(this)
-                .title("正在提交").content("请稍后...").cancelable(false).build();
+                .progressIndeterminateStyle(false).title("正在提交").content("请稍后...").cancelable(false).build();
         EvaluateApi.commitEvaluate(course.getId(), new SimpleServiceCallback<StudentCourseInfo>(clEvaluate) {
 
             @Override

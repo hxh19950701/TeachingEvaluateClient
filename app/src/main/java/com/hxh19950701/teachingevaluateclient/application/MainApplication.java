@@ -31,6 +31,8 @@ public class MainApplication extends Application {
 
         @Override
         public void onFailure(Exception initException, Exception updateException) {
+            initException.printStackTrace();
+            updateException.printStackTrace();
             ToastUtils.show("更新评价条目失败，软件可能工作不正常");
         }
 
@@ -45,6 +47,8 @@ public class MainApplication extends Application {
 
         @Override
         public void onFailure(Exception initException, Exception updateException) {
+            initException.printStackTrace();
+            updateException.printStackTrace();
             ToastUtils.show("更新系部班级信息失败，软件可能工作不正常");
         }
     };

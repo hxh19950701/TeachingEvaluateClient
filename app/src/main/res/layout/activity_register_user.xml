@@ -21,11 +21,16 @@
 
 		<android.support.design.widget.TextInputLayout
 			android:id="@+id/tilUsername"
+			android:clickable="true"
+			android:focusable="true"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content">
 
 			<EditText android:layout_width="match_parent"
+					  android:focusableInTouchMode="true"
 					  android:layout_height="wrap_content"
+					  android:clickable="true"
+					  android:focusable="true"
 					  android:digits="0123456789abcdefghigklmnopqrstuvwxyzABCDEFGHIGKLMNOPQRSTUVWXYZ"
 					  android:hint="输入用户名"
 					  android:inputType="textEmailAddress"

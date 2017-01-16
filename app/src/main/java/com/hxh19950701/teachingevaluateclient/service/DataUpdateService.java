@@ -8,8 +8,6 @@ import android.net.ConnectivityManager;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
-import com.hxh19950701.teachingevaluateclient.manager.DepartmentInfoManager;
-import com.hxh19950701.teachingevaluateclient.manager.EvaluateTargetManager;
 import com.hxh19950701.teachingevaluateclient.receiver.DataUpdateReceiver;
 
 public class DataUpdateService extends Service {
@@ -31,8 +29,6 @@ public class DataUpdateService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        EvaluateTargetManager.init(this);
-        DepartmentInfoManager.init(this);
         return super.onStartCommand(intent, flags, startId);
     }
 

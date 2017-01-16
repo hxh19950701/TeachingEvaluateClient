@@ -27,11 +27,13 @@ public class FirstTargetFragment extends BaseFragment implements ExpandableListV
     private EvaluateFirstTarget firstTarget;
     private float[] score;
     private OnItemScoreUpdateListener listener;
+    private boolean isReadOnly;
 
-    public FirstTargetFragment(EvaluateFirstTarget firstTarget, float[] score, @Nullable OnItemScoreUpdateListener listener) {
+    public FirstTargetFragment(EvaluateFirstTarget firstTarget, float[] score, boolean isReadOnly, @Nullable OnItemScoreUpdateListener listener) {
         this.firstTarget = firstTarget;
         this.score = score;
         this.listener = listener;
+        this.isReadOnly = isReadOnly;
     }
 
     @Override
@@ -46,10 +48,9 @@ public class FirstTargetFragment extends BaseFragment implements ExpandableListV
         elvFirstTarget.setOnChildClickListener(this);
     }
 
-
     @Override
     public void initData() {
-        elvFirstTarget.setAdapter(new SecondTargetExpandableListViewAdapter(firstTarget, score));
+        elvFirstTarget.setAdapter(new SecondTargetExpandableListViewAdapter(firstTarget, score, isReadOnly));
     }
 
     @Override

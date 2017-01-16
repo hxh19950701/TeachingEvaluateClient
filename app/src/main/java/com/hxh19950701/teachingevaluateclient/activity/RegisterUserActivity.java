@@ -55,7 +55,6 @@ public class RegisterUserActivity extends BaseActivity {
             } else {
                 Boolean exist = existence.get(username);
                 if (exist == null) {
-                    tilUsername.setError("正在检测该用户名是否可用，请稍后……");
                     checkUsernameExistence();
                 } else {
                     setupUsernameExistence(exist);
@@ -119,6 +118,7 @@ public class RegisterUserActivity extends BaseActivity {
         displayHomeAsUp();
         tilPasswordRetype.getEditText().setEnabled(false);
         refreshOperationEnable();
+
         //弹出键盘
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_NOT_ALWAYS);
@@ -144,6 +144,10 @@ public class RegisterUserActivity extends BaseActivity {
     protected void checkUsernameExistence() {
         final String username = tilUsername.getEditText().getText().toString();
         httpHandler = UserApi.hasExist(username, new SimpleServiceCallback<Boolean>(clRegister) {
+            @Override
+            public void onStart() {
+                tilUsername.setError("正在检测该用户名是否可用，请稍后……");
+            }
 
             @Override
             public void onAfter() {
@@ -174,8 +178,8 @@ public class RegisterUserActivity extends BaseActivity {
     }
 
     protected void register() {
-        final MaterialDialog dialog = new MaterialDialog.Builder(this).title("正在注册").content("请稍后...").cancelable(false)
-                .progress(true, 0).progressIndeterminateStyle(false).build();
+        final MaterialDialog dialog = new MaterialDialog.Builder(this).title("正在注册").content("请稍后...")
+                .cancelable(false).progressIndeterminateStyle(false).build();
         final String username = tilUsername.getEditText().getText().toString();
         final String password = MD5Utils.encipher(tilPassword.getEditText().getText().toString());
 
