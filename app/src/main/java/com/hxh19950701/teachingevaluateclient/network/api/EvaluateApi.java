@@ -31,7 +31,7 @@ public class EvaluateApi {
     public static HttpHandler<String> getAllTargets(ServiceCallback<List<EvaluateThirdTarget>> callBack) {
         String action = "getAllTargets";
         RequestParams requestParams = NetClient.buildRequestParams(action);
-        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<List<EvaluateThirdTarget>>>(){}.getType());
+        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<List<EvaluateThirdTarget>>>(){});
     }
 
     public static ResponseStream getAllTargetsSync() throws HttpException {
@@ -43,24 +43,24 @@ public class EvaluateApi {
     public static HttpHandler<String> commitEvaluate(int courseId, ServiceCallback<StudentCourseInfo> callBack) {
         String action = "commitEvaluate";
         RequestParams requestParams = NetClient.buildRequestParams(action, "courseId", courseId + "");
-        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<StudentCourseInfo>>(){}.getType());
+        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<StudentCourseInfo>>(){});
     }
 
     public static HttpHandler<String> updateItemScore(int courseId, int itemId, float score, ServiceCallback<StudentCourseEvaluate> callBack) {
         String action = "updateItemScore";
         RequestParams requestParams = NetClient.buildRequestParams(action, "courseId", courseId + "", "itemId", itemId + "", "score", score + "");
-        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<StudentCourseEvaluate>>(){}.getType());
+        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<StudentCourseEvaluate>>(){});
     }
 
     public static HttpHandler<String> getStudentAllEvaluatedItemsByCourse(int courseId, ServiceCallback<CourseAndEvaluatedItem> callBack) {
         String action = "getStudentAllEvaluatedItemsByCourse";
         RequestParams requestParams = NetClient.buildRequestParams(action, "courseId", courseId + "");
-        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<CourseAndEvaluatedItem>>(){}.getType());
+        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<CourseAndEvaluatedItem>>(){});
     }
 
     public static HttpHandler<String> getTeacherAllEvaluatedItemsByCourse(int courseId, ServiceCallback<List<TeacherCourseEvaluate>> callBack) {
         String action = "getTeacherAllEvaluatedItemsByCourse";
         RequestParams requestParams = NetClient.buildRequestParams(action, "courseId", courseId + "");
-        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<List<TeacherCourseEvaluate>>>(){}.getType());
+        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<List<TeacherCourseEvaluate>>>(){});
     }
 }

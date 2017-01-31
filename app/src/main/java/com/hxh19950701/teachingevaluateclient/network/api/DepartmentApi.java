@@ -29,31 +29,31 @@ public class DepartmentApi {
     public static HttpHandler<String> getDepartmentList(ServiceCallback<List<Department>> callBack) {
         String action = "getDepartmentList";
         RequestParams requestParams = NetClient.buildRequestParams(action);
-        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<List<Department>>>(){}.getType());
+        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<List<Department>>>(){});
     }
 
     public static HttpHandler<String> getSubjectList(ServiceCallback<List<Subject>> callBack) {
         String action = "getSubjectList";
         RequestParams requestParams = NetClient.buildRequestParams(action);
-        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<Subject>>(){}.getType());
+        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<List<Subject>>>(){});
     }
 
     public static HttpHandler<String> getSubjectListByDepartment(int id, ServiceCallback<List<Subject>> callBack) {
         String action = "getSubjectListByDepartment";
         RequestParams requestParams = NetClient.buildRequestParams(action, "id", id + "");
-        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<Subject>>(){}.getType());
+        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<List<Subject>>>(){});
     }
 
     public static HttpHandler<String> getClazzList(ServiceCallback<List<Clazz>> callBack) {
         String action = "getClazzList";
         RequestParams requestParams = NetClient.buildRequestParams(action);
-        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<List<Clazz>>>(){}.getType());
+        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<List<Clazz>>>(){});
     }
 
     public static HttpHandler<String> getClazzListBySubject(int id, ServiceCallback<List<Clazz>> callBack) {
         String action = "getClazzListBySubject";
         RequestParams requestParams = NetClient.buildRequestParams(action, "id", id + "");
-        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<List<Clazz>>>(){}.getType());
+        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<List<Clazz>>>(){});
     }
 
     public static ResponseStream getClazzListSync() throws HttpException {

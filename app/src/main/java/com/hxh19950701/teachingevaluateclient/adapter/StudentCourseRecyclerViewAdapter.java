@@ -1,7 +1,6 @@
 package com.hxh19950701.teachingevaluateclient.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -10,8 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.hxh19950701.teachingevaluateclient.R;
-import com.hxh19950701.teachingevaluateclient.activity.StudentEvaluateActivity;
-import com.hxh19950701.teachingevaluateclient.bean.service.Course;
+import com.hxh19950701.teachingevaluateclient.activity.EvaluateActivity;
 import com.hxh19950701.teachingevaluateclient.bean.service.StudentCourseInfo;
 import com.hxh19950701.teachingevaluateclient.constant.Constant;
 import com.hxh19950701.teachingevaluateclient.utils.CourseUtils;
@@ -52,7 +50,7 @@ public class StudentCourseRecyclerViewAdapter extends RecyclerView.Adapter<Stude
         private TextView tvComment;
         private TextView tvReply;
 
-        private Course course;
+        private StudentCourseInfo data;
 
         public ContentViewHolder(View itemView) {
             super(itemView);
@@ -66,12 +64,12 @@ public class StudentCourseRecyclerViewAdapter extends RecyclerView.Adapter<Stude
         }
 
         public void bindData(StudentCourseInfo data) {
-            this.course = data.getCourse();
-            tvCourse.setText(course.getName());
-            tvTeacher.setText(course.getTeacher().getName());
+            this.data = data;
+            tvCourse.setText(data.getCourse().getName());
+            tvTeacher.setText(data.getCourse().getTeacher().getName());
             tvScore.setVisibility(data.getScore() >= 0 ? View.VISIBLE : View.GONE);
             tvScore.setText(data.getScore() + "");
-            tvTime.setText(CourseUtils.formatCourseTime(course.getYear(), course.getTerm()));
+            tvTime.setText(CourseUtils.formatCourseTime(data.getCourse().getYear(), data.getCourse().getTerm()));
             tvComment.setVisibility(TextUtils.isEmpty(data.getComment()) ? View.GONE : View.VISIBLE);
             tvComment.setText("你：" + data.getComment());
             tvReply.setVisibility(TextUtils.isEmpty(data.getReply()) ? View.GONE : View.VISIBLE);
@@ -81,10 +79,9 @@ public class StudentCourseRecyclerViewAdapter extends RecyclerView.Adapter<Stude
         @Override
         public void onClick(View v) {
             Context context = itemView.getContext();
-            int courseId = course.getId();
-            Intent intent = new Intent(context, StudentEvaluateActivity.class);
-            intent.putExtra(Constant.KEY_COURSE_ID, courseId);
-            context.startActivity(intent);
+            int courseId = data.getCourse().getId();
+            boolean isCommitted = data.getScore() >= 0.0f;
+            context.startActivity(EvaluateActivity.newIntent(context, courseId, Constant.IDENTITY_STUDENT, isCommitted));
         }
     }
 }

@@ -23,36 +23,36 @@ public class UserApi {
     public static HttpHandler<String> hasExist(String username, ServiceCallback<Boolean> callBack) {
         String action = "hasExist";
         RequestParams requestParams = NetClient.buildRequestParams(action, "username", username);
-        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<Boolean>>(){}.getType());
+        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<Boolean>>(){});
     }
 
     public static HttpHandler<String> register(String username, String password, ServiceCallback<User> callBack) {
         String action = "register";
         RequestParams requestParams = NetClient.buildRequestParams(action, "username", username, "password", password);
-        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<User>>(){}.getType());
+        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<User>>(){});
     }
 
     public static HttpHandler<String> registerStudent(String username, String password, ServiceCallback<User> callBack) {
         String action = "registerStudent";
         RequestParams requestParams = NetClient.buildRequestParams(action, "username", username, "password", password);
-        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<User>>(){}.getType());
+        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<User>>(){});
     }
 
     public static HttpHandler<String> registerTeacher(String username, String password, ServiceCallback<User> callBack) {
         String action = "registerTeacher";
         RequestParams requestParams = NetClient.buildRequestParams(action, "username", username, "password", password);
-        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<User>>(){}.getType());
+        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<User>>(){});
     }
 
     public static HttpHandler<String> login(String username, String password, ServiceCallback<User> callBack) {
         String action = "login";
         RequestParams requestParams = NetClient.buildRequestParams(action, "username", username, "password", password);
-        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<User>>(){}.getType());
+        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<User>>(){});
     }
 
     public static HttpHandler<String> logout(ServiceCallback<User> callBack) {
         String action = "logout";
         RequestParams requestParams = NetClient.buildRequestParams(action);
-        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<User>>(){}.getType());
+        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<User>>(){});
     }
 }

@@ -23,18 +23,18 @@ public class TeacherApi {
     public static HttpHandler<String> hasExist(String teacherId, ServiceCallback<Boolean> callBack) {
         String action = "hasExist";
         RequestParams requestParams = NetClient.buildRequestParams(action, "teacherId", teacherId);
-        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<Boolean>>(){}.getType());
+        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<Boolean>>(){});
     }
 
     public static HttpHandler<String> register(String teacherId, String name, int sex, ServiceCallback<Teacher> callBack) {
         String action = "register";
         RequestParams requestParams = NetClient.buildRequestParams(action, "teacherId", teacherId, "name", name, "sex", sex + "");
-        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<Teacher>>(){}.getType());
+        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<Teacher>>(){});
     }
 
     public static HttpHandler<String> currentTeacher(ServiceCallback<Teacher> callBack) {
         String action = "currentTeacher";
         RequestParams requestParams = NetClient.buildRequestParams(action);
-        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<Teacher>>(){}.getType());
+        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<Teacher>>(){});
     }
 }
