@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.hxh19950701.teachingevaluateclient.base.ResponseData;
 import com.hxh19950701.teachingevaluateclient.bean.service.User;
-import com.hxh19950701.teachingevaluateclient.constant.Constant;
+import com.hxh19950701.teachingevaluateclient.common.Constant;
 import com.hxh19950701.teachingevaluateclient.network.ServiceCallback;
 import com.hxh19950701.teachingevaluateclient.network.api.UserApi;
 import com.hxh19950701.teachingevaluateclient.utils.IntentUtils;

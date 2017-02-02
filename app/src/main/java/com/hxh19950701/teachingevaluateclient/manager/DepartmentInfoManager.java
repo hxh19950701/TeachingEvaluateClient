@@ -4,8 +4,6 @@ import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.hxh19950701.teachingevaluateclient.base.ResponseData;
 import com.hxh19950701.teachingevaluateclient.bean.service.Clazz;
@@ -13,6 +11,7 @@ import com.hxh19950701.teachingevaluateclient.bean.service.Department;
 import com.hxh19950701.teachingevaluateclient.bean.service.Subject;
 import com.hxh19950701.teachingevaluateclient.interfaces.ManagerInitializeListener;
 import com.hxh19950701.teachingevaluateclient.network.api.DepartmentApi;
+import com.hxh19950701.teachingevaluateclient.utils.GsonUtils;
 import com.hxh19950701.teachingevaluateclient.utils.IdRecordUtils;
 
 import java.io.FileInputStream;
@@ -24,10 +23,10 @@ import java.util.List;
 
 public class DepartmentInfoManager {
 
-    private static final String TAG = EvaluateTargetManager.class.getSimpleName();
+    private static final String TAG = DepartmentInfoManager.class.getSimpleName();
 
     private static final String KEY = "4C14A42286964298654B147CFF57EA9E";
-    private static final String FILE_NAME = "EvaluateTarget.json";
+    private static final String FILE_NAME = "DepartmentInfo.json";
 
     private DepartmentInfoManager() {
         throw new UnsupportedOperationException("This class cannot be instantiated, and its methods must be called directly.");
@@ -44,7 +43,6 @@ public class DepartmentInfoManager {
 
         private static final Handler HANDLER = new Handler();
         private static final Type TYPE = new TypeToken<ResponseData<List<Clazz>>>() {}.getType();
-        private static final Gson GSON = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 
         private Context context = null;
 
@@ -69,7 +67,7 @@ public class DepartmentInfoManager {
         private Exception update() {
             try {
                 String jsonString = DepartmentApi.getClazzListSync().readString();
-                ResponseData<List<Clazz>> response = GSON.fromJson(jsonString, TYPE);
+                ResponseData<List<Clazz>> response = GsonUtils.fromJson(jsonString, TYPE);
                 if (response.getData() == null) {
                     return null;
                 } else {
@@ -121,7 +119,7 @@ public class DepartmentInfoManager {
         public Exception initFromLocal() {
             try {
                 String jsonString = getLocalJson();
-                ResponseData<List<Clazz>> response = GSON.fromJson(jsonString, TYPE);
+                ResponseData<List<Clazz>> response = GsonUtils.fromJson(jsonString, TYPE);
                 initData(response.getData());
                 return null;
             } catch (Exception e) {

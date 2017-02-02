@@ -21,7 +21,7 @@ import com.hxh19950701.teachingevaluateclient.bean.service.Course;
 import com.hxh19950701.teachingevaluateclient.bean.service.StudentCourseEvaluate;
 import com.hxh19950701.teachingevaluateclient.bean.service.StudentCourseInfo;
 import com.hxh19950701.teachingevaluateclient.bean.service.TeacherCourseEvaluate;
-import com.hxh19950701.teachingevaluateclient.constant.Constant;
+import com.hxh19950701.teachingevaluateclient.common.Constant;
 import com.hxh19950701.teachingevaluateclient.fragment.FirstTargetFragment;
 import com.hxh19950701.teachingevaluateclient.manager.EvaluateTargetManager;
 import com.hxh19950701.teachingevaluateclient.network.SimpleServiceCallback;

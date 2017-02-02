@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.hxh19950701.teachingevaluateclient.R;
 import com.hxh19950701.teachingevaluateclient.bean.service.Course;
-import com.hxh19950701.teachingevaluateclient.constant.Constant;
+import com.hxh19950701.teachingevaluateclient.common.Constant;
 
 import java.util.List;
 

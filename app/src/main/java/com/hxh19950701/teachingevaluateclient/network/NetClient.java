@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.google.gson.reflect.TypeToken;
 import com.hxh19950701.teachingevaluateclient.base.ResponseData;
-import com.hxh19950701.teachingevaluateclient.constant.Constant;
+import com.hxh19950701.teachingevaluateclient.common.Constant;
 import com.hxh19950701.teachingevaluateclient.utils.PrefUtils;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.exception.HttpException;
@@ -16,8 +16,6 @@ import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.lidroid.xutils.http.client.HttpRequest;
 
 import org.apache.http.Header;
-
-import java.lang.reflect.Type;
 
 public class NetClient {
 
@@ -32,8 +30,8 @@ public class NetClient {
                                                          String url,
                                                          RequestParams requestParams,
                                                          ServiceCallback<Data> serviceCallback,
-                                                         Type type) {
-        RequestCallBack<String> callBack = new RequestCallBackBuilder<Data>(type, serviceCallback);
+                                                         TypeToken<? extends ResponseData<? extends Data>> typeToken) {
+        RequestCallBack<String> callBack = new RequestCallBackBuilder<Data>(typeToken.getType(), serviceCallback);
         return HTTP_UTILS.send(httpMethod, url, requestParams, callBack);
     }
 
@@ -44,15 +42,15 @@ public class NetClient {
     public static <Data> HttpHandler<String> sendGetRequest(String url,
                                                             RequestParams requestParams,
                                                             final ServiceCallback<Data> serviceCallback,
-                                                            TypeToken<? extends ResponseData<? extends Data>> type) {
-        return sendRequest(HttpRequest.HttpMethod.GET, url, requestParams, serviceCallback, type.getType());
+                                                            TypeToken<? extends ResponseData<? extends Data>> typeToken) {
+        return sendRequest(HttpRequest.HttpMethod.GET, url, requestParams, serviceCallback, typeToken);
     }
 
     public static <Data> HttpHandler<String> sendPostRequest(String url,
                                                              RequestParams requestParams,
                                                              ServiceCallback<Data> serviceCallback,
-                                                             TypeToken<? extends ResponseData<? extends Data>> type) {
-        return sendRequest(HttpRequest.HttpMethod.POST, url, requestParams, serviceCallback, type.getType());
+                                                             TypeToken<? extends ResponseData<? extends Data>> typeToken) {
+        return sendRequest(HttpRequest.HttpMethod.POST, url, requestParams, serviceCallback, typeToken);
     }
 
     public static ResponseStream sendGetRequestSync(String url, RequestParams requestParams) throws HttpException {

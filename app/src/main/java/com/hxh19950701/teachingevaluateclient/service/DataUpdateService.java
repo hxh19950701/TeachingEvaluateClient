@@ -13,18 +13,17 @@ import com.hxh19950701.teachingevaluateclient.receiver.DataUpdateReceiver;
 public class DataUpdateService extends Service {
 
     private BroadcastReceiver receiver = new DataUpdateReceiver();
-    private IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
 
     @Override
     public void onCreate() {
         super.onCreate();
-        registerReceiver(receiver, filter);
+        registerReceiver(receiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        throw new UnsupportedOperationException("this service can not be bind");
     }
 
     @Override

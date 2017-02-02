@@ -14,13 +14,9 @@ import org.greenrobot.eventbus.EventBus;
 public abstract class BaseActivity extends AppCompatActivity implements View.OnClickListener {
 
     protected abstract void initView();
-
     protected abstract void initListener();
-
     protected abstract void initData();
-
     public abstract void onClick(View view);
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

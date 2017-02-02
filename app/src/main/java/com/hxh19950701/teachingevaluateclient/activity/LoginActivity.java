@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -20,7 +21,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -29,7 +29,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.hxh19950701.teachingevaluateclient.R;
 import com.hxh19950701.teachingevaluateclient.base.BaseActivity;
 import com.hxh19950701.teachingevaluateclient.bean.service.User;
-import com.hxh19950701.teachingevaluateclient.constant.Constant;
+import com.hxh19950701.teachingevaluateclient.common.Constant;
 import com.hxh19950701.teachingevaluateclient.event.ServerUrlChangedEvent;
 import com.hxh19950701.teachingevaluateclient.event.UserLoginSuccessEvent;
 import com.hxh19950701.teachingevaluateclient.event.UserRegisterCompleteEvent;
@@ -49,22 +49,22 @@ import org.greenrobot.eventbus.ThreadMode;
 
 public class LoginActivity extends BaseActivity implements CompoundButton.OnCheckedChangeListener, TextView.OnEditorActionListener {
 
-    protected FloatingActionButton fabRegisterStudent;
-    protected EditText etUsername;
-    protected EditText etPassword;
-    protected CoordinatorLayout clLogin;
-    protected Button btnLogin;
-    protected CheckBox cbAutoLogin;
-    protected CheckBox cbRememberPassword;
-    protected LinearLayout llLogin;
+    private FloatingActionButton fabRegisterStudent;
+    private TextInputLayout tilUsername;
+    private TextInputLayout tilPassword;
+    private CoordinatorLayout clLogin;
+    private Button btnLogin;
+    private CheckBox cbAutoLogin;
+    private CheckBox cbRememberPassword;
+    private LinearLayout llLogin;
 
-    protected boolean isMD5;
+    private boolean isMD5;
 
     private TextWatcher usernameWatcher = new TextWatcherImpl() {
         @Override
         public void afterTextChanged(Editable s) {
             super.afterTextChanged(s);
-            etPassword.setText("");
+            tilUsername.getEditText().setText("");
         }
     };
 
@@ -72,9 +72,9 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             super.beforeTextChanged(s, start, count, after);
-            if (isMD5 && etPassword.hasFocus()) {
+            if (isMD5 && tilPassword.getEditText().hasFocus()) {
                 isMD5 = false;
-                etPassword.setText("");
+                tilPassword.getEditText().setText("");
             }
         }
     };
@@ -83,8 +83,8 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
     public void initView() {
         setContentView(R.layout.activity_login);
         fabRegisterStudent = (FloatingActionButton) findViewById(R.id.fabRegisterStudent);
-        etUsername = (EditText) findViewById(R.id.etUsername);
-        etPassword = (EditText) findViewById(R.id.etPassword);
+        tilUsername = (TextInputLayout) findViewById(R.id.tilUsername);
+        tilPassword = (TextInputLayout) findViewById(R.id.tilPassword);
         clLogin = (CoordinatorLayout) findViewById(R.id.clLogin);
         llLogin = (LinearLayout) findViewById(R.id.llLogin);
         btnLogin = (Button) findViewById(R.id.btnLogin);
@@ -97,9 +97,9 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
         fabRegisterStudent.setOnClickListener(this);
         btnLogin.setOnClickListener(this);
         cbAutoLogin.setOnCheckedChangeListener(this);
-        etUsername.addTextChangedListener(usernameWatcher);
-        etPassword.addTextChangedListener(passwordWatcher);
-        etPassword.setOnEditorActionListener(this);
+        tilUsername.getEditText().addTextChangedListener(usernameWatcher);
+        tilPassword.getEditText().addTextChangedListener(passwordWatcher);
+        tilPassword.getEditText().setOnEditorActionListener(this);
     }
 
     @Override
@@ -112,8 +112,8 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
 
     private void initLoginInfo() {
         isMD5 = true;
-        etUsername.setText(PrefUtils.getString(Constant.KEY_USERNAME, ""));
-        etPassword.setText(PrefUtils.getString(Constant.KEY_PASSWORD, ""));
+        tilUsername.getEditText().setText(PrefUtils.getString(Constant.KEY_USERNAME, ""));
+        tilPassword.getEditText().setText(PrefUtils.getString(Constant.KEY_PASSWORD, ""));
         cbRememberPassword.setChecked(PrefUtils.getBoolean(Constant.KEY_REMEMBER_PASSWORD, false));
         cbAutoLogin.setChecked(PrefUtils.getBoolean(Constant.KEY_AUTO_LOGIN, false));
     }
@@ -139,8 +139,8 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
 
     @Subscribe(sticky = false, threadMode = ThreadMode.MAIN)
     public void onUserRegisterComplete(UserRegisterCompleteEvent event) {
-        etUsername.setText(event.getUsername());
-        etPassword.setText(event.getPassword());
+        tilUsername.getEditText().setText(event.getUsername());
+        tilPassword.getEditText().setText(event.getPassword());
         cbRememberPassword.setChecked(true);
         isMD5 = true;
     }
@@ -178,13 +178,13 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
 
     private void startLogin() {
         //判断用户名及密码是否已填写
-        if (TextUtils.isEmpty(etUsername.getText().toString()) || TextUtils.isEmpty(etPassword.getText().toString())) {
+        if (tilUsername.getEditText().getText().length() == 0 || tilPassword.getEditText().getText().length() == 0) {
             SnackBarUtils.showLong(clLogin, R.string.fillInUsernameAndPassword);
             return;
         }
         //获取用户名及密码MD5
-        final String username = etUsername.getText().toString();
-        final String password = isMD5 ? etPassword.getText().toString() : MD5Utils.encipher(etPassword.getText().toString());
+        final String username = tilUsername.getEditText().getText().toString();
+        final String password = isMD5 ? tilPassword.getEditText().getText().toString() : MD5Utils.encipher(tilPassword.getEditText().getText().toString());
         final MaterialDialog dialog = new MaterialDialog.Builder(this).title(R.string.loggingIn).content(R.string.wait)
                 .progress(true, 0).progressIndeterminateStyle(true).cancelable(true).build();
         //开始登录
@@ -226,7 +226,7 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
             case Constant.IDENTITY_STUDENT:
             case Constant.IDENTITY_TEACHER:
             case Constant.IDENTITY_ADMINISTRATOR:
-                IntentUtils.startActivity(this, Constant.IDENTITY_ACTIVITY[identity], Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                IntentUtils.startActivity(this, Constant.IDENTITY_ACTIVITY[identity], Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 break;
             default:
                 SnackBarUtils.showSystemError(clLogin);
@@ -242,7 +242,7 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
                 break;
             case Constant.ERROR_INCORRECT_PASSWORD:
             case Constant.ERROR_INVALID_PASSWORD:
-                etPassword.setText("");
+                tilPassword.getEditText().setText("");
                 SnackBarUtils.showLong(clLogin, R.string.errorPassword);
                 break;
             default:

@@ -2,13 +2,14 @@ package com.hxh19950701.teachingevaluateclient.application;
 
 import android.app.Application;
 
-import com.hxh19950701.teachingevaluateclient.constant.Constant;
+import com.hxh19950701.teachingevaluateclient.common.Constant;
 import com.hxh19950701.teachingevaluateclient.event.ServerUrlChangedEvent;
 import com.hxh19950701.teachingevaluateclient.event.UserLoginSuccessEvent;
 import com.hxh19950701.teachingevaluateclient.interfaces.ManagerInitializeListener;
-import com.hxh19950701.teachingevaluateclient.network.NetService;
 import com.hxh19950701.teachingevaluateclient.manager.DepartmentInfoManager;
 import com.hxh19950701.teachingevaluateclient.manager.EvaluateTargetManager;
+import com.hxh19950701.teachingevaluateclient.manager.EventManager;
+import com.hxh19950701.teachingevaluateclient.network.NetService;
 import com.hxh19950701.teachingevaluateclient.service.DataUpdateService;
 import com.hxh19950701.teachingevaluateclient.utils.DisplayUtils;
 import com.hxh19950701.teachingevaluateclient.utils.InputMethodUtils;
@@ -16,13 +17,12 @@ import com.hxh19950701.teachingevaluateclient.utils.IntentUtils;
 import com.hxh19950701.teachingevaluateclient.utils.PrefUtils;
 import com.hxh19950701.teachingevaluateclient.utils.ToastUtils;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 public class MainApplication extends Application {
 
-    private ManagerInitializeListener evaluateTargetManagerInitializeListener = new ManagerInitializeListener() {
+    private final ManagerInitializeListener evaluateTargetManagerInitializeListener = new ManagerInitializeListener() {
 
         @Override
         public void onSuccess(boolean fromCache) {
@@ -38,7 +38,7 @@ public class MainApplication extends Application {
 
     };
 
-    private ManagerInitializeListener departmentInfoManagerInitializeListener = new ManagerInitializeListener() {
+    private final ManagerInitializeListener departmentInfoManagerInitializeListener = new ManagerInitializeListener() {
 
         @Override
         public void onSuccess(boolean fromCache) {
@@ -60,7 +60,7 @@ public class MainApplication extends Application {
         initServerURL();
         initManager();
         startServices();
-        EventBus.getDefault().register(this);
+        EventManager.register(this);
     }
 
     public void initUtils() {
@@ -92,7 +92,7 @@ public class MainApplication extends Application {
     public void onTerminate() {
         super.onTerminate();
         stopServices();
-        EventBus.getDefault().unregister(this);
+        EventManager.unregister(this);
     }
 
     @Subscribe(sticky = false, threadMode = ThreadMode.BACKGROUND)

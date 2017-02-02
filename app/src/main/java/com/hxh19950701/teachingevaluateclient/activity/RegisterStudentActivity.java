@@ -21,7 +21,7 @@ import com.hxh19950701.teachingevaluateclient.bean.service.Clazz;
 import com.hxh19950701.teachingevaluateclient.bean.service.Department;
 import com.hxh19950701.teachingevaluateclient.bean.service.Student;
 import com.hxh19950701.teachingevaluateclient.bean.service.Subject;
-import com.hxh19950701.teachingevaluateclient.constant.Constant;
+import com.hxh19950701.teachingevaluateclient.common.Constant;
 import com.hxh19950701.teachingevaluateclient.impl.TextWatcherImpl;
 import com.hxh19950701.teachingevaluateclient.network.NetServer;
 import com.hxh19950701.teachingevaluateclient.network.SimpleServiceCallback;

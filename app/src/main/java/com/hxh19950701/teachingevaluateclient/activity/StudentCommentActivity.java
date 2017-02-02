@@ -6,7 +6,7 @@ import android.view.View;
 
 import com.hxh19950701.teachingevaluateclient.R;
 import com.hxh19950701.teachingevaluateclient.base.BaseActivity;
-import com.hxh19950701.teachingevaluateclient.constant.Constant;
+import com.hxh19950701.teachingevaluateclient.common.Constant;
 
 public class StudentCommentActivity extends BaseActivity {
 

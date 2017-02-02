@@ -1,4 +1,4 @@
-package com.hxh19950701.teachingevaluateclient.constant;
+package com.hxh19950701.teachingevaluateclient.common;
 
 import com.hxh19950701.teachingevaluateclient.activity.AdministratorMainUiActivity;
 import com.hxh19950701.teachingevaluateclient.activity.StudentMainUiActivity;

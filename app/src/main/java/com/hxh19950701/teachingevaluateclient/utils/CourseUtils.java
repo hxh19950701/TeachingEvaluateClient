@@ -1,6 +1,6 @@
 package com.hxh19950701.teachingevaluateclient.utils;
 
-import com.hxh19950701.teachingevaluateclient.constant.Constant;
+import com.hxh19950701.teachingevaluateclient.common.Constant;
 
 public class CourseUtils {
 

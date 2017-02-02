@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.hxh19950701.teachingevaluateclient.R;
 import com.hxh19950701.teachingevaluateclient.activity.EvaluateActivity;
 import com.hxh19950701.teachingevaluateclient.bean.service.StudentCourseInfo;
-import com.hxh19950701.teachingevaluateclient.constant.Constant;
+import com.hxh19950701.teachingevaluateclient.common.Constant;
 import com.hxh19950701.teachingevaluateclient.utils.CourseUtils;
 
 import java.util.List;

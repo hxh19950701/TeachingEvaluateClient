@@ -10,7 +10,7 @@ import java.lang.reflect.Type;
 
 public class RequestCallBackBuilder<Data> extends RequestCallBack<String> {
 
-    public static final String TAG = RequestCallBackBuilder.class.getSimpleName();
+    private static final String TAG = RequestCallBackBuilder.class.getSimpleName();
 
     private ServiceCallback<Data> serviceCallback;
     private Type type;

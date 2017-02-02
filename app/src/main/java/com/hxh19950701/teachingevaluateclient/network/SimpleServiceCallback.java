@@ -3,7 +3,7 @@ package com.hxh19950701.teachingevaluateclient.network;
 import android.view.View;
 
 import com.hxh19950701.teachingevaluateclient.base.ResponseData;
-import com.hxh19950701.teachingevaluateclient.constant.Constant;
+import com.hxh19950701.teachingevaluateclient.common.Constant;
 import com.hxh19950701.teachingevaluateclient.utils.SnackBarUtils;
 import com.lidroid.xutils.exception.HttpException;
 

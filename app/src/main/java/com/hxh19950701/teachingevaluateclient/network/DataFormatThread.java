@@ -1,9 +1,8 @@
 package com.hxh19950701.teachingevaluateclient.network;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
 import com.hxh19950701.teachingevaluateclient.base.ResponseData;
+import com.hxh19950701.teachingevaluateclient.utils.GsonUtils;
 
 import java.lang.reflect.Type;
 
@@ -16,7 +15,6 @@ public class DataFormatThread<Data> extends Thread {
     }
 
     private static final String TAG = DataFormatThread.class.getSimpleName();
-    private static final Gson GSON = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 
     private String jsonString;
     private Type type;
@@ -38,14 +36,12 @@ public class DataFormatThread<Data> extends Thread {
     @Override
     public void run() {
         onStart();
-        ResponseData<Data> data = null;
         try {
-            data = GSON.fromJson(jsonString, type);
+            ResponseData<Data> data = GsonUtils.fromJson(jsonString, type);
+            onComplete(data);
         } catch (JsonParseException e) {
             onException(e);
-            return;
         }
-        onComplete(data);
     }
 
     private void onStart() {
