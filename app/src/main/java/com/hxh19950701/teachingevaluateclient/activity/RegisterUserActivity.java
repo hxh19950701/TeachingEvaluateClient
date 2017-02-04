@@ -154,7 +154,7 @@ public class RegisterUserActivity extends BaseActivity {
             }
 
             @Override
-            public void onGetDataSuccess(Boolean isExist) {
+            public void onGetDataSuccessful(Boolean isExist) {
                 existence.put(username, isExist);
                 setupUsernameExistence(isExist);
             }
@@ -165,12 +165,12 @@ public class RegisterUserActivity extends BaseActivity {
             }
 
             @Override
-            public void onGetDataFailure(int code, String msg) {
+            public void onGetDataFailed(int code, String msg) {
                 tilUsername.setError("我们无法检测该用户名是否可用。");
             }
 
             @Override
-            public void onException(String s) {
+            public void onJsonSyntaxException(String s) {
                 tilUsername.setError("我们无法检测该用户名是否可用。");
             }
         });
@@ -178,24 +178,14 @@ public class RegisterUserActivity extends BaseActivity {
 
     protected void register() {
         final MaterialDialog dialog = new MaterialDialog.Builder(this).title("正在注册").content("请稍后...")
-                .cancelable(false).progressIndeterminateStyle(false).build();
+                .cancelable(false).progressIndeterminateStyle(false).progress(true, 0).build();
         final String username = tilUsername.getEditText().getText().toString();
         final String password = MD5Utils.encipher(tilPassword.getEditText().getText().toString());
 
-        UserApi.registerStudent(username, password, new SimpleServiceCallback<User>(clRegister) {
+        UserApi.registerStudent(username, password, new SimpleServiceCallback<User>(clRegister,dialog) {
 
             @Override
-            public void onStart() {
-                dialog.show();
-            }
-
-            @Override
-            public void onAfter() {
-                dialog.dismiss();
-            }
-
-            @Override
-            public void onGetDataSuccess(User user) {
+            public void onGetDataSuccessful(User user) {
                 EventManager.postEvent(new UserRegisterCompleteEvent(username, password));
                 finish();
             }

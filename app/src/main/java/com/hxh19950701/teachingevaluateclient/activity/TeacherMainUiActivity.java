@@ -73,7 +73,7 @@ public class TeacherMainUiActivity extends BaseMainUiActivity implements SwipeRe
     private void initCourse() {
         CourseApi.getTeacherCourseList(new SimpleServiceCallback<List<Course>>(clPersonCenter) {
             @Override
-            public void onGetDataSuccess(List<Course> courses) {
+            public void onGetDataSuccessful(List<Course> courses) {
                 rvCourse.setAdapter(new TeacherCourseRecyclerViewAdapter(courses));
             }
         });

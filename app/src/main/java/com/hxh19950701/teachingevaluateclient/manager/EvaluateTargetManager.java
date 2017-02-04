@@ -59,7 +59,8 @@ public class EvaluateTargetManager {
     private static class Initializer extends Thread implements ManagerInitializeListener {
 
         private static final Handler HANDLER = new Handler();
-        private static final Type TYPE = new TypeToken<ResponseData<List<EvaluateThirdTarget>>>() {}.getType();
+        private static final Type TYPE = new TypeToken<ResponseData<List<EvaluateThirdTarget>>>() {
+        }.getType();
 
         private Context context = null;
 
@@ -186,8 +187,12 @@ public class EvaluateTargetManager {
     }
 
     public static void init(Context context) {
-        INITIALIZER.context = context;
-        INITIALIZER.start();
+        if (!INITIALIZER.isAlive()) {
+            INITIALIZER.context = context;
+            INITIALIZER.start();
+        } else {
+            Log.w(TAG, "正在进行初始化，此次初始化请求将被忽略。");
+        }
     }
 
     public static void setInitializeListener(ManagerInitializeListener initializeListener) {

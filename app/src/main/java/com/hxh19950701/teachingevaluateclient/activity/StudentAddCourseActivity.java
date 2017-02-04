@@ -77,29 +77,17 @@ public class StudentAddCourseActivity extends BaseActivity {
     }
 
     private void addCourse() {
-        final MaterialDialog dialog = new MaterialDialog.Builder(this)
+        MaterialDialog dialog = new MaterialDialog.Builder(this)
                 .title("正在添加").content("请稍后...").cancelable(false)
                 .progress(true, 0).progressIndeterminateStyle(false).build();
         int courseId = Integer.valueOf(tilClassId.getEditText().getText().toString());
         String password = MD5Utils.encipher(tilClassPassword.getEditText().getText().toString());
-        CourseApi.addCourse(courseId, password, new SimpleServiceCallback<StudentCourseInfo>(clAddCourse) {
-
+        CourseApi.addCourse(courseId, password, new SimpleServiceCallback<StudentCourseInfo>(clAddCourse, dialog) {
             @Override
-            public void onStart() {
-                dialog.show();
-            }
-
-            @Override
-            public void onAfter() {
-                dialog.dismiss();
-            }
-
-            @Override
-            public void onGetDataSuccess(StudentCourseInfo info) {
+            public void onGetDataSuccessful(StudentCourseInfo info) {
                 EventManager.postEvent(new StudentAddCourseSuccessfullyEvent(info));
                 showAddCourseSuccessDialog(info.getCourse());
             }
-
         });
     }
 

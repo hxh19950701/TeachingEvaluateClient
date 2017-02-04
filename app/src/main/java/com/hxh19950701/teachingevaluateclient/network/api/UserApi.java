@@ -55,4 +55,10 @@ public class UserApi {
         RequestParams requestParams = NetClient.buildRequestParams(action);
         return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<User>>(){});
     }
+
+    public static HttpHandler<String> modifyPassword(String currentPassword, String newPassword, ServiceCallback<User> callBack) {
+        String action = "modifyPassword";
+        RequestParams requestParams = NetClient.buildRequestParams(action, "password", currentPassword, "newPassword", newPassword);
+        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<User>>() {});
+    }
 }

@@ -25,26 +25,15 @@ public class SplashActivity extends AppCompatActivity {
     private static final int LOGIN_FAIL_DUE_SERVER_ERROR = 6;
     private static final int LOGIN_FAIL_DUE_NETWORK_FAILURE = 7;
     private static final int LOGIN_FAIL_DUE_UNKNOWN = 8;
+    private static final long SPLASH_DURATION = 1500L;
 
-    private static final long SPLASH_DURATION = 2000L;
-    private static final long DELAY_FINISH_DURATION = 300L;
-
-    private final Thread splashTimerThread = new Thread() {
+    private final Thread splashTimer = new Thread() {
         @Override
         public void run() {
             super.run();
             SystemClock.sleep(SPLASH_DURATION);
             isTimeUp = true;
             requireDismiss();
-        }
-    };
-
-    private final Thread delayFinishThread = new Thread() {
-        @Override
-        public void run() {
-            super.run();
-            SystemClock.sleep(DELAY_FINISH_DURATION);
-            finish();
         }
     };
 
@@ -55,7 +44,7 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        splashTimerThread.start();
+        splashTimer.start();
         if (PrefUtils.getBoolean(Constant.KEY_AUTO_LOGIN, false)) {
             loginAuto();
         } else {
@@ -81,14 +70,14 @@ public class SplashActivity extends AppCompatActivity {
                         identity = data.getData().getIdentity();
                         loginStatus = LOGIN_SUCCESS;
                         break;
-                    case Constant.ERROR_NO_SUCH_USERNAME:
-                    case Constant.ERROR_INVALID_USERNAME:
+                    case Constant.CODE_NO_SUCH_USERNAME:
+                    case Constant.CODE_INVALID_USERNAME:
                         loginStatus = LOGIN_FAIL_DUE_WRONG_USERNAME;
                         PrefUtils.remove(Constant.KEY_USERNAME);
                         PrefUtils.remove(Constant.KEY_PASSWORD);
                         break;
-                    case Constant.ERROR_INCORRECT_PASSWORD:
-                    case Constant.ERROR_INVALID_PASSWORD:
+                    case Constant.CODE_INCORRECT_PASSWORD:
+                    case Constant.CODE_INVALID_PASSWORD:
                         loginStatus = LOGIN_FAIL_DUE_WRONG_PASSWORD;
                         PrefUtils.remove(Constant.KEY_PASSWORD);
                         break;
@@ -99,7 +88,7 @@ public class SplashActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onException(String s) {
+            public void onJsonSyntaxException(String s) {
                 loginStatus = LOGIN_FAIL_DUE_SERVER_ERROR;
             }
 

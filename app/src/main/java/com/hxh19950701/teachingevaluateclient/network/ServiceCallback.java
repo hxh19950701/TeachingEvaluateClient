@@ -14,7 +14,7 @@ public abstract class ServiceCallback<Data> {
     public void onFailure(HttpException e, String s) {
     }
 
-    public void onException(String s) {
+    public void onJsonSyntaxException(String s) {
     }
 
     public void onAfter() {

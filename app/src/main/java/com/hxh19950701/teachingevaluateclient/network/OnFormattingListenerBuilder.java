@@ -30,7 +30,7 @@ public class OnFormattingListenerBuilder<Data> implements DataFormatThread.OnFor
         handler.post(new Runnable() {
             @Override
             public void run() {
-                serviceCallback.onException(jsonString);
+                serviceCallback.onJsonSyntaxException(jsonString);
                 serviceCallback.onAfter();
             }
         });

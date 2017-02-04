@@ -10,6 +10,7 @@ import com.hxh19950701.teachingevaluateclient.activity.LoginActivity;
 import com.hxh19950701.teachingevaluateclient.activity.StudentMainUiActivity;
 import com.hxh19950701.teachingevaluateclient.activity.TeacherMainUiActivity;
 import com.hxh19950701.teachingevaluateclient.common.Constant;
+import com.hxh19950701.teachingevaluateclient.network.api.UserApi;
 
 public class ActivityUtils {
 
@@ -39,6 +40,7 @@ public class ActivityUtils {
 
     public static void exitApp(Activity activity, String msg) {
         PrefUtils.putBoolean(Constant.KEY_AUTO_LOGIN, false);
+        UserApi.logout(null);
         activity.startActivity(LoginActivity.newIntent(activity, msg).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
         activity.overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out);
     }

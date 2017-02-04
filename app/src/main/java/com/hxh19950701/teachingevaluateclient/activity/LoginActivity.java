@@ -35,10 +35,11 @@ import com.hxh19950701.teachingevaluateclient.event.ServerUrlChangedEvent;
 import com.hxh19950701.teachingevaluateclient.event.UserLoginSuccessfullyEvent;
 import com.hxh19950701.teachingevaluateclient.event.UserRegisterCompleteEvent;
 import com.hxh19950701.teachingevaluateclient.impl.TextWatcherImpl;
+import com.hxh19950701.teachingevaluateclient.manager.EventManager;
 import com.hxh19950701.teachingevaluateclient.network.SimpleServiceCallback;
 import com.hxh19950701.teachingevaluateclient.network.api.UserApi;
-import com.hxh19950701.teachingevaluateclient.utils.DisplayUtils;
 import com.hxh19950701.teachingevaluateclient.utils.ActivityUtils;
+import com.hxh19950701.teachingevaluateclient.utils.DisplayUtils;
 import com.hxh19950701.teachingevaluateclient.utils.IntentUtils;
 import com.hxh19950701.teachingevaluateclient.utils.MD5Utils;
 import com.hxh19950701.teachingevaluateclient.utils.PrefUtils;
@@ -196,26 +197,16 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
         final MaterialDialog dialog = new MaterialDialog.Builder(this).title(R.string.loggingIn).content(R.string.wait)
                 .progress(true, 0).progressIndeterminateStyle(true).cancelable(true).build();
         //开始登录
-        final HttpHandler httpHandler = UserApi.login(username, password, new SimpleServiceCallback<User>(clLogin) {
+        final HttpHandler httpHandler = UserApi.login(username, password, new SimpleServiceCallback<User>(clLogin, dialog) {
 
             @Override
-            public void onStart() {
-                dialog.show();
-            }
-
-            @Override
-            public void onAfter() {
-                dialog.dismiss();
-            }
-
-            @Override
-            public void onGetDataSuccess(User user) {
-                EventBus.getDefault().post(new UserLoginSuccessfullyEvent(username, password, cbRememberPassword.isChecked(), cbAutoLogin.isChecked()));
+            public void onGetDataSuccessful(User user) {
+                EventManager.postEvent(new UserLoginSuccessfullyEvent(username, password, cbRememberPassword.isChecked(), cbAutoLogin.isChecked()));
                 enterApp(user.getIdentity());
             }
 
             @Override
-            public void onGetDataFailure(int code, String msg) {
+            public void onGetDataFailed(int code, String msg) {
                 showErrorMsg(code);
             }
         });
@@ -239,12 +230,12 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
 
     private void showErrorMsg(int errorCode) {
         switch (errorCode) {
-            case Constant.ERROR_NO_SUCH_USERNAME:
-            case Constant.ERROR_INVALID_USERNAME:
+            case Constant.CODE_NO_SUCH_USERNAME:
+            case Constant.CODE_INVALID_USERNAME:
                 SnackBarUtils.showLong(clLogin, R.string.nonExistUsername);
                 break;
-            case Constant.ERROR_INCORRECT_PASSWORD:
-            case Constant.ERROR_INVALID_PASSWORD:
+            case Constant.CODE_INCORRECT_PASSWORD:
+            case Constant.CODE_INVALID_PASSWORD:
                 tilPassword.getEditText().setText("");
                 SnackBarUtils.showLong(clLogin, R.string.errorPassword);
                 break;

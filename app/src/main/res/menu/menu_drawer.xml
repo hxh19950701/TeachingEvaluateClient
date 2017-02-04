@@ -7,6 +7,10 @@
 		android:icon="@drawable/ic_border_color"
 		android:title="修改信息"/>
 	<item
+		android:id="@+id/action_modify_password"
+		android:icon="@drawable/ic_border_color"
+		android:title="修改密码"/>
+	<item
 		android:id="@+id/action_logout"
 		android:icon="@drawable/ic_exit"
 		android:title="@string/logout"/>

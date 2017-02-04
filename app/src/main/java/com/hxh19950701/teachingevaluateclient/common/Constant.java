@@ -20,10 +20,10 @@ public class Constant {
     public static final int SEX_FEMALE = 0;
 
     public static final int CODE_SUCCESS = 200;
-    public static final int ERROR_NO_SUCH_USERNAME = -101;
-    public static final int ERROR_INVALID_USERNAME = -103;
-    public static final int ERROR_INVALID_PASSWORD = -104;
-    public static final int ERROR_INCORRECT_PASSWORD = -102;
+    public static final int CODE_NO_SUCH_USERNAME = -101;
+    public static final int CODE_INVALID_USERNAME = -103;
+    public static final int CODE_INVALID_PASSWORD = -104;
+    public static final int CODE_INCORRECT_PASSWORD = -102;
 
     public static final String KEY_USERNAME = "username";
     public static final String KEY_PASSWORD = "password";

@@ -64,7 +64,7 @@ public class StudentCommentActivity extends BaseActivity {
     private void initCourseInfo() {
         CourseApi.getCourse(courseId, new SimpleServiceCallback<Course>(clComment) {
             @Override
-            public void onGetDataSuccess(Course course) {
+            public void onGetDataSuccessful(Course course) {
 
             }
         });
@@ -93,23 +93,12 @@ public class StudentCommentActivity extends BaseActivity {
     }
 
     private void commitComment() {
-        final MaterialDialog dialog = new MaterialDialog.Builder(this).title("正在注册").content("请稍后...")
+        MaterialDialog dialog = new MaterialDialog.Builder(this).title("正在注册").content("请稍后...")
                 .cancelable(false).progressIndeterminateStyle(false).progress(true, 0).build();
-        final String comment = tilComment.getEditText().getText().toString();
-        EvaluateApi.commentCourse(courseId, comment, new SimpleServiceCallback<StudentCourseInfo>(clComment) {
-
+        String comment = tilComment.getEditText().getText().toString();
+        EvaluateApi.commentCourse(courseId, comment, new SimpleServiceCallback<StudentCourseInfo>(clComment, dialog) {
             @Override
-            public void onStart() {
-                dialog.show();
-            }
-
-            @Override
-            public void onAfter() {
-                dialog.dismiss();
-            }
-
-            @Override
-            public void onGetDataSuccess(StudentCourseInfo infoList) {
+            public void onGetDataSuccessful(StudentCourseInfo infoList) {
                 finish();
             }
         });

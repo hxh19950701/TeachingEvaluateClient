@@ -63,15 +63,18 @@ public class StudentMainUiActivity extends BaseMainUiActivity implements SwipeRe
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        dlPersonCenter.closeDrawers();
         switch (item.getItemId()) {
             case R.id.action_edit_info:
                 IntentUtils.startActivity(this, StudentEditInfoActivity.class);
+                break;
+            case R.id.action_modify_password:
+                IntentUtils.startActivity(this, ModifyPasswordActivity.class);
                 break;
             case R.id.action_logout:
                 ActivityUtils.exitApp(this, "您已注销成功");
                 break;
         }
-        dlPersonCenter.closeDrawers();
         return true;
     }
 
@@ -89,20 +92,9 @@ public class StudentMainUiActivity extends BaseMainUiActivity implements SwipeRe
     }
 
     private void initStudentCourse() {
-        CourseApi.getStudentCourseList(new SimpleServiceCallback<List<StudentCourseInfo>>(clPersonCenter) {
-
+        CourseApi.getStudentCourseList(new SimpleServiceCallback<List<StudentCourseInfo>>(clPersonCenter, srlCourseList) {
             @Override
-            public void onStart() {
-                srlCourseList.setRefreshing(true);
-            }
-
-            @Override
-            public void onAfter() {
-                srlCourseList.setRefreshing(false);
-            }
-
-            @Override
-            public void onGetDataSuccess(List<StudentCourseInfo> infoList) {
+            public void onGetDataSuccessful(List<StudentCourseInfo> infoList) {
                 rvCourse.setAdapter(new StudentCourseRecyclerViewAdapter(infoList));
             }
         });
@@ -111,7 +103,7 @@ public class StudentMainUiActivity extends BaseMainUiActivity implements SwipeRe
     private void initUserInfo() {
         StudentApi.currentStudent(new SimpleServiceCallback<Student>(clPersonCenter) {
             @Override
-            public void onGetDataSuccess(Student student) {
+            public void onGetDataSuccessful(Student student) {
                 if (student == null) {
                     IntentUtils.startActivity(StudentMainUiActivity.this, RegisterStudentActivity.class,
                             Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

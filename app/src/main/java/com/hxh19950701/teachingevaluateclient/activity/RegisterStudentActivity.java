@@ -27,6 +27,7 @@ import com.hxh19950701.teachingevaluateclient.manager.DepartmentInfoManager;
 import com.hxh19950701.teachingevaluateclient.network.SimpleServiceCallback;
 import com.hxh19950701.teachingevaluateclient.network.api.StudentApi;
 import com.hxh19950701.teachingevaluateclient.utils.ActivityUtils;
+import com.hxh19950701.teachingevaluateclient.utils.IntentUtils;
 import com.hxh19950701.teachingevaluateclient.utils.TextInputLayoutUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.HttpHandler;
@@ -245,30 +246,18 @@ public class RegisterStudentActivity extends BaseActivity implements AdapterView
     }
 
     protected void saveStudentInfo() {
-        final MaterialDialog dialog = new MaterialDialog.Builder(this)
+        MaterialDialog dialog = new MaterialDialog.Builder(this)
                 .title("正在保存信息").content("请稍后...").cancelable(false)
                 .progress(true, 0).progressIndeterminateStyle(false).build();
         String studentId = tilStudentId.getEditText().getText().toString();
         String name = tilStudentName.getEditText().getText().toString();
         int sex = rgSex.getCheckedRadioButtonId() == R.id.rbMale ? Constant.SEX_MALE : Constant.SEX_FEMALE;
         int clazzId = ((Clazz) spClazz.getSelectedItem()).getId();
-
-        StudentApi.register(studentId, name, sex, clazzId, new SimpleServiceCallback<Student>(clRegister) {
-
+        StudentApi.register(studentId, name, sex, clazzId, new SimpleServiceCallback<Student>(clRegister, dialog) {
             @Override
-            public void onStart() {
-                dialog.show();
-            }
-
-            @Override
-            public void onAfter() {
-                dialog.dismiss();
-            }
-
-            @Override
-            public void onGetDataSuccess(Student student) {
-                startActivity(new Intent(getApplication(), StudentMainUiActivity.class));
-                finish();
+            public void onGetDataSuccessful(Student student) {
+                IntentUtils.startActivity(RegisterStudentActivity.this, StudentMainUiActivity.class,
+                        Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             }
         });
     }
@@ -283,7 +272,7 @@ public class RegisterStudentActivity extends BaseActivity implements AdapterView
             }
 
             @Override
-            public void onGetDataSuccess(Boolean isExist) {
+            public void onGetDataSuccessful(Boolean isExist) {
                 existence.put(studentId, isExist);
                 setupStudentIdExistence(isExist);
             }
@@ -294,12 +283,12 @@ public class RegisterStudentActivity extends BaseActivity implements AdapterView
             }
 
             @Override
-            public void onGetDataFailure(int code, String msg) {
+            public void onGetDataFailed(int code, String msg) {
                 tilStudentId.setError("我们无法检测该学号是否可用。");
             }
 
             @Override
-            public void onException(String s) {
+            public void onJsonSyntaxException(String s) {
                 tilStudentId.setError("我们无法检测该学号是否可用。");
             }
         });

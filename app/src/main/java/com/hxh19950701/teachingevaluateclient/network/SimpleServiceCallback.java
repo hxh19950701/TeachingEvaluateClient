@@ -1,5 +1,9 @@
 package com.hxh19950701.teachingevaluateclient.network;
 
+import android.app.Dialog;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 
 import com.hxh19950701.teachingevaluateclient.base.ResponseData;
@@ -10,23 +14,45 @@ import com.lidroid.xutils.exception.HttpException;
 public abstract class SimpleServiceCallback<Data> extends ServiceCallback<Data> {
 
     private View container;
+    private Dialog dialog;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
-    public SimpleServiceCallback(View container) {
+    public SimpleServiceCallback(@NonNull View container) {
         this.container = container;
+    }
+
+    public SimpleServiceCallback(@NonNull View container, @Nullable Dialog dialog) {
+        this.container = container;
+        this.dialog = dialog;
+    }
+
+    public SimpleServiceCallback(View container, SwipeRefreshLayout swipeRefreshLayout) {
+        this.container = container;
+        this.swipeRefreshLayout = swipeRefreshLayout;
+    }
+
+    @Override
+    public void onStart() {
+        if (dialog != null) {
+            dialog.show();
+        }
+        if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setRefreshing(true);
+        }
     }
 
     @Override
     public void onSuccess(ResponseData<Data> data) {
         if (data.getCode() == Constant.CODE_SUCCESS) {
-            onGetDataSuccess(data.getData());
+            onGetDataSuccessful(data.getData());
         } else {
-            onGetDataFailure(data.getCode(), data.getMsg());
+            onGetDataFailed(data.getCode(), data.getMsg());
         }
     }
 
-    public abstract void onGetDataSuccess(Data data);
+    public abstract void onGetDataSuccessful(Data data);
 
-    public void onGetDataFailure(int code, String msg) {
+    public void onGetDataFailed(int code, String msg) {
         SnackBarUtils.showLong(container, msg);
     }
 
@@ -36,7 +62,17 @@ public abstract class SimpleServiceCallback<Data> extends ServiceCallback<Data> 
     }
 
     @Override
-    public void onException(String s) {
+    public void onJsonSyntaxException(String s) {
         SnackBarUtils.showSystemError(container);
+    }
+
+    @Override
+    public void onAfter() {
+        if (dialog != null) {
+            dialog.dismiss();
+        }
+        if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setRefreshing(false);
+        }
     }
 }

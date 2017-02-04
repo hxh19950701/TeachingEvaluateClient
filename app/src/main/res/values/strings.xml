@@ -40,4 +40,6 @@
 	</string-array>
 	<string name="ok">ok</string>
 	<string name="cancel">Cancel</string>
+
+	<string name="usernameChar">0123456789abcdefghigklmnopqrstuvwxyzABCDEFGHIGKLMNOPQRSTUVWXYZ</string>
 </resources>

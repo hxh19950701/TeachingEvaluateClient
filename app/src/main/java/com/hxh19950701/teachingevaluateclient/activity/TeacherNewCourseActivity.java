@@ -91,30 +91,17 @@ public class TeacherNewCourseActivity extends BaseActivity {
     }
 
     private void newCourse() {
-        final MaterialDialog dialog = new MaterialDialog.Builder(this)
+        MaterialDialog dialog = new MaterialDialog.Builder(this)
                 .title("正在创建").content("请稍后...").cancelable(false)
-                .progress(true, 0).progressIndeterminateStyle(false).build();
-
+                .progressIndeterminateStyle(false).progress(true, 0).build();
         String courseName = tilCourseName.getEditText().getText().toString();
         String coursePassword = MD5Utils.encipher(tilCoursePassword.getEditText().getText().toString());
         int year = Integer.parseInt(tilYear.getEditText().getText().toString());
         int term = rbTerm1.isChecked() ? Constant.TERM_FIRST : Constant.TERM_SECOND;
         int personCount = Integer.parseInt(tilPersonCount.getEditText().getText().toString());
-
-        CourseApi.newCourse(courseName, coursePassword, year, term, personCount, new SimpleServiceCallback<Course>(clNewCourse) {
-
+        CourseApi.newCourse(courseName, coursePassword, year, term, personCount, new SimpleServiceCallback<Course>(clNewCourse, dialog) {
             @Override
-            public void onStart() {
-                dialog.show();
-            }
-
-            @Override
-            public void onAfter() {
-                dialog.dismiss();
-            }
-
-            @Override
-            public void onGetDataSuccess(Course course) {
+            public void onGetDataSuccessful(Course course) {
                 showNewCourseSuccessDialog(course);
             }
         });

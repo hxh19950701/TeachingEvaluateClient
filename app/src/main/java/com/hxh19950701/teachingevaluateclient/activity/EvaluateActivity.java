@@ -92,7 +92,7 @@ public class EvaluateActivity extends BaseActivity implements FirstTargetFragmen
                     EvaluateApi.getStudentAllEvaluatedItemsByCourse(courseId,
                             new SimpleServiceCallback<CourseAndEvaluatedItem>(clEvaluate) {
                                 @Override
-                                public void onGetDataSuccess(CourseAndEvaluatedItem data) {
+                                public void onGetDataSuccessful(CourseAndEvaluatedItem data) {
                                     initStudentEvaluatedItem(data);
                                 }
                             });
@@ -101,7 +101,7 @@ public class EvaluateActivity extends BaseActivity implements FirstTargetFragmen
                     EvaluateApi.getTeacherAllEvaluatedItemsByCourse(courseId,
                             new SimpleServiceCallback<List<TeacherCourseEvaluate>>(clEvaluate) {
                                 @Override
-                                public void onGetDataSuccess(List<TeacherCourseEvaluate> teacherCourseEvaluates) {
+                                public void onGetDataSuccessful(List<TeacherCourseEvaluate> teacherCourseEvaluates) {
 
                                 }
                             });
@@ -168,20 +168,9 @@ public class EvaluateActivity extends BaseActivity implements FirstTargetFragmen
     private void commitScore() {
         final MaterialDialog dialog = new MaterialDialog.Builder(this).title("正在提交").content("请稍后...")
                 .progressIndeterminateStyle(false).progress(true, 0).cancelable(false).build();
-        EvaluateApi.commitEvaluate(course.getId(), new SimpleServiceCallback<StudentCourseInfo>(clEvaluate) {
-
+        EvaluateApi.commitEvaluate(course.getId(), new SimpleServiceCallback<StudentCourseInfo>(clEvaluate, dialog) {
             @Override
-            public void onStart() {
-                dialog.show();
-            }
-
-            @Override
-            public void onAfter() {
-                dialog.dismiss();
-            }
-
-            @Override
-            public void onGetDataSuccess(StudentCourseInfo studentCourseInfo) {
+            public void onGetDataSuccessful(StudentCourseInfo studentCourseInfo) {
                 startActivity(StudentCommentActivity.newIntent(EvaluateActivity.this, course.getId()));
                 finish();
             }
@@ -225,7 +214,7 @@ public class EvaluateActivity extends BaseActivity implements FirstTargetFragmen
             EvaluateApi.updateItemScore(course.getId(), itemId, newScore,
                     new SimpleServiceCallback<StudentCourseEvaluate>(clEvaluate) {
                         @Override
-                        public void onGetDataSuccess(StudentCourseEvaluate data) {
+                        public void onGetDataSuccessful(StudentCourseEvaluate data) {
                             score[itemId] = data.getScore();
                             textView.setText(data.getScore() + "分");
                             invalidateOptionsMenu();
