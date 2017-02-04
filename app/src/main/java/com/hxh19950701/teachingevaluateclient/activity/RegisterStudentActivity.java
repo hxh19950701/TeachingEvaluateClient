@@ -23,10 +23,10 @@ import com.hxh19950701.teachingevaluateclient.bean.service.Student;
 import com.hxh19950701.teachingevaluateclient.bean.service.Subject;
 import com.hxh19950701.teachingevaluateclient.common.Constant;
 import com.hxh19950701.teachingevaluateclient.impl.TextWatcherImpl;
-import com.hxh19950701.teachingevaluateclient.network.NetServer;
+import com.hxh19950701.teachingevaluateclient.manager.DepartmentInfoManager;
 import com.hxh19950701.teachingevaluateclient.network.SimpleServiceCallback;
 import com.hxh19950701.teachingevaluateclient.network.api.StudentApi;
-import com.hxh19950701.teachingevaluateclient.manager.DepartmentInfoManager;
+import com.hxh19950701.teachingevaluateclient.utils.ActivityUtils;
 import com.hxh19950701.teachingevaluateclient.utils.TextInputLayoutUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.HttpHandler;
@@ -36,18 +36,18 @@ import java.util.Map;
 
 public class RegisterStudentActivity extends BaseActivity implements AdapterView.OnItemSelectedListener {
 
-    protected CoordinatorLayout clRegister;
-    protected TextInputLayout tilStudentId;
-    protected TextInputLayout tilStudentName;
-    protected RadioGroup rgSex;
-    protected Spinner spDepartment;
-    protected Spinner spSubject;
-    protected Spinner spYear;
-    protected Spinner spClazz;
-    protected Button btnSave;
+    private CoordinatorLayout clRegister;
+    private TextInputLayout tilStudentId;
+    private TextInputLayout tilStudentName;
+    private RadioGroup rgSex;
+    private Spinner spDepartment;
+    private Spinner spSubject;
+    private Spinner spYear;
+    private Spinner spClazz;
+    private Button btnSave;
 
     private HttpHandler<String> httpHandler = null;
-    private Map<String, Boolean> existence = new HashMap<>(20);
+    private final Map<String, Boolean> existence = new HashMap<>(20);
 
     private final TextWatcher STUDENT_ID_WATCHER = new TextWatcherImpl() {
         @Override
@@ -108,24 +108,8 @@ public class RegisterStudentActivity extends BaseActivity implements AdapterView
 
     @Override
     protected void initData() {
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        ArrayAdapter<Department> departmentAdapter = new ArrayAdapter<>(this, R.layout.spinner_item);
-        departmentAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-        spDepartment.setAdapter(departmentAdapter);
-
-        ArrayAdapter<Subject> subjectAdapter = new ArrayAdapter<>(this, R.layout.spinner_item);
-        subjectAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-        spSubject.setAdapter(subjectAdapter);
-
-        ArrayAdapter<Integer> yearAdapter = new ArrayAdapter<>(this, R.layout.spinner_item);
-        yearAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-        spYear.setAdapter(yearAdapter);
-
-        ArrayAdapter<Clazz> clazzAdapter = new ArrayAdapter<>(this, R.layout.spinner_item);
-        clazzAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-        spClazz.setAdapter(clazzAdapter);
-
+        displayHomeAsUp();
+        initAdapter();
         initDepartment();
         refreshOperationEnable();
     }
@@ -152,6 +136,24 @@ public class RegisterStudentActivity extends BaseActivity implements AdapterView
                 initClazz();
                 break;
         }
+    }
+
+    private void initAdapter() {
+        ArrayAdapter<Department> departmentAdapter = new ArrayAdapter<>(this, R.layout.spinner_item);
+        departmentAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        spDepartment.setAdapter(departmentAdapter);
+
+        ArrayAdapter<Subject> subjectAdapter = new ArrayAdapter<>(this, R.layout.spinner_item);
+        subjectAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        spSubject.setAdapter(subjectAdapter);
+
+        ArrayAdapter<Integer> yearAdapter = new ArrayAdapter<>(this, R.layout.spinner_item);
+        yearAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        spYear.setAdapter(yearAdapter);
+
+        ArrayAdapter<Clazz> clazzAdapter = new ArrayAdapter<>(this, R.layout.spinner_item);
+        clazzAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        spClazz.setAdapter(clazzAdapter);
     }
 
     protected void initDepartment() {
@@ -322,8 +324,7 @@ public class RegisterStudentActivity extends BaseActivity implements AdapterView
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        NetServer.requireLoginAgain(RegisterStudentActivity.this, null);
-                        finish();
+                        ActivityUtils.exitApp(RegisterStudentActivity.this, "在你完善信息之前，你将无法使用本系统。");
                     }
                 })
                 .show();

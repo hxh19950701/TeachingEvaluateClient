@@ -13,6 +13,7 @@ import com.hxh19950701.teachingevaluateclient.interfaces.ManagerInitializeListen
 import com.hxh19950701.teachingevaluateclient.network.api.DepartmentApi;
 import com.hxh19950701.teachingevaluateclient.utils.GsonUtils;
 import com.hxh19950701.teachingevaluateclient.utils.IdRecordUtils;
+import com.hxh19950701.teachingevaluateclient.utils.ToastUtils;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -36,6 +37,21 @@ public class DepartmentInfoManager {
     private static final List<Department> DEPARTMENTS = new ArrayList<>(30);
     private static final List<Subject> SUBJECTS = new ArrayList<>(7);
     private static final List<Clazz> CLASSES = new ArrayList<>(5);
+
+    private static final ManagerInitializeListener defaultInitializeListener = new ManagerInitializeListener() {
+
+        @Override
+        public void onSuccess(boolean fromCache) {
+            DepartmentInfoManager.printAllClasses();
+        }
+
+        @Override
+        public void onFailure(Exception initException, Exception updateException) {
+            initException.printStackTrace();
+            updateException.printStackTrace();
+            ToastUtils.show("更新系部班级信息失败，软件可能工作不正常");
+        }
+    };
 
     private static ManagerInitializeListener initializeListener = null;
 
@@ -174,6 +190,10 @@ public class DepartmentInfoManager {
 
     public static void setInitializeListener(ManagerInitializeListener initializeListener) {
         DepartmentInfoManager.initializeListener = initializeListener;
+    }
+
+    public static ManagerInitializeListener getDefaultInitializeListener() {
+        return defaultInitializeListener;
     }
 
     public static Clazz getClazzById(int id) {

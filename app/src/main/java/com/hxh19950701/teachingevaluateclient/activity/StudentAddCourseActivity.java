@@ -13,22 +13,31 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.hxh19950701.teachingevaluateclient.R;
 import com.hxh19950701.teachingevaluateclient.base.BaseActivity;
 import com.hxh19950701.teachingevaluateclient.bean.service.Course;
+import com.hxh19950701.teachingevaluateclient.bean.service.StudentCourseInfo;
+import com.hxh19950701.teachingevaluateclient.event.StudentAddCourseSuccessfullyEvent;
 import com.hxh19950701.teachingevaluateclient.impl.TextWatcherImpl;
+import com.hxh19950701.teachingevaluateclient.manager.EventManager;
 import com.hxh19950701.teachingevaluateclient.network.SimpleServiceCallback;
 import com.hxh19950701.teachingevaluateclient.network.api.CourseApi;
 import com.hxh19950701.teachingevaluateclient.utils.MD5Utils;
 
 public class StudentAddCourseActivity extends BaseActivity {
 
-    protected TextInputLayout tilClassId;
-    protected TextInputLayout tilClassPassword;
-    protected CoordinatorLayout clAddCourse;
-    protected Button btnAddCourse;
+    private TextInputLayout tilClassId;
+    private TextInputLayout tilClassPassword;
+    private CoordinatorLayout clAddCourse;
+    private Button btnAddCourse;
+
+    private final TextWatcher textWatcher = new TextWatcherImpl() {
+        @Override
+        public void afterTextChanged(Editable s) {
+            refreshAddCourseButtonEnable();
+        }
+    };
 
     @Override
     protected void initView() {
         setContentView(R.layout.activity_student_add_course);
-
         tilClassId = (TextInputLayout) findViewById(R.id.tilClassId);
         tilClassPassword = (TextInputLayout) findViewById(R.id.tilCoursePasswordRetype);
         clAddCourse = (CoordinatorLayout) findViewById(R.id.clAddCourse);
@@ -37,12 +46,6 @@ public class StudentAddCourseActivity extends BaseActivity {
 
     @Override
     protected void initListener() {
-        TextWatcher textWatcher = new TextWatcherImpl() {
-            @Override
-            public void afterTextChanged(Editable s) {
-                refreshAddCourseButtonEnable();
-            }
-        };
         tilClassId.getEditText().addTextChangedListener(textWatcher);
         tilClassPassword.getEditText().addTextChangedListener(textWatcher);
         btnAddCourse.setOnClickListener(this);
@@ -50,7 +53,7 @@ public class StudentAddCourseActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        displayHomeAsUp();
         refreshAddCourseButtonEnable();
     }
 
@@ -63,12 +66,11 @@ public class StudentAddCourseActivity extends BaseActivity {
         StringBuilder msg = new StringBuilder("你已成功添加如下课程：\n")
                 .append("课程名：").append(course.getName()).append("\n")
                 .append("任课老师：").append(course.getTeacher().getName());
-        new MaterialDialog.Builder(this).title("成功添加课程").content(msg).cancelable(false)
-                .positiveText(R.string.ok)
+        new MaterialDialog.Builder(this).title("成功添加课程").content(msg)
+                .cancelable(false).positiveText(R.string.ok)
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        setResult(1);
                         finish();
                     }
                 }).show();
@@ -77,10 +79,15 @@ public class StudentAddCourseActivity extends BaseActivity {
     private void addCourse() {
         final MaterialDialog dialog = new MaterialDialog.Builder(this)
                 .title("正在添加").content("请稍后...").cancelable(false)
-                .progress(true, 0).progressIndeterminateStyle(false).show();
+                .progress(true, 0).progressIndeterminateStyle(false).build();
         int courseId = Integer.valueOf(tilClassId.getEditText().getText().toString());
         String password = MD5Utils.encipher(tilClassPassword.getEditText().getText().toString());
-        CourseApi.addCourse(courseId, password, new SimpleServiceCallback<Course>(clAddCourse) {
+        CourseApi.addCourse(courseId, password, new SimpleServiceCallback<StudentCourseInfo>(clAddCourse) {
+
+            @Override
+            public void onStart() {
+                dialog.show();
+            }
 
             @Override
             public void onAfter() {
@@ -88,8 +95,9 @@ public class StudentAddCourseActivity extends BaseActivity {
             }
 
             @Override
-            public void onGetDataSuccess(Course course) {
-                showAddCourseSuccessDialog(course);
+            public void onGetDataSuccess(StudentCourseInfo info) {
+                EventManager.postEvent(new StudentAddCourseSuccessfullyEvent(info));
+                showAddCourseSuccessDialog(info.getCourse());
             }
 
         });

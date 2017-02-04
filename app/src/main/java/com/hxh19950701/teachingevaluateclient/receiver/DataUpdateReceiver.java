@@ -6,14 +6,17 @@ import android.content.Intent;
 
 import com.hxh19950701.teachingevaluateclient.manager.DepartmentInfoManager;
 import com.hxh19950701.teachingevaluateclient.manager.EvaluateTargetManager;
+import com.hxh19950701.teachingevaluateclient.utils.ConnectivityUtils;
 
 public class DataUpdateReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Context applicationContext = context.getApplicationContext();
-        EvaluateTargetManager.init(applicationContext);
-        DepartmentInfoManager.init(applicationContext);
+        if (ConnectivityUtils.isNetworkConnected()) {
+            Context applicationContext = context.getApplicationContext();
+            EvaluateTargetManager.init(applicationContext);
+            DepartmentInfoManager.init(applicationContext);
+        }
     }
 
 }

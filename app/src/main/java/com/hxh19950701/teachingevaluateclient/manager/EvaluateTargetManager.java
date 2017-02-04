@@ -13,6 +13,7 @@ import com.hxh19950701.teachingevaluateclient.interfaces.ManagerInitializeListen
 import com.hxh19950701.teachingevaluateclient.network.api.EvaluateApi;
 import com.hxh19950701.teachingevaluateclient.utils.GsonUtils;
 import com.hxh19950701.teachingevaluateclient.utils.IdRecordUtils;
+import com.hxh19950701.teachingevaluateclient.utils.ToastUtils;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -31,6 +32,22 @@ public class EvaluateTargetManager {
     private EvaluateTargetManager() {
         throw new UnsupportedOperationException("This class cannot be instantiated, and its methods must be called directly.");
     }
+
+    private static final ManagerInitializeListener defaultInitializeListener = new ManagerInitializeListener() {
+
+        @Override
+        public void onSuccess(boolean fromCache) {
+            EvaluateTargetManager.printAllTargets();
+        }
+
+        @Override
+        public void onFailure(Exception initException, Exception updateException) {
+            initException.printStackTrace();
+            updateException.printStackTrace();
+            ToastUtils.show("更新评价条目失败，软件可能工作不正常");
+        }
+
+    };
 
     private static final Initializer INITIALIZER = new Initializer();
     private static final List<EvaluateFirstTarget> FIRST_TARGETS = new ArrayList<>(4);
@@ -175,6 +192,10 @@ public class EvaluateTargetManager {
 
     public static void setInitializeListener(ManagerInitializeListener initializeListener) {
         EvaluateTargetManager.initializeListener = initializeListener;
+    }
+
+    public static ManagerInitializeListener getDefaultInitializeListener() {
+        return defaultInitializeListener;
     }
 
     public static EvaluateThirdTarget getThirdTargetById(int id) {

@@ -28,15 +28,10 @@ public class HelpActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        displayHomeAsUp();
+        wvHelp.getSettings().setJavaScriptEnabled(true);
+        wvHelp.setWebViewClient(new WebViewClient());
         wvHelp.loadUrl("http://3g.qq.com");
-        wvHelp.setWebViewClient(new WebViewClient(){
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
-                return true;
-            }
-        });
     }
 
     @Override

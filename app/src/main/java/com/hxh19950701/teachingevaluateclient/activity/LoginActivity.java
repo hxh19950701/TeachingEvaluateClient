@@ -1,5 +1,6 @@
 package com.hxh19950701.teachingevaluateclient.activity;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -31,12 +32,13 @@ import com.hxh19950701.teachingevaluateclient.base.BaseActivity;
 import com.hxh19950701.teachingevaluateclient.bean.service.User;
 import com.hxh19950701.teachingevaluateclient.common.Constant;
 import com.hxh19950701.teachingevaluateclient.event.ServerUrlChangedEvent;
-import com.hxh19950701.teachingevaluateclient.event.UserLoginSuccessEvent;
+import com.hxh19950701.teachingevaluateclient.event.UserLoginSuccessfullyEvent;
 import com.hxh19950701.teachingevaluateclient.event.UserRegisterCompleteEvent;
 import com.hxh19950701.teachingevaluateclient.impl.TextWatcherImpl;
 import com.hxh19950701.teachingevaluateclient.network.SimpleServiceCallback;
 import com.hxh19950701.teachingevaluateclient.network.api.UserApi;
 import com.hxh19950701.teachingevaluateclient.utils.DisplayUtils;
+import com.hxh19950701.teachingevaluateclient.utils.ActivityUtils;
 import com.hxh19950701.teachingevaluateclient.utils.IntentUtils;
 import com.hxh19950701.teachingevaluateclient.utils.MD5Utils;
 import com.hxh19950701.teachingevaluateclient.utils.PrefUtils;
@@ -60,15 +62,15 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
 
     private boolean isMD5;
 
-    private TextWatcher usernameWatcher = new TextWatcherImpl() {
+    private final TextWatcher usernameWatcher = new TextWatcherImpl() {
         @Override
         public void afterTextChanged(Editable s) {
             super.afterTextChanged(s);
-            tilUsername.getEditText().setText("");
+            tilPassword.getEditText().setText("");
         }
     };
 
-    private TextWatcher passwordWatcher = new TextWatcherImpl() {
+    private final TextWatcher passwordWatcher = new TextWatcherImpl() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             super.beforeTextChanged(s, start, count, after);
@@ -78,6 +80,12 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
             }
         }
     };
+
+    public static Intent newIntent(Context context, String msg) {
+        Intent intent = new Intent(context, LoginActivity.class);
+        intent.putExtra(Constant.KEY_MASSAGE, msg);
+        return intent;
+    }
 
     @Override
     public void initView() {
@@ -202,7 +210,7 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
 
             @Override
             public void onGetDataSuccess(User user) {
-                EventBus.getDefault().post(new UserLoginSuccessEvent(username, password, cbRememberPassword.isChecked(), cbAutoLogin.isChecked()));
+                EventBus.getDefault().post(new UserLoginSuccessfullyEvent(username, password, cbRememberPassword.isChecked(), cbAutoLogin.isChecked()));
                 enterApp(user.getIdentity());
             }
 
@@ -222,15 +230,10 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
     }
 
     private void enterApp(int identity) {
-        switch (identity) {
-            case Constant.IDENTITY_STUDENT:
-            case Constant.IDENTITY_TEACHER:
-            case Constant.IDENTITY_ADMINISTRATOR:
-                IntentUtils.startActivity(this, Constant.IDENTITY_ACTIVITY[identity], Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                break;
-            default:
-                SnackBarUtils.showSystemError(clLogin);
-                break;
+        try {
+            ActivityUtils.enterApp(this, identity);
+        } catch (IllegalArgumentException e) {
+            SnackBarUtils.showSystemError(clLogin);
         }
     }
 

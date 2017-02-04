@@ -1,9 +1,5 @@
 package com.hxh19950701.teachingevaluateclient.common;
 
-import com.hxh19950701.teachingevaluateclient.activity.AdministratorMainUiActivity;
-import com.hxh19950701.teachingevaluateclient.activity.StudentMainUiActivity;
-import com.hxh19950701.teachingevaluateclient.activity.TeacherMainUiActivity;
-
 public class Constant {
 
     private Constant() {
@@ -16,13 +12,6 @@ public class Constant {
     public static final int IDENTITY_TEACHER = 1;
     public static final int IDENTITY_ADMINISTRATOR = 2;
     public static final int IDENTITY_COUNT = 3;
-    public static final Class[] IDENTITY_ACTIVITY = new Class[Constant.IDENTITY_COUNT];
-
-    static {
-        IDENTITY_ACTIVITY[Constant.IDENTITY_STUDENT] = StudentMainUiActivity.class;
-        IDENTITY_ACTIVITY[Constant.IDENTITY_TEACHER] = TeacherMainUiActivity.class;
-        IDENTITY_ACTIVITY[Constant.IDENTITY_ADMINISTRATOR] = AdministratorMainUiActivity.class;
-    }
 
     public static final int TERM_FIRST = 1;
     public static final int TERM_SECOND = 2;
@@ -50,5 +39,5 @@ public class Constant {
     public static final String KEY_READ_ONLY = "read_only";
 
     public static final String PREFIX_SERVER_DOMAIN = "http://";
-    public static final String DEFAULT_SERVER_DOMAIN = "http://192.168.56.1:8080/TeachingEvaluateServer";
+    public static final String DEFAULT_SERVER_DOMAIN = "http://192.168.2.103:8080/TeachingEvaluateServer";
 }

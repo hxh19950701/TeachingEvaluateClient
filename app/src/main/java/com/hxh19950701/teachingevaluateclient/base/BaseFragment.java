@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.greenrobot.eventbus.EventBus;
+import com.hxh19950701.teachingevaluateclient.manager.EventManager;
 
 public abstract class BaseFragment extends Fragment implements View.OnClickListener {
 
@@ -30,18 +30,16 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     }
 
     protected void startReceiveEvent() {
-        EventBus defaultEventBus = EventBus.getDefault();
-        if (!defaultEventBus.isRegistered(this)) {
-            defaultEventBus.register(this);
+        if (!EventManager.isRegistered(this)) {
+            EventManager.register(this);
         }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        EventBus defaultEventBus = EventBus.getDefault();
-        if (defaultEventBus.isRegistered(this)) {
-            defaultEventBus.unregister(this);
+        if (EventManager.isRegistered(this)) {
+            EventManager.unregister(this);
         }
     }
 }

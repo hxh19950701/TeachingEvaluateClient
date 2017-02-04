@@ -1,13 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-	android:id="@+id/activity_student_comment"
+<android.support.design.widget.CoordinatorLayout
+	android:id="@+id/clComment"
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:paddingBottom="@dimen/activity_vertical_margin"
-	android:paddingLeft="@dimen/activity_horizontal_margin"
-	android:paddingRight="@dimen/activity_horizontal_margin"
-	android:paddingTop="@dimen/activity_vertical_margin">
+	android:fitsSystemWindows="true"
+	android:orientation="vertical">
 
-</RelativeLayout>
+	<include layout="@layout/widget_toolbar"/>
+
+	<LinearLayout android:layout_width="match_parent"
+				  android:layout_height="match_parent"
+				  android:orientation="vertical"
+				  android:paddingBottom="@dimen/activity_vertical_margin"
+				  android:paddingLeft="@dimen/activity_horizontal_margin"
+				  android:paddingRight="@dimen/activity_horizontal_margin"
+				  android:paddingTop="@dimen/activity_vertical_margin"
+				  app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+		<TextView android:layout_width="wrap_content"
+				  android:layout_height="wrap_content"
+				  android:text="评价已经完成，你对教师的教学方式还有什么建议呢，赶快写下来吧，教师很希望得到你的建议噢！"/>
+
+		<android.support.design.widget.TextInputLayout
+			android:id="@+id/tilComment"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content">
+
+			<EditText android:layout_width="match_parent"
+					  android:layout_height="wrap_content"
+					  android:gravity="start"
+					  android:hint="写下你的建议吧"
+					  android:maxLength="120"
+					  android:maxLines="3"/>
+		</android.support.design.widget.TextInputLayout>
+
+		<Button android:id="@+id/btnCommit"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="right"
+				android:text="提交"/>
+	</LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>

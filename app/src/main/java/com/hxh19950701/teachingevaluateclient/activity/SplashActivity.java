@@ -10,6 +10,7 @@ import com.hxh19950701.teachingevaluateclient.bean.service.User;
 import com.hxh19950701.teachingevaluateclient.common.Constant;
 import com.hxh19950701.teachingevaluateclient.network.ServiceCallback;
 import com.hxh19950701.teachingevaluateclient.network.api.UserApi;
+import com.hxh19950701.teachingevaluateclient.utils.ActivityUtils;
 import com.hxh19950701.teachingevaluateclient.utils.IntentUtils;
 import com.hxh19950701.teachingevaluateclient.utils.PrefUtils;
 import com.lidroid.xutils.exception.HttpException;
@@ -23,15 +24,12 @@ public class SplashActivity extends AppCompatActivity {
     private static final int LOGIN_FAIL_DUE_WRONG_PASSWORD = 5;
     private static final int LOGIN_FAIL_DUE_SERVER_ERROR = 6;
     private static final int LOGIN_FAIL_DUE_NETWORK_FAILURE = 7;
+    private static final int LOGIN_FAIL_DUE_UNKNOWN = 8;
 
     private static final long SPLASH_DURATION = 2000L;
     private static final long DELAY_FINISH_DURATION = 300L;
 
-    private int loginStatus = LOGIN_NOT_START;
-    private boolean isTimeUp = false;
-    private int identity = -1;
-
-    private Thread splashTimerThread = new Thread() {
+    private final Thread splashTimerThread = new Thread() {
         @Override
         public void run() {
             super.run();
@@ -41,7 +39,7 @@ public class SplashActivity extends AppCompatActivity {
         }
     };
 
-    private Thread delayFinishThread = new Thread() {
+    private final Thread delayFinishThread = new Thread() {
         @Override
         public void run() {
             super.run();
@@ -49,6 +47,10 @@ public class SplashActivity extends AppCompatActivity {
             finish();
         }
     };
+
+    private int loginStatus = LOGIN_NOT_START;
+    private boolean isTimeUp = false;
+    private int identity = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +92,9 @@ public class SplashActivity extends AppCompatActivity {
                         loginStatus = LOGIN_FAIL_DUE_WRONG_PASSWORD;
                         PrefUtils.remove(Constant.KEY_PASSWORD);
                         break;
+                    default:
+                        loginStatus = LOGIN_FAIL_DUE_UNKNOWN;
+                        break;
                 }
             }
 
@@ -108,15 +113,11 @@ public class SplashActivity extends AppCompatActivity {
     private boolean requireDismiss() {
         if (isTimeUp && loginStatus != LOGIN_PROCEED) {
             switch (loginStatus) {
-                case LOGIN_FAIL_DUE_WRONG_PASSWORD:
-                case LOGIN_FAIL_DUE_SERVER_ERROR:
-                case LOGIN_FAIL_DUE_NETWORK_FAILURE:
-                case LOGIN_FAIL_DUE_WRONG_USERNAME:
-                case LOGIN_NOT_START:
-                    enterLogin();
-                    break;
                 case LOGIN_SUCCESS:
                     enterApp();
+                    break;
+                default:
+                    enterLogin();
                     break;
             }
             return true;
@@ -126,20 +127,19 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void enterApp() {
-        switch (identity) {
-            case Constant.IDENTITY_STUDENT:
-            case Constant.IDENTITY_TEACHER:
-            case Constant.IDENTITY_ADMINISTRATOR:
-                IntentUtils.startActivity(this, Constant.IDENTITY_ACTIVITY[identity], Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                delayFinishThread.start();
-                break;
-            default:
-                enterLogin();
+        try {
+            ActivityUtils.enterApp(this, identity);
+        } catch (IllegalArgumentException e) {
+            enterLogin();
         }
     }
 
     private void enterLogin() {
-        IntentUtils.startActivity(this, LoginActivity.class);
-        delayFinishThread.start();
+        IntentUtils.startActivity(this, LoginActivity.class, Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+    }
+
+    @Override
+    public void onBackPressed() {
+        //不允许用户按返回键退出
     }
 }

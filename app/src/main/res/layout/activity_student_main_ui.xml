@@ -6,9 +6,7 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	app:layout_behavior="@string/appbar_scrolling_view_behavior"
-	tools:context=".activity.StudentMainUiActivity"
-	tools:showIn="@layout/activity_student_main_ui">
+	app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 	<android.support.design.widget.CoordinatorLayout
 		android:id="@+id/clPersonCenter"
@@ -60,6 +58,6 @@
 		android:layout_height="match_parent"
 		android:layout_gravity="start"
 		app:headerLayout="@layout/drawer_header"
-		app:menu="@menu/drawer"/>
+		app:menu="@menu/menu_drawer"/>
 
 </android.support.v4.widget.DrawerLayout>

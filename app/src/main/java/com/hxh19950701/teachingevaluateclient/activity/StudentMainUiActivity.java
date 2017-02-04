@@ -5,9 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
@@ -19,38 +17,41 @@ import com.hxh19950701.teachingevaluateclient.adapter.StudentCourseRecyclerViewA
 import com.hxh19950701.teachingevaluateclient.base.BaseMainUiActivity;
 import com.hxh19950701.teachingevaluateclient.bean.service.Student;
 import com.hxh19950701.teachingevaluateclient.bean.service.StudentCourseInfo;
-import com.hxh19950701.teachingevaluateclient.network.NetServer;
+import com.hxh19950701.teachingevaluateclient.event.StudentAddCourseSuccessfullyEvent;
 import com.hxh19950701.teachingevaluateclient.network.SimpleServiceCallback;
 import com.hxh19950701.teachingevaluateclient.network.api.CourseApi;
 import com.hxh19950701.teachingevaluateclient.network.api.StudentApi;
+import com.hxh19950701.teachingevaluateclient.utils.ActivityUtils;
 import com.hxh19950701.teachingevaluateclient.utils.IntentUtils;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
 public class StudentMainUiActivity extends BaseMainUiActivity implements SwipeRefreshLayout.OnRefreshListener {
 
-    protected FloatingActionButton fabAddCourse;
-    protected ActionBarDrawerToggle drawerToggle;
-    protected TextView tvName;
-    protected TextView tvDepartment;
-    protected TextView tvLogout;
-    protected CoordinatorLayout clPersonCenter;
-    protected RecyclerView rvCourse;
-    protected NavigationView nvDrawer;
-    protected SwipeRefreshLayout srlCourseList;
+    private FloatingActionButton fabAddCourse;
+    private TextView tvName;
+    private TextView tvDepartment;
+    private CoordinatorLayout clPersonCenter;
+    private RecyclerView rvCourse;
+    private NavigationView nvDrawer;
+    private SwipeRefreshLayout srlCourseList;
 
     @Override
     public void initView() {
         setContentView(R.layout.activity_student_main_ui);
         fabAddCourse = (FloatingActionButton) findViewById(R.id.fabAddCourse);
-        dlPersonCenter = (DrawerLayout) findViewById(R.id.dlPersonCenter);
         clPersonCenter = (CoordinatorLayout) findViewById(R.id.clPersonCenter);
         nvDrawer = (NavigationView) findViewById(R.id.nvDrawer);
         rvCourse = (RecyclerView) findViewById(R.id.rvCourse);
         srlCourseList = (SwipeRefreshLayout) findViewById(R.id.srlCourseList);
+        srlCourseList.setColorSchemeResources(R.color.colorAccent);
 
-        tvName = (TextView) nvDrawer.getHeaderView(0).findViewById(R.id.tvName);
-        tvDepartment = (TextView) nvDrawer.getHeaderView(0).findViewById(R.id.tvDepartment);
+        View headerView = nvDrawer.getHeaderView(0);
+        tvName = (TextView) headerView.findViewById(R.id.tvName);
+        tvDepartment = (TextView) headerView.findViewById(R.id.tvDepartment);
     }
 
     @Override
@@ -63,8 +64,11 @@ public class StudentMainUiActivity extends BaseMainUiActivity implements SwipeRe
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.navigationItemLogout:
-                NetServer.requireLoginAgain(this, "注销成功。");
+            case R.id.action_edit_info:
+                IntentUtils.startActivity(this, StudentEditInfoActivity.class);
+                break;
+            case R.id.action_logout:
+                ActivityUtils.exitApp(this, "您已注销成功");
                 break;
         }
         dlPersonCenter.closeDrawers();
@@ -74,9 +78,9 @@ public class StudentMainUiActivity extends BaseMainUiActivity implements SwipeRe
     @Override
     public void initData() {
         rvCourse.setLayoutManager(new LinearLayoutManager(this));
-        srlCourseList.setColorSchemeResources(R.color.colorAccent);
         initUserInfo();
         initStudentCourse();
+        startReceiveEvent();
     }
 
     @Override
@@ -99,8 +103,7 @@ public class StudentMainUiActivity extends BaseMainUiActivity implements SwipeRe
 
             @Override
             public void onGetDataSuccess(List<StudentCourseInfo> infoList) {
-                StudentCourseRecyclerViewAdapter studentCourseRecyclerViewAdapter = new StudentCourseRecyclerViewAdapter(infoList);
-                rvCourse.setAdapter(studentCourseRecyclerViewAdapter);
+                rvCourse.setAdapter(new StudentCourseRecyclerViewAdapter(infoList));
             }
         });
     }
@@ -110,38 +113,27 @@ public class StudentMainUiActivity extends BaseMainUiActivity implements SwipeRe
             @Override
             public void onGetDataSuccess(Student student) {
                 if (student == null) {
-                    requireFillInfo();
+                    IntentUtils.startActivity(StudentMainUiActivity.this, RegisterStudentActivity.class,
+                            Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 } else {
-                    setInfo(student.getName(), student.getClazz().getSubject().getDepartment().getName());
+                    tvName.setText(student.getName());
+                    tvDepartment.setText(student.getClazz().getSubject().getDepartment().getName());
                 }
             }
         });
-    }
-
-    private void requireFillInfo() {
-        IntentUtils.startActivity(this, RegisterStudentActivity.class, Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-    }
-
-    private void setInfo(String name, String otherInfo) {
-        tvName.setText(name);
-        tvDepartment.setText(otherInfo);
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.fabAddCourse:
-                startActivityForResult(new Intent(this, StudentAddCourseActivity.class), 1);
+                IntentUtils.startActivity(this, StudentAddCourseActivity.class);
                 break;
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1 && requestCode == 1) {
-            initStudentCourse();
-        }
+    @Subscribe(sticky = false, threadMode = ThreadMode.MAIN)
+    public void onStudentAddCourseSuccessfully(StudentAddCourseSuccessfullyEvent event) {
+        initStudentCourse();
     }
-
 }

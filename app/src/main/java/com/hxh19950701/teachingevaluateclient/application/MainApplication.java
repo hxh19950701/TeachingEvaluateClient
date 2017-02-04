@@ -1,16 +1,17 @@
 package com.hxh19950701.teachingevaluateclient.application;
 
 import android.app.Application;
+import android.util.Log;
 
 import com.hxh19950701.teachingevaluateclient.common.Constant;
 import com.hxh19950701.teachingevaluateclient.event.ServerUrlChangedEvent;
-import com.hxh19950701.teachingevaluateclient.event.UserLoginSuccessEvent;
-import com.hxh19950701.teachingevaluateclient.interfaces.ManagerInitializeListener;
+import com.hxh19950701.teachingevaluateclient.event.UserLoginSuccessfullyEvent;
 import com.hxh19950701.teachingevaluateclient.manager.DepartmentInfoManager;
 import com.hxh19950701.teachingevaluateclient.manager.EvaluateTargetManager;
 import com.hxh19950701.teachingevaluateclient.manager.EventManager;
 import com.hxh19950701.teachingevaluateclient.network.NetService;
 import com.hxh19950701.teachingevaluateclient.service.DataUpdateService;
+import com.hxh19950701.teachingevaluateclient.utils.ConnectivityUtils;
 import com.hxh19950701.teachingevaluateclient.utils.DisplayUtils;
 import com.hxh19950701.teachingevaluateclient.utils.InputMethodUtils;
 import com.hxh19950701.teachingevaluateclient.utils.IntentUtils;
@@ -22,36 +23,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 public class MainApplication extends Application {
 
-    private final ManagerInitializeListener evaluateTargetManagerInitializeListener = new ManagerInitializeListener() {
-
-        @Override
-        public void onSuccess(boolean fromCache) {
-            EvaluateTargetManager.printAllTargets();
-        }
-
-        @Override
-        public void onFailure(Exception initException, Exception updateException) {
-            initException.printStackTrace();
-            updateException.printStackTrace();
-            ToastUtils.show("更新评价条目失败，软件可能工作不正常");
-        }
-
-    };
-
-    private final ManagerInitializeListener departmentInfoManagerInitializeListener = new ManagerInitializeListener() {
-
-        @Override
-        public void onSuccess(boolean fromCache) {
-            DepartmentInfoManager.printAllClasses();
-        }
-
-        @Override
-        public void onFailure(Exception initException, Exception updateException) {
-            initException.printStackTrace();
-            updateException.printStackTrace();
-            ToastUtils.show("更新系部班级信息失败，软件可能工作不正常");
-        }
-    };
+    private static final String TAG = MainApplication.class.getSimpleName();
 
     @Override
     public void onCreate() {
@@ -68,6 +40,7 @@ public class MainApplication extends Application {
         InputMethodUtils.init(this);
         DisplayUtils.init(this);
         ToastUtils.init(this);
+        ConnectivityUtils.init(this);
     }
 
     public void initServerURL() {
@@ -76,8 +49,8 @@ public class MainApplication extends Application {
     }
 
     public void initManager() {
-        EvaluateTargetManager.setInitializeListener(evaluateTargetManagerInitializeListener);
-        DepartmentInfoManager.setInitializeListener(departmentInfoManagerInitializeListener);
+        EvaluateTargetManager.setInitializeListener(EvaluateTargetManager.getDefaultInitializeListener());
+        DepartmentInfoManager.setInitializeListener(DepartmentInfoManager.getDefaultInitializeListener());
     }
 
     public void startServices() {
@@ -97,13 +70,13 @@ public class MainApplication extends Application {
 
     @Subscribe(sticky = false, threadMode = ThreadMode.BACKGROUND)
     public void onServerUrlChanged(ServerUrlChangedEvent event) {
-        System.out.println("服务器地址改变，正在重新初始化API");
+        Log.d(TAG, "服务器地址改变，正在重新初始化API");
         initServerURL();
     }
 
     @Subscribe(sticky = false, threadMode = ThreadMode.BACKGROUND)
-    public void onUserLoginSuccess(UserLoginSuccessEvent event) {
-        System.out.println("用户" + event.getUsername() + "登录成功");
+    public void onUserLoginSuccess(UserLoginSuccessfullyEvent event) {
+        Log.d(TAG, "用户" + event.getUsername() + "登录成功");
         PrefUtils.putString(Constant.KEY_USERNAME, event.getUsername());
         PrefUtils.putString(Constant.KEY_PASSWORD, event.isRememberPassword() ? event.getPassword() : "");
         PrefUtils.putBoolean(Constant.KEY_REMEMBER_PASSWORD, event.isRememberPassword());

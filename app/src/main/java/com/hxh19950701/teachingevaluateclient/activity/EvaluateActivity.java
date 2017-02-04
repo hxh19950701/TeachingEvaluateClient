@@ -78,15 +78,14 @@ public class EvaluateActivity extends BaseActivity implements FirstTargetFragmen
     @Override
     protected void initData() {
         displayHomeAsUp();
+        Intent intent = getIntent();
+        identity = intent.getIntExtra(Constant.KEY_IDENTITY, -1);
+        isReadOnly = intent.getBooleanExtra(Constant.KEY_READ_ONLY, false);
         loadEvaluatedItem();
     }
 
     private void loadEvaluatedItem() {
-        Intent intent = getIntent();
-        identity = intent.getIntExtra(Constant.KEY_IDENTITY, -1);
-        isReadOnly = intent.getBooleanExtra(Constant.KEY_READ_ONLY, false);
-        invalidateOptionsMenu();
-        int courseId = intent.getIntExtra(Constant.KEY_COURSE_ID, -1);
+        int courseId = getIntent().getIntExtra(Constant.KEY_COURSE_ID, -1);
         if (courseId > 0) {
             switch (identity) {
                 case Constant.IDENTITY_STUDENT:
@@ -126,6 +125,7 @@ public class EvaluateActivity extends BaseActivity implements FirstTargetFragmen
         vpFirstTarget.setAdapter(new FirstTargetViewPagerAdapter(getSupportFragmentManager(), score, isReadOnly, this));
         vpFirstTarget.setOffscreenPageLimit(EvaluateTargetManager.getFirstTargets().size());
         tlFirstTarget.setupWithViewPager(vpFirstTarget);
+        invalidateOptionsMenu();
     }
 
     @Override
@@ -166,8 +166,8 @@ public class EvaluateActivity extends BaseActivity implements FirstTargetFragmen
     }
 
     private void commitScore() {
-        final MaterialDialog dialog = new MaterialDialog.Builder(this)
-                .progressIndeterminateStyle(false).title("正在提交").content("请稍后...").cancelable(false).build();
+        final MaterialDialog dialog = new MaterialDialog.Builder(this).title("正在提交").content("请稍后...")
+                .progressIndeterminateStyle(false).progress(true, 0).cancelable(false).build();
         EvaluateApi.commitEvaluate(course.getId(), new SimpleServiceCallback<StudentCourseInfo>(clEvaluate) {
 
             @Override

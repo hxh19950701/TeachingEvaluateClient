@@ -8,7 +8,7 @@ public class EventManager {
         throw new UnsupportedOperationException("This class cannot be instantiated, and its methods must be called directly.");
     }
 
-    private static final EventBus eventBus = new EventBus();
+    private static final EventBus eventBus = EventBus.getDefault();
 
     public static EventBus getEventBus() {
         return eventBus;

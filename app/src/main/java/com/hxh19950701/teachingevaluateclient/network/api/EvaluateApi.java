@@ -63,4 +63,10 @@ public class EvaluateApi {
         RequestParams requestParams = NetClient.buildRequestParams(action, "courseId", courseId + "");
         return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<List<TeacherCourseEvaluate>>>(){});
     }
+
+    public static HttpHandler<String> commentCourse(int courseId, String comment, ServiceCallback<StudentCourseInfo> callBack) {
+        String action = "commentCourse";
+        RequestParams requestParams = NetClient.buildRequestParams(action, "courseId", courseId + "", "comment", comment);
+        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<StudentCourseInfo>>(){});
+    }
 }

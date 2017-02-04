@@ -8,8 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.hxh19950701.teachingevaluateclient.R;
-
-import org.greenrobot.eventbus.EventBus;
+import com.hxh19950701.teachingevaluateclient.manager.EventManager;
 
 public abstract class BaseActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -50,18 +49,16 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
     }
 
     protected void startReceiveEvent() {
-        EventBus defaultEventBus = EventBus.getDefault();
-        if (!defaultEventBus.isRegistered(this)) {
-            defaultEventBus.register(this);
+        if (!EventManager.isRegistered(this)) {
+            EventManager.register(this);
         }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus defaultEventBus = EventBus.getDefault();
-        if (defaultEventBus.isRegistered(this)) {
-            defaultEventBus.unregister(this);
+        if (EventManager.isRegistered(this)) {
+            EventManager.unregister(this);
         }
     }
 }

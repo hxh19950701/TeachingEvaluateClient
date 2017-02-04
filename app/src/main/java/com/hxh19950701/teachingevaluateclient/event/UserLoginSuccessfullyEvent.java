@@ -1,13 +1,13 @@
 package com.hxh19950701.teachingevaluateclient.event;
 
-public class UserLoginSuccessEvent {
+public class UserLoginSuccessfullyEvent {
 
     private String username;
     private String password;
     private boolean isRememberPassword;
     private boolean isAutoLoginEnable;
 
-    public UserLoginSuccessEvent(String username, String password, boolean isRememberPassword, boolean isAutoLoginEnable) {
+    public UserLoginSuccessfullyEvent(String username, String password, boolean isRememberPassword, boolean isAutoLoginEnable) {
         this.username = username;
         this.password = password;
         this.isRememberPassword = isRememberPassword;
