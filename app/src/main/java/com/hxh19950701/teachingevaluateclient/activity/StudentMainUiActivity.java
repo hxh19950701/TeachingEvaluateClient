@@ -18,6 +18,8 @@ import com.hxh19950701.teachingevaluateclient.base.BaseMainUiActivity;
 import com.hxh19950701.teachingevaluateclient.bean.service.Student;
 import com.hxh19950701.teachingevaluateclient.bean.service.StudentCourseInfo;
 import com.hxh19950701.teachingevaluateclient.event.StudentAddCourseSuccessfullyEvent;
+import com.hxh19950701.teachingevaluateclient.event.StudentCommentCourseCompleteEvent;
+import com.hxh19950701.teachingevaluateclient.event.StudentEvaluateCourseCompleteEvent;
 import com.hxh19950701.teachingevaluateclient.network.SimpleServiceCallback;
 import com.hxh19950701.teachingevaluateclient.network.api.CourseApi;
 import com.hxh19950701.teachingevaluateclient.network.api.StudentApi;
@@ -46,6 +48,7 @@ public class StudentMainUiActivity extends BaseMainUiActivity implements SwipeRe
         clPersonCenter = (CoordinatorLayout) findViewById(R.id.clPersonCenter);
         nvDrawer = (NavigationView) findViewById(R.id.nvDrawer);
         rvCourse = (RecyclerView) findViewById(R.id.rvCourse);
+        rvCourse.setLayoutManager(new LinearLayoutManager(this));
         srlCourseList = (SwipeRefreshLayout) findViewById(R.id.srlCourseList);
         srlCourseList.setColorSchemeResources(R.color.colorAccent);
 
@@ -80,7 +83,6 @@ public class StudentMainUiActivity extends BaseMainUiActivity implements SwipeRe
 
     @Override
     public void initData() {
-        rvCourse.setLayoutManager(new LinearLayoutManager(this));
         initUserInfo();
         initStudentCourse();
         startReceiveEvent();
@@ -124,8 +126,18 @@ public class StudentMainUiActivity extends BaseMainUiActivity implements SwipeRe
         }
     }
 
-    @Subscribe(sticky = false, threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onStudentAddCourseSuccessfully(StudentAddCourseSuccessfullyEvent event) {
+        initStudentCourse();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onStudentCommentCourseComplete(StudentCommentCourseCompleteEvent event) {
+        initStudentCourse();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onStudentEvaluateCourseComplete(StudentEvaluateCourseCompleteEvent event) {
         initStudentCourse();
     }
 }

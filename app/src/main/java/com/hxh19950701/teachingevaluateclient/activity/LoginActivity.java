@@ -193,7 +193,8 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
         }
         //获取用户名及密码MD5
         final String username = tilUsername.getEditText().getText().toString();
-        final String password = isMD5 ? tilPassword.getEditText().getText().toString() : MD5Utils.encipher(tilPassword.getEditText().getText().toString());
+        final String password = isMD5 ? tilPassword.getEditText().getText().toString()
+                : MD5Utils.encipher(tilPassword.getEditText().getText().toString());
         final MaterialDialog dialog = new MaterialDialog.Builder(this).title(R.string.loggingIn).content(R.string.wait)
                 .progress(true, 0).progressIndeterminateStyle(true).cancelable(true).build();
         //开始登录
@@ -201,7 +202,8 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
 
             @Override
             public void onGetDataSuccessful(User user) {
-                EventManager.postEvent(new UserLoginSuccessfullyEvent(username, password, cbRememberPassword.isChecked(), cbAutoLogin.isChecked()));
+                EventManager.postEvent(new UserLoginSuccessfullyEvent(
+                        username, password, cbRememberPassword.isChecked(), cbAutoLogin.isChecked()));
                 enterApp(user.getIdentity());
             }
 
@@ -238,6 +240,9 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
             case Constant.CODE_INVALID_PASSWORD:
                 tilPassword.getEditText().setText("");
                 SnackBarUtils.showLong(clLogin, R.string.errorPassword);
+                break;
+            case Constant.CODE_DISABLED_USER:
+                SnackBarUtils.showLong(clLogin, "该用户尚未启用，请联系管理员。");
                 break;
             default:
                 SnackBarUtils.showSystemError(clLogin);

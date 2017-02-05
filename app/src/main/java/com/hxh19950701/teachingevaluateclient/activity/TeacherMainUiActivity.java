@@ -32,6 +32,7 @@ public class TeacherMainUiActivity extends BaseMainUiActivity implements SwipeRe
     protected void initView() {
         setContentView(R.layout.activity_teacher_main_ui);
         rvCourse = (RecyclerView) findViewById(R.id.rvCourse);
+        rvCourse.setLayoutManager(new LinearLayoutManager(this));
         srlCourseList = (SwipeRefreshLayout) findViewById(R.id.srlCourseList);
         fabNewCourse = (FloatingActionButton) findViewById(R.id.fabNewCourse);
         clPersonCenter = (CoordinatorLayout) findViewById(R.id.clPersonCenter);
@@ -47,7 +48,6 @@ public class TeacherMainUiActivity extends BaseMainUiActivity implements SwipeRe
 
     @Override
     protected void initData() {
-        rvCourse.setLayoutManager(new LinearLayoutManager(this));
         initCourse();
     }
 
@@ -71,7 +71,7 @@ public class TeacherMainUiActivity extends BaseMainUiActivity implements SwipeRe
     }
 
     private void initCourse() {
-        CourseApi.getTeacherCourseList(new SimpleServiceCallback<List<Course>>(clPersonCenter) {
+        CourseApi.getTeacherCourseList(new SimpleServiceCallback<List<Course>>(clPersonCenter, srlCourseList) {
             @Override
             public void onGetDataSuccessful(List<Course> courses) {
                 rvCourse.setAdapter(new TeacherCourseRecyclerViewAdapter(courses));

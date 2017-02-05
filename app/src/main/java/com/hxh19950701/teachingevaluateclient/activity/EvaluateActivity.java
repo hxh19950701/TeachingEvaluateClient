@@ -22,8 +22,10 @@ import com.hxh19950701.teachingevaluateclient.bean.service.StudentCourseEvaluate
 import com.hxh19950701.teachingevaluateclient.bean.service.StudentCourseInfo;
 import com.hxh19950701.teachingevaluateclient.bean.service.TeacherCourseEvaluate;
 import com.hxh19950701.teachingevaluateclient.common.Constant;
+import com.hxh19950701.teachingevaluateclient.event.StudentEvaluateCourseCompleteEvent;
 import com.hxh19950701.teachingevaluateclient.fragment.FirstTargetFragment;
 import com.hxh19950701.teachingevaluateclient.manager.EvaluateTargetManager;
+import com.hxh19950701.teachingevaluateclient.manager.EventManager;
 import com.hxh19950701.teachingevaluateclient.network.SimpleServiceCallback;
 import com.hxh19950701.teachingevaluateclient.network.api.EvaluateApi;
 import com.hxh19950701.teachingevaluateclient.utils.SnackBarUtils;
@@ -56,11 +58,10 @@ public class EvaluateActivity extends BaseActivity implements FirstTargetFragmen
         } else if (identity != Constant.IDENTITY_STUDENT && identity != Constant.IDENTITY_TEACHER) {
             throw new IllegalArgumentException("Invalid identity : " + identity);
         }
-        Intent intent = new Intent(context, EvaluateActivity.class);
-        intent.putExtra(Constant.KEY_COURSE_ID, courseId);
-        intent.putExtra(Constant.KEY_IDENTITY, identity);
-        intent.putExtra(Constant.KEY_READ_ONLY, isReadOnly);
-        return intent;
+        return new Intent(context, EvaluateActivity.class)
+                .putExtra(Constant.KEY_COURSE_ID, courseId)
+                .putExtra(Constant.KEY_IDENTITY, identity)
+                .putExtra(Constant.KEY_READ_ONLY, isReadOnly);
     }
 
     @Override
@@ -101,8 +102,8 @@ public class EvaluateActivity extends BaseActivity implements FirstTargetFragmen
                     EvaluateApi.getTeacherAllEvaluatedItemsByCourse(courseId,
                             new SimpleServiceCallback<List<TeacherCourseEvaluate>>(clEvaluate) {
                                 @Override
-                                public void onGetDataSuccessful(List<TeacherCourseEvaluate> teacherCourseEvaluates) {
-
+                                public void onGetDataSuccessful(List<TeacherCourseEvaluate> data) {
+                                    initTeacherEvaluatedItem(data);
                                 }
                             });
                     break;
@@ -126,6 +127,19 @@ public class EvaluateActivity extends BaseActivity implements FirstTargetFragmen
         vpFirstTarget.setOffscreenPageLimit(EvaluateTargetManager.getFirstTargets().size());
         tlFirstTarget.setupWithViewPager(vpFirstTarget);
         invalidateOptionsMenu();
+    }
+
+    private void initTeacherEvaluatedItem(List<TeacherCourseEvaluate> data) {
+        if (data != null && data.size() != 0) {
+            setTitle("评价：" + data.get(0).getCourse().getName());
+            for (TeacherCourseEvaluate item : data) {
+                score[item.getItem().getId()] = item.getScore();
+            }
+            vpFirstTarget.setAdapter(new FirstTargetViewPagerAdapter(getSupportFragmentManager(), score, isReadOnly, this));
+            vpFirstTarget.setOffscreenPageLimit(EvaluateTargetManager.getFirstTargets().size());
+            tlFirstTarget.setupWithViewPager(vpFirstTarget);
+            invalidateOptionsMenu();
+        }
     }
 
     @Override
@@ -171,6 +185,7 @@ public class EvaluateActivity extends BaseActivity implements FirstTargetFragmen
         EvaluateApi.commitEvaluate(course.getId(), new SimpleServiceCallback<StudentCourseInfo>(clEvaluate, dialog) {
             @Override
             public void onGetDataSuccessful(StudentCourseInfo studentCourseInfo) {
+                EventManager.postEvent(new StudentEvaluateCourseCompleteEvent(studentCourseInfo));
                 startActivity(StudentCommentActivity.newIntent(EvaluateActivity.this, course.getId()));
                 finish();
             }
@@ -184,11 +199,9 @@ public class EvaluateActivity extends BaseActivity implements FirstTargetFragmen
             MenuItem item = menu.getItem(index);
             switch (item.getItemId()) {
                 case R.id.action_commit:
-                    item.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
                     item.setVisible(getTotalScore() >= 0.0f && !isReadOnly);
                     break;
                 case R.id.action_analysis:
-                    item.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
                     item.setVisible(identity == Constant.IDENTITY_TEACHER);
                     break;
                 default:

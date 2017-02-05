@@ -19,11 +19,15 @@ public class Constant {
     public static final int SEX_MALE = 1;
     public static final int SEX_FEMALE = 0;
 
+    public static final int CREATE_BY_USER = 0;
+    public static final int CREATE_BY_ADMINISTRATOR = 1;
+
     public static final int CODE_SUCCESS = 200;
     public static final int CODE_NO_SUCH_USERNAME = -101;
     public static final int CODE_INVALID_USERNAME = -103;
     public static final int CODE_INVALID_PASSWORD = -104;
     public static final int CODE_INCORRECT_PASSWORD = -102;
+    public static final int CODE_DISABLED_USER = -139;
 
     public static final String KEY_USERNAME = "username";
     public static final String KEY_PASSWORD = "password";
