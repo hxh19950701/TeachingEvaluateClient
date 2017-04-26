@@ -37,11 +37,15 @@ public class Constant {
     public static final String KEY_SET_COOKIE = "set-cookie";
     public static final String KEY_ACTION = "action";
     public static final String KEY_SERVER_DOMAIN = "server_domain";
+    public static final String KEY_COURSE= "course";
     public static final String KEY_COURSE_ID = "course_id";
     public static final String KEY_MASSAGE = "massage";
     public static final String KEY_IDENTITY = "identity";
     public static final String KEY_READ_ONLY = "read_only";
+    public static final String KEY_USER_ID = "read_only";
+    public static final String KEY_DEPARTMENT = "department";
+    public static final String KEY_SUBJECT = "subject";
 
     public static final String PREFIX_SERVER_DOMAIN = "http://";
-    public static final String DEFAULT_SERVER_DOMAIN = "http://192.168.2.103:8080/TeachingEvaluateServer";
+    public static final String DEFAULT_SERVER_DOMAIN = "http://192.168.2.108:8080/TeachingEvaluateServer";
 }

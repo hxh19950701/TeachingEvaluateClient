@@ -26,7 +26,8 @@
 			android:clickable="true"
 			android:focusable="true">
 
-			<EditText android:layout_width="match_parent"
+			<EditText android:id="@+id/etUsername"
+					  android:layout_width="match_parent"
 					  android:layout_height="wrap_content"
 					  android:digits="@string/usernameChar"
 					  android:hint="输入用户名"
@@ -39,7 +40,8 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content">
 
-			<EditText android:layout_width="match_parent"
+			<EditText android:id="@+id/etPassword"
+					  android:layout_width="match_parent"
 					  android:layout_height="wrap_content"
 					  android:hint="输入密码"
 					  android:inputType="textPassword"
@@ -52,7 +54,8 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content">
 
-			<EditText android:layout_width="match_parent"
+			<EditText android:id="@+id/etPasswordRetype"
+					  android:layout_width="match_parent"
 					  android:layout_height="wrap_content"
 					  android:hint="再次输入密码以确认"
 					  android:inputType="textPassword"

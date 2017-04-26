@@ -1,6 +1,6 @@
 package com.hxh19950701.teachingevaluateclient.event;
 
-import com.hxh19950701.teachingevaluateclient.bean.service.Course;
+import com.hxh19950701.teachingevaluateclient.bean.response.Course;
 
 public class StudentCommentCourseCompleteEvent {
 

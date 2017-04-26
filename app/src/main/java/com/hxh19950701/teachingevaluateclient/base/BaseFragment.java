@@ -1,6 +1,7 @@
 package com.hxh19950701.teachingevaluateclient.base;
 
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,17 +10,39 @@ import android.view.ViewGroup;
 
 import com.hxh19950701.teachingevaluateclient.manager.EventManager;
 
+import butterknife.ButterKnife;
+
 public abstract class BaseFragment extends Fragment implements View.OnClickListener {
 
-    public abstract View initView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState);
-    public abstract void initListener();
-    public abstract void initData();
-    public abstract void onClick(View v);
+    protected abstract int getLayoutId();
+
+    protected void initView() {
+
+    }
+
+    protected void initListener() {
+
+    }
+
+    protected void initData() {
+
+    }
+
+    public void onClick(View view) {
+
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return initView(inflater, container, savedInstanceState);
+        int layoutId = getLayoutId();
+        if (layoutId > 0) {
+            View view = inflater.inflate(layoutId, container, false);
+            ButterKnife.bind(this, view);
+            initView();
+            return view;
+        }
+        return null;
     }
 
     @Override
@@ -29,17 +52,25 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
         initData();
     }
 
+    protected View findViewById(@IdRes int resId) {
+        return getView() == null ? null : getView().findViewById(resId);
+    }
+
     protected void startReceiveEvent() {
         if (!EventManager.isRegistered(this)) {
             EventManager.register(this);
         }
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
+    protected void stopReceiveEvent() {
         if (EventManager.isRegistered(this)) {
             EventManager.unregister(this);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stopReceiveEvent();
     }
 }

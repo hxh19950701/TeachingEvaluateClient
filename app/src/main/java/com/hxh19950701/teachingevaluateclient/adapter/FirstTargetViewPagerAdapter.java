@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.hxh19950701.teachingevaluateclient.bean.service.EvaluateFirstTarget;
+import com.hxh19950701.teachingevaluateclient.bean.response.EvaluateFirstTarget;
 import com.hxh19950701.teachingevaluateclient.fragment.FirstTargetFragment;
 import com.hxh19950701.teachingevaluateclient.manager.EvaluateTargetManager;
 
@@ -15,7 +15,8 @@ public class FirstTargetViewPagerAdapter extends FragmentStatePagerAdapter {
 
     private Fragment[] fragments = new Fragment[FIRST_TARGET_COUNT];
 
-    public FirstTargetViewPagerAdapter(FragmentManager fm, float[] score, boolean isReadOnly, @Nullable FirstTargetFragment.OnItemScoreUpdateListener listener) {
+    public FirstTargetViewPagerAdapter(FragmentManager fm, float[] score, boolean isReadOnly,
+                                       @Nullable FirstTargetFragment.OnItemScoreUpdateListener listener) {
         super(fm);
         for (int counter = 0; counter < FIRST_TARGET_COUNT; ++counter) {
             EvaluateFirstTarget firstTarget = EvaluateTargetManager.getFirstTargets().get(counter);

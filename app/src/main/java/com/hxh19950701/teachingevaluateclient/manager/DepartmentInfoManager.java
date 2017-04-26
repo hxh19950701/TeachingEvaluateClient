@@ -6,9 +6,10 @@ import android.util.Log;
 
 import com.google.gson.reflect.TypeToken;
 import com.hxh19950701.teachingevaluateclient.base.ResponseData;
-import com.hxh19950701.teachingevaluateclient.bean.service.Clazz;
-import com.hxh19950701.teachingevaluateclient.bean.service.Department;
-import com.hxh19950701.teachingevaluateclient.bean.service.Subject;
+import com.hxh19950701.teachingevaluateclient.bean.response.Clazz;
+import com.hxh19950701.teachingevaluateclient.bean.response.Department;
+import com.hxh19950701.teachingevaluateclient.bean.response.Subject;
+import com.hxh19950701.teachingevaluateclient.event.DepartmentInfoUpdateSuccessfullyEvent;
 import com.hxh19950701.teachingevaluateclient.interfaces.ManagerInitializeListener;
 import com.hxh19950701.teachingevaluateclient.network.api.DepartmentApi;
 import com.hxh19950701.teachingevaluateclient.utils.GsonUtils;
@@ -33,7 +34,6 @@ public class DepartmentInfoManager {
         throw new UnsupportedOperationException("This class cannot be instantiated, and its methods must be called directly.");
     }
 
-    private static final Initializer INITIALIZER = new Initializer();
     private static final List<Department> DEPARTMENTS = new ArrayList<>(30);
     private static final List<Subject> SUBJECTS = new ArrayList<>(7);
     private static final List<Clazz> CLASSES = new ArrayList<>(5);
@@ -43,6 +43,7 @@ public class DepartmentInfoManager {
         @Override
         public void onSuccess(boolean fromCache) {
             DepartmentInfoManager.printAllClasses();
+            EventManager.postEvent(new DepartmentInfoUpdateSuccessfullyEvent(fromCache));
         }
 
         @Override
@@ -184,12 +185,9 @@ public class DepartmentInfoManager {
     }
 
     public static void init(Context context) {
-        if (!INITIALIZER.isAlive()) {
-            INITIALIZER.context = context;
-            INITIALIZER.start();
-        } else {
-            Log.w(TAG, "正在进行初始化，此次初始化请求将被忽略。");
-        }
+        Initializer initializer = new Initializer();
+        initializer.context = context;
+        initializer.start();
     }
 
     public static void setInitializeListener(ManagerInitializeListener initializeListener) {

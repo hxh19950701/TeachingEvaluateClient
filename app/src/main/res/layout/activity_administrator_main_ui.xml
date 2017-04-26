@@ -1,42 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout
-	android:id="@+id/dlPersonCenter"
+<android.support.design.widget.CoordinatorLayout
+	android:id="@+id/clManager"
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	app:layout_behavior="@string/appbar_scrolling_view_behavior">
+	android:fitsSystemWindows="true">
 
-	<android.support.design.widget.CoordinatorLayout
-		android:id="@+id/clPersonCenter"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:fitsSystemWindows="true">
+	<include layout="@layout/widget_toolbar"/>
 
-		<include layout="@layout/widget_toolbar"/>
+	<LinearLayout android:layout_width="match_parent"
+				  android:layout_height="match_parent"
+				  android:orientation="vertical"
+				  android:paddingBottom="@dimen/activity_vertical_margin"
+				  android:paddingLeft="@dimen/activity_horizontal_margin"
+				  android:paddingRight="@dimen/activity_horizontal_margin"
+				  android:paddingTop="@dimen/activity_vertical_margin"
+				  app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-		<!--主布局-->
-		<LinearLayout
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			android:paddingBottom="@dimen/activity_vertical_margin"
-			android:paddingLeft="@dimen/activity_horizontal_margin"
-			android:paddingRight="@dimen/activity_horizontal_margin"
-			android:paddingTop="@dimen/activity_vertical_margin"
-			app:layout_behavior="@string/appbar_scrolling_view_behavior">
+		<LinearLayout android:layout_width="match_parent"
+					  android:layout_height="70dp"
+					  android:gravity="center_vertical">
+
+			<de.hdodenhof.circleimageview.CircleImageView
+				android:layout_width="50dp"
+				android:layout_height="50dp"
+				android:src="@drawable/ic_person_black_48dp"/>
+
+			<TextView android:layout_width="wrap_content"
+					  android:layout_height="wrap_content"
+					  android:layout_marginLeft="15dp"
+					  android:text="欢迎使用教学评价管理端\n为了保证安全，使用完成请退出登录"
+					  android:textColor="@color/textColor3"/>
 
 		</LinearLayout>
 
-	</android.support.design.widget.CoordinatorLayout>
+		<include layout="@layout/widget_divider_line1"/>
 
-	<!--侧滑菜单-->
-	<android.support.design.widget.NavigationView
-		android:id="@+id/nvDrawer"
-		android:layout_width="wrap_content"
-		android:layout_height="match_parent"
-		android:layout_gravity="start"
-		app:headerLayout="@layout/drawer_header"
-		app:menu="@menu/menu_drawer"/>
+		<Button android:id="@+id/btnUserManage"
+				android:layout_width="match_parent"
+				android:layout_height="60dp"
+				android:background="?attr/selectableItemBackground"
+				android:drawableLeft="@drawable/ic_person_grey600_24dp"
+				android:text="用户管理"
+				android:textSize="16sp"/>
 
-</android.support.v4.widget.DrawerLayout>
+		<include layout="@layout/widget_divider_line1"/>
+
+		<Button android:id="@+id/btnCreateUser"
+				android:layout_width="match_parent"
+				android:layout_height="60dp"
+				android:background="?attr/selectableItemBackground"
+				android:drawableLeft="@drawable/ic_person_add_grey600_24dp"
+				android:text="创建用户"
+				android:textSize="16sp"/>
+
+		<include layout="@layout/widget_divider_line1"/>
+
+		<Button android:id="@+id/btnDepartmentManage"
+				android:layout_width="match_parent"
+				android:layout_height="60dp"
+				android:background="?attr/selectableItemBackground"
+				android:drawableLeft="@drawable/ic_apps_grey600_24dp"
+				android:text="系部管理"
+				android:textSize="16sp"/>
+
+		<include layout="@layout/widget_divider_line1"/>
+
+		<Button android:id="@+id/btnChangePassword"
+				android:layout_width="match_parent"
+				android:layout_height="60dp"
+				android:background="?attr/selectableItemBackground"
+				android:drawableLeft="@drawable/ic_border_color_grey600_48dp"
+				android:text="修改密码"
+				android:textSize="16sp"/>
+
+		<include layout="@layout/widget_divider_line1"/>
+
+		<Button android:id="@+id/btnLogout"
+				android:layout_width="match_parent"
+				android:layout_height="60dp"
+				android:background="?attr/selectableItemBackground"
+				android:drawableLeft="@drawable/ic_exit_to_app_grey600_24dp"
+				android:text="退出登录"
+				android:textSize="16sp"/>
+
+		<include layout="@layout/widget_divider_line1"/>
+	</LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>

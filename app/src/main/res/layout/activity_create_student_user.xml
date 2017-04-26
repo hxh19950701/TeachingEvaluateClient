@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+	android:id="@+id/clCreateStudentUser"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:fitsSystemWindows="true">
+
+	<include layout="@layout/widget_toolbar"/>
+
+	<LinearLayout android:layout_width="match_parent"
+				  android:layout_height="match_parent"
+				  android:orientation="vertical"
+				  android:paddingBottom="@dimen/activity_vertical_margin"
+				  android:paddingLeft="@dimen/activity_horizontal_margin"
+				  android:paddingRight="@dimen/activity_horizontal_margin"
+				  android:paddingTop="@dimen/activity_vertical_margin"
+				  app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+		<TextView android:layout_width="match_parent"
+				  android:layout_height="wrap_content"
+				  android:text="你可以在这里创建学生用户，创建之后的学生用户密码与用户名相同，且默认为启用状态。"/>
+
+		<RadioGroup android:id="@+id/rgCreateType"
+					android:layout_marginTop="10dp"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal">
+
+			<TextView android:layout_width="wrap_content"
+					  android:layout_height="wrap_content"
+					  android:text="创建个数："/>
+
+			<RadioButton android:id="@+id/rbSingleCreate"
+						 android:layout_width="wrap_content"
+						 android:layout_height="wrap_content"
+						 android:layout_weight="1"
+						 android:checked="true"
+						 android:text="创建一个"/>
+
+			<RadioButton android:id="@+id/rbMultiCreate"
+						 android:layout_width="wrap_content"
+						 android:layout_height="wrap_content"
+						 android:layout_weight="1"
+						 android:text="创建多个"/>
+		</RadioGroup>
+
+		<android.support.design.widget.TextInputLayout
+			android:id="@+id/tilUsername"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:hint="用户名">
+
+			<EditText android:id="@+id/etUsername"
+					  android:layout_width="match_parent"
+					  android:layout_height="match_parent"
+					  android:digits="@string/usernameChar"/>
+		</android.support.design.widget.TextInputLayout>
+
+		<android.support.design.widget.TextInputLayout
+			android:id="@+id/tilNumber"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:visibility="gone">
+
+			<EditText android:id="@+id/etNumber"
+					  android:layout_width="match_parent"
+					  android:layout_height="match_parent"
+					  android:hint="数量"
+					  android:inputType="number"
+					  android:maxLength="2"/>
+
+			<TextView android:layout_width="wrap_content"
+					  android:layout_height="wrap_content"
+					  android:text="将自动在用户名后加上递增数字，并自动补齐位置，最多创建99个"/>
+		</android.support.design.widget.TextInputLayout>
+
+		<Button android:id="@+id/btnCreateType"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="right"
+				android:text="创建"/>
+	</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

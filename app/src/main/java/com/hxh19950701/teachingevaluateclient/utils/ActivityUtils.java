@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.hxh19950701.teachingevaluateclient.R;
 import com.hxh19950701.teachingevaluateclient.activity.AdministratorMainUiActivity;
 import com.hxh19950701.teachingevaluateclient.activity.LoginActivity;
@@ -31,7 +32,8 @@ public class ActivityUtils {
             case Constant.IDENTITY_STUDENT:
             case Constant.IDENTITY_TEACHER:
             case Constant.IDENTITY_ADMINISTRATOR:
-                IntentUtils.startActivity(context, IDENTITY_ACTIVITY[identity], Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                IntentUtils.startActivity(context, IDENTITY_ACTIVITY[identity],
+                        Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown identity code : " + identity);
@@ -39,9 +41,13 @@ public class ActivityUtils {
     }
 
     public static void exitApp(Activity activity, String msg) {
-        PrefUtils.putBoolean(Constant.KEY_AUTO_LOGIN, false);
-        UserApi.logout(null);
-        activity.startActivity(LoginActivity.newIntent(activity, msg).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
-        activity.overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out);
+        new MaterialDialog.Builder(activity).content("确认注销当前用户吗？")
+                .positiveText("注销").onPositive((dialog, which) -> {
+                    PrefUtils.putBoolean(Constant.KEY_AUTO_LOGIN, false);
+                    UserApi.logout(null);
+                    activity.startActivity(LoginActivity.newIntent(activity, msg)
+                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                    activity.overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out);
+                }).negativeText("取消").show();
     }
 }

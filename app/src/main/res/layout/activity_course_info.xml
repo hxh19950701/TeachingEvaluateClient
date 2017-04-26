@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+	android:id="@+id/clCourseInfo"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:fitsSystemWindows="true">
+
+	<include layout="@layout/widget_toolbar"/>
+
+	<LinearLayout android:layout_width="match_parent"
+				  android:layout_height="match_parent"
+				  android:orientation="vertical"
+				  android:padding="@dimen/activity_horizontal_margin"
+				  app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+		<LinearLayout android:layout_width="match_parent"
+					  android:layout_height="wrap_content"
+					  android:orientation="horizontal"
+					  android:paddingTop="10dp">
+
+			<TextView android:layout_width="wrap_content"
+					  android:layout_height="wrap_content"
+					  android:text="课程编号："/>
+
+			<TextView android:id="@+id/tvCourseId"
+					  android:layout_width="wrap_content"
+					  android:layout_height="wrap_content"/>
+		</LinearLayout>
+
+		<LinearLayout android:layout_width="match_parent"
+					  android:layout_height="wrap_content"
+					  android:orientation="horizontal"
+					  android:paddingTop="10dp">
+
+			<TextView android:layout_width="wrap_content"
+					  android:layout_height="wrap_content"
+					  android:text="课程名称："/>
+
+			<TextView android:id="@+id/tvCourseName"
+					  android:layout_width="wrap_content"
+					  android:layout_height="wrap_content"/>
+		</LinearLayout>
+
+		<LinearLayout android:layout_width="match_parent"
+					  android:layout_height="wrap_content"
+					  android:orientation="horizontal"
+					  android:paddingTop="10dp">
+
+			<TextView android:layout_width="wrap_content"
+					  android:layout_height="wrap_content"
+					  android:text="开设时间："/>
+
+			<TextView android:id="@+id/tvCourseTime"
+					  android:layout_width="wrap_content"
+					  android:layout_height="wrap_content"/>
+		</LinearLayout>
+
+		<LinearLayout android:layout_width="match_parent"
+					  android:layout_height="wrap_content"
+					  android:orientation="horizontal"
+					  android:paddingTop="10dp">
+
+			<TextView android:layout_width="wrap_content"
+					  android:layout_height="wrap_content"
+					  android:text="学生总数："/>
+
+			<TextView android:id="@+id/tvStudentCount"
+					  android:layout_width="wrap_content"
+					  android:layout_height="wrap_content"/>
+		</LinearLayout>
+	</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

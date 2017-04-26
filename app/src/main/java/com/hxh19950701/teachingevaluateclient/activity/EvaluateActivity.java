@@ -2,25 +2,22 @@ package com.hxh19950701.teachingevaluateclient.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hxh19950701.teachingevaluateclient.R;
 import com.hxh19950701.teachingevaluateclient.adapter.FirstTargetViewPagerAdapter;
 import com.hxh19950701.teachingevaluateclient.base.BaseActivity;
 import com.hxh19950701.teachingevaluateclient.bean.response.CourseAndEvaluatedItem;
-import com.hxh19950701.teachingevaluateclient.bean.service.Course;
-import com.hxh19950701.teachingevaluateclient.bean.service.StudentCourseEvaluate;
-import com.hxh19950701.teachingevaluateclient.bean.service.StudentCourseInfo;
-import com.hxh19950701.teachingevaluateclient.bean.service.TeacherCourseEvaluate;
+import com.hxh19950701.teachingevaluateclient.bean.response.Course;
+import com.hxh19950701.teachingevaluateclient.bean.response.StudentCourseEvaluate;
+import com.hxh19950701.teachingevaluateclient.bean.response.StudentCourseInfo;
+import com.hxh19950701.teachingevaluateclient.bean.response.TeacherCourseEvaluate;
 import com.hxh19950701.teachingevaluateclient.common.Constant;
 import com.hxh19950701.teachingevaluateclient.event.StudentEvaluateCourseCompleteEvent;
 import com.hxh19950701.teachingevaluateclient.fragment.FirstTargetFragment;
@@ -33,24 +30,11 @@ import com.hxh19950701.teachingevaluateclient.utils.SnackBarUtils;
 import java.util.Arrays;
 import java.util.List;
 
+import butterknife.BindView;
+
 public class EvaluateActivity extends BaseActivity implements FirstTargetFragment.OnItemScoreUpdateListener {
 
     private static final String TAG = EvaluateActivity.class.getSimpleName();
-
-    private final int THIRD_TARGET_COUNT = EvaluateTargetManager.getThirdTargets().size();
-
-    private CoordinatorLayout clEvaluate;
-    private TabLayout tlFirstTarget;
-    private ViewPager vpFirstTarget;
-
-    private Course course = null;
-    private int identity = -1;
-    private boolean isReadOnly = false;
-    private float score[] = new float[THIRD_TARGET_COUNT];
-
-    {
-        Arrays.fill(score, -1.0f);
-    }
 
     public static Intent newIntent(Context context, int courseId, int identity, boolean isReadOnly) {
         if (courseId < 0) {
@@ -64,54 +48,69 @@ public class EvaluateActivity extends BaseActivity implements FirstTargetFragmen
                 .putExtra(Constant.KEY_READ_ONLY, isReadOnly);
     }
 
-    @Override
-    protected void initView() {
-        setContentView(R.layout.activity_student_evaluate);
-        clEvaluate = (CoordinatorLayout) findViewById(R.id.clEvaluate);
-        tlFirstTarget = (TabLayout) findViewById(R.id.tlFirstTarget);
-        vpFirstTarget = (ViewPager) findViewById(R.id.vpFirstTarget);
+    private final int THIRD_TARGET_COUNT = EvaluateTargetManager.getThirdTargets().size();
+
+    @BindView(R.id.clEvaluate)
+    /*package*/ CoordinatorLayout clEvaluate;
+    @BindView(R.id.tlFirstTarget)
+    /*package*/ TabLayout tlFirstTarget;
+    @BindView(R.id.vpFirstTarget)
+    /*package*/ ViewPager vpFirstTarget;
+
+    private Course course = null;
+    private int identity = -1;
+    private boolean isReadOnly = false;
+    private float score[] = new float[THIRD_TARGET_COUNT];
+
+    {
+        Arrays.fill(score, -1.0f);
     }
 
     @Override
-    protected void initListener() {
+    protected int getLayoutId() {
+        return R.layout.activity_student_evaluate;
     }
 
     @Override
     protected void initData() {
         displayHomeAsUp();
+        initSetting();
+        loadEvaluatedItem();
+    }
+
+    private void initSetting() {
         Intent intent = getIntent();
         identity = intent.getIntExtra(Constant.KEY_IDENTITY, -1);
         isReadOnly = intent.getBooleanExtra(Constant.KEY_READ_ONLY, false);
-        loadEvaluatedItem();
     }
 
     private void loadEvaluatedItem() {
         int courseId = getIntent().getIntExtra(Constant.KEY_COURSE_ID, -1);
-        if (courseId > 0) {
-            switch (identity) {
-                case Constant.IDENTITY_STUDENT:
-                    EvaluateApi.getStudentAllEvaluatedItemsByCourse(courseId,
-                            new SimpleServiceCallback<CourseAndEvaluatedItem>(clEvaluate) {
-                                @Override
-                                public void onGetDataSuccessful(CourseAndEvaluatedItem data) {
-                                    initStudentEvaluatedItem(data);
-                                }
-                            });
-                    break;
-                case Constant.IDENTITY_TEACHER:
-                    EvaluateApi.getTeacherAllEvaluatedItemsByCourse(courseId,
-                            new SimpleServiceCallback<List<TeacherCourseEvaluate>>(clEvaluate) {
-                                @Override
-                                public void onGetDataSuccessful(List<TeacherCourseEvaluate> data) {
-                                    initTeacherEvaluatedItem(data);
-                                }
-                            });
-                    break;
-                default:
-                    SnackBarUtils.showLongPost(clEvaluate, "初始化失败，非法的的启动参数。");
-            }
-        } else {
+        if (courseId < 0) {
             SnackBarUtils.showLongPost(clEvaluate, "初始化失败，非法的的启动参数。");
+            return;
+        }
+        switch (identity) {
+            case Constant.IDENTITY_STUDENT:
+                EvaluateApi.getStudentAllEvaluatedItemsByCourse(courseId,
+                        new SimpleServiceCallback<CourseAndEvaluatedItem>(clEvaluate) {
+                            @Override
+                            public void onGetDataSuccessful(CourseAndEvaluatedItem data) {
+                                initStudentEvaluatedItem(data);
+                            }
+                        });
+                break;
+            case Constant.IDENTITY_TEACHER:
+                EvaluateApi.getTeacherAllEvaluatedItemsByCourse(courseId,
+                        new SimpleServiceCallback<List<TeacherCourseEvaluate>>(clEvaluate) {
+                            @Override
+                            public void onGetDataSuccessful(List<TeacherCourseEvaluate> data) {
+                                initTeacherEvaluatedItem(data);
+                            }
+                        });
+                break;
+            default:
+                SnackBarUtils.showLongPost(clEvaluate, "初始化失败，非法的的启动参数。");
         }
     }
 
@@ -120,7 +119,10 @@ public class EvaluateActivity extends BaseActivity implements FirstTargetFragmen
         setTitle("评价：" + course.getName());
         if (data.getItem() != null) {
             for (StudentCourseEvaluate item : data.getItem()) {
-                score[item.getItem().getId()] = item.getScore();
+                int pos = item.getItem().getId();
+                if (pos >= 0 && pos < score.length) {
+                    score[pos] = item.getScore();
+                }
             }
         }
         vpFirstTarget.setAdapter(new FirstTargetViewPagerAdapter(getSupportFragmentManager(), score, isReadOnly, this));
@@ -142,10 +144,6 @@ public class EvaluateActivity extends BaseActivity implements FirstTargetFragmen
         }
     }
 
-    @Override
-    public void onClick(View view) {
-    }
-
     private float getTotalScore() {
         if (score.length > 0) {
             float totalScore = 0.0f;
@@ -161,27 +159,26 @@ public class EvaluateActivity extends BaseActivity implements FirstTargetFragmen
         }
     }
 
+    @SuppressWarnings("StringBufferReplaceableByString")
     private void showResultDialog() {
         float totalScore = getTotalScore();
         if (totalScore < 0.0f) {
             SnackBarUtils.showLong(clEvaluate, "存在未评价的项目。");
         } else {
-            StringBuilder content = new StringBuilder();
-            content.append("课程：").append(course.getName()).append("\n");
-            content.append("得分：").append(totalScore);
-            new MaterialDialog.Builder(this).title("结果").content(content)
-                    .positiveText("提交").onPositive(new MaterialDialog.SingleButtonCallback() {
-                @Override
-                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                    commitScore();
-                }
-            }).show();
+            String content = new StringBuilder()
+                    .append("课程 \"").append(course.getName())
+                    .append("\" 的最终得分为 ").append(totalScore)
+                    .toString();
+            new MaterialDialog.Builder(this).title("确定提交吗").content(content)
+                    .positiveText("提交").onPositive((dialog, which) -> commitScore())
+                    .show();
         }
     }
 
     private void commitScore() {
-        final MaterialDialog dialog = new MaterialDialog.Builder(this).title("正在提交").content("请稍后...")
-                .progressIndeterminateStyle(false).progress(true, 0).cancelable(false).build();
+        MaterialDialog dialog = new MaterialDialog.Builder(this)
+                .title("正在提交").content("请稍后...")
+                .progress(true, 0).cancelable(false).build();
         EvaluateApi.commitEvaluate(course.getId(), new SimpleServiceCallback<StudentCourseInfo>(clEvaluate, dialog) {
             @Override
             public void onGetDataSuccessful(StudentCourseInfo studentCourseInfo) {
@@ -229,7 +226,7 @@ public class EvaluateActivity extends BaseActivity implements FirstTargetFragmen
                         @Override
                         public void onGetDataSuccessful(StudentCourseEvaluate data) {
                             score[itemId] = data.getScore();
-                            textView.setText(data.getScore() + "分");
+                            textView.setText(getString(R.string.point, score[itemId]));
                             invalidateOptionsMenu();
                         }
                     });

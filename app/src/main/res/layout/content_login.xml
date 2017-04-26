@@ -28,7 +28,8 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content">
 
-				<EditText android:layout_width="match_parent"
+				<EditText android:id="@+id/etUsername"
+						  android:layout_width="match_parent"
 						  android:layout_height="wrap_content"
 						  android:digits="0123456789abcdefghigklmnopqrstuvwxyzABCDEFGHIGKLMNOPQRSTUVWXYZ"
 						  android:hint="@string/inputUsername"
@@ -44,6 +45,7 @@
 				android:layout_height="wrap_content">
 
 				<EditText android:layout_width="match_parent"
+						  android:id="@+id/etPassword"
 						  android:layout_height="wrap_content"
 						  android:hint="@string/inputPassword"
 						  android:imeOptions="actionDone"

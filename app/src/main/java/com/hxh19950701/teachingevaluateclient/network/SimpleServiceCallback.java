@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.hxh19950701.teachingevaluateclient.base.ResponseData;
 import com.hxh19950701.teachingevaluateclient.common.Constant;
 import com.hxh19950701.teachingevaluateclient.utils.SnackBarUtils;
@@ -26,14 +27,20 @@ public abstract class SimpleServiceCallback<Data> extends ServiceCallback<Data> 
         this.dialog = dialog;
     }
 
-    public SimpleServiceCallback(View container, SwipeRefreshLayout swipeRefreshLayout) {
+    public SimpleServiceCallback(@NonNull View container, @Nullable CharSequence dialogText) {
+        this.container = container;
+        this.dialog = new MaterialDialog.Builder(container.getContext()).content(dialogText)
+                .progressIndeterminateStyle(false).cancelable(false).build();
+    }
+
+    public SimpleServiceCallback(@NonNull View container, @Nullable SwipeRefreshLayout swipeRefreshLayout) {
         this.container = container;
         this.swipeRefreshLayout = swipeRefreshLayout;
     }
 
     @Override
     public void onStart() {
-        if (dialog != null) {
+        if (dialog != null && !dialog.isShowing()) {
             dialog.show();
         }
         if (swipeRefreshLayout != null) {
@@ -68,7 +75,7 @@ public abstract class SimpleServiceCallback<Data> extends ServiceCallback<Data> 
 
     @Override
     public void onAfter() {
-        if (dialog != null) {
+        if (dialog != null && dialog.isShowing()) {
             dialog.dismiss();
         }
         if (swipeRefreshLayout != null) {

@@ -15,8 +15,12 @@ public class HelpActivity extends BaseActivity {
     private WebView wvHelp;
 
     @Override
+    protected int getLayoutId() {
+        return R.layout.activity_help;
+    }
+
+    @Override
     protected void initView() {
-        setContentView(R.layout.activity_help);
         wvHelp = (WebView) findViewById(R.id.wvHelp);
         clHelp = (CoordinatorLayout) findViewById(R.id.clHelp);
     }

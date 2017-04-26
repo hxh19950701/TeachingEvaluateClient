@@ -6,7 +6,7 @@ import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 
 import com.hxh19950701.teachingevaluateclient.base.ResponseData;
-import com.hxh19950701.teachingevaluateclient.bean.service.User;
+import com.hxh19950701.teachingevaluateclient.bean.response.User;
 import com.hxh19950701.teachingevaluateclient.common.Constant;
 import com.hxh19950701.teachingevaluateclient.network.ServiceCallback;
 import com.hxh19950701.teachingevaluateclient.network.api.UserApi;
@@ -27,15 +27,11 @@ public class SplashActivity extends AppCompatActivity {
     private static final int LOGIN_FAIL_DUE_UNKNOWN = 8;
     private static final long SPLASH_DURATION = 1500L;
 
-    private final Thread splashTimer = new Thread() {
-        @Override
-        public void run() {
-            super.run();
-            SystemClock.sleep(SPLASH_DURATION);
-            isTimeUp = true;
-            requireDismiss();
-        }
-    };
+    private final Thread splashTimer = new Thread(() -> {
+        SystemClock.sleep(SPLASH_DURATION);
+        isTimeUp = true;
+        requireDismiss();
+    });
 
     private int loginStatus = LOGIN_NOT_START;
     private boolean isTimeUp = false;
@@ -124,7 +120,8 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void enterLogin() {
-        IntentUtils.startActivity(this, LoginActivity.class, Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        IntentUtils.startActivity(this, LoginActivity.class,
+                Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
     }
 
     @Override

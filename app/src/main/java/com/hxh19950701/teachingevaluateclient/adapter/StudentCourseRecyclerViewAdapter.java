@@ -8,13 +8,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.hxh19950701.teachingevaluateclient.R;
+import com.hxh19950701.teachingevaluateclient.activity.CourseInfoActivity;
 import com.hxh19950701.teachingevaluateclient.activity.EvaluateActivity;
-import com.hxh19950701.teachingevaluateclient.bean.service.StudentCourseInfo;
+import com.hxh19950701.teachingevaluateclient.base.BaseViewHolder;
+import com.hxh19950701.teachingevaluateclient.bean.response.StudentCourseInfo;
 import com.hxh19950701.teachingevaluateclient.common.Constant;
 import com.hxh19950701.teachingevaluateclient.utils.CourseUtils;
 
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.OnClick;
+import butterknife.OnLongClick;
 
 public class StudentCourseRecyclerViewAdapter extends RecyclerView.Adapter<StudentCourseRecyclerViewAdapter.ContentViewHolder> {
 
@@ -41,26 +48,25 @@ public class StudentCourseRecyclerViewAdapter extends RecyclerView.Adapter<Stude
         return data == null ? 0 : data.size();
     }
 
-    public static class ContentViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public static class ContentViewHolder extends BaseViewHolder {
 
-        private TextView tvCourse;
-        private TextView tvTeacher;
-        private TextView tvScore;
-        private TextView tvTime;
-        private TextView tvComment;
-        private TextView tvReply;
+        @BindView(R.id.tvCourse)
+        /*package*/ TextView tvCourse;
+        @BindView(R.id.tvTeacher)
+        /*package*/ TextView tvTeacher;
+        @BindView(R.id.tvScore)
+        /*package*/ TextView tvScore;
+        @BindView(R.id.tvTime)
+        /*package*/ TextView tvTime;
+        @BindView(R.id.tvComment)
+        /*package*/ TextView tvComment;
+        @BindView(R.id.tvReply)
+        /*package*/ TextView tvReply;
 
         private StudentCourseInfo data;
 
         public ContentViewHolder(View itemView) {
             super(itemView);
-            tvCourse = (TextView) itemView.findViewById(R.id.tvCourse);
-            tvScore = (TextView) itemView.findViewById(R.id.tvScore);
-            tvTeacher = (TextView) itemView.findViewById(R.id.tvTeacher);
-            tvTime = (TextView) itemView.findViewById(R.id.tvTime);
-            tvComment = (TextView) itemView.findViewById(R.id.tvComment);
-            tvReply = (TextView) itemView.findViewById(R.id.tvReply);
-            itemView.setOnClickListener(this);
         }
 
         public void bindData(StudentCourseInfo data) {
@@ -76,12 +82,21 @@ public class StudentCourseRecyclerViewAdapter extends RecyclerView.Adapter<Stude
             tvReply.setText("教师回复：" + data.getReply());
         }
 
-        @Override
-        public void onClick(View v) {
+        @OnClick(R.id.cvItem)
+        public void viewDetail() {
             Context context = itemView.getContext();
-            int courseId = data.getCourse().getId();
-            boolean isCommitted = data.getScore() >= 0.0f;
-            context.startActivity(EvaluateActivity.newIntent(context, courseId, Constant.IDENTITY_STUDENT, isCommitted));
+            context.startActivity(EvaluateActivity.newIntent(context,
+                    data.getCourse().getId(), Constant.IDENTITY_STUDENT, data.getScore() >= 0.0f));
+        }
+
+        @OnLongClick(R.id.cvItem)
+        public boolean showMoreOperationDialog() {
+            Context context = itemView.getContext();
+            new MaterialDialog.Builder(context).items("查看详细信息")
+                    .itemsCallback((dialog, itemView, which, text)
+                            -> context.startActivity(CourseInfoActivity.newIntent(context, data.getCourse())))
+                    .show();
+            return true;
         }
     }
 }

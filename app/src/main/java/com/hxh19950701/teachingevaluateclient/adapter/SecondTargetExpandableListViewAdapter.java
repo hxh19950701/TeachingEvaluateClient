@@ -8,39 +8,28 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
 import com.hxh19950701.teachingevaluateclient.R;
-import com.hxh19950701.teachingevaluateclient.bean.service.EvaluateFirstTarget;
-import com.hxh19950701.teachingevaluateclient.bean.service.EvaluateSecondTarget;
-import com.hxh19950701.teachingevaluateclient.bean.service.EvaluateThirdTarget;
+import com.hxh19950701.teachingevaluateclient.base.BaseViewHolder;
+import com.hxh19950701.teachingevaluateclient.bean.response.EvaluateFirstTarget;
+import com.hxh19950701.teachingevaluateclient.bean.response.EvaluateSecondTarget;
+import com.hxh19950701.teachingevaluateclient.bean.response.EvaluateThirdTarget;
 
-import java.util.Arrays;
+import butterknife.BindView;
 
 public class SecondTargetExpandableListViewAdapter extends BaseExpandableListAdapter {
 
     private EvaluateFirstTarget firstTarget;
     private float[] score;
-    private float[] averageScore;
     private boolean isReadOnly;
 
     public SecondTargetExpandableListViewAdapter(EvaluateFirstTarget firstTarget, float[] score) {
         this.firstTarget = firstTarget;
         this.score = score;
-        this.averageScore = new float[score.length];
         this.isReadOnly = false;
-        Arrays.fill(averageScore, -1.0f);
     }
 
     public SecondTargetExpandableListViewAdapter(EvaluateFirstTarget firstTarget, float[] score, boolean isReadOnly) {
         this.firstTarget = firstTarget;
         this.score = score;
-        this.averageScore = new float[score.length];
-        this.isReadOnly = isReadOnly;
-        Arrays.fill(averageScore, -1.0f);
-    }
-
-    public SecondTargetExpandableListViewAdapter(EvaluateFirstTarget firstTarget, float[] score, float[] averageScore, boolean isReadOnly) {
-        this.firstTarget = firstTarget;
-        this.score = score;
-        this.averageScore = averageScore;
         this.isReadOnly = isReadOnly;
     }
 
@@ -100,7 +89,7 @@ public class SecondTargetExpandableListViewAdapter extends BaseExpandableListAda
         }
         ChildViewHolder holder = (ChildViewHolder) convertView.getTag();
         EvaluateThirdTarget thirdTarget = firstTarget.getSecondTargets().get(groupPosition).getThirdTargets().get(childPosition);
-        holder.bindData(thirdTarget, score[thirdTarget.getId()], averageScore[thirdTarget.getId()], isReadOnly);
+        holder.bindData(thirdTarget, score[thirdTarget.getId()], isReadOnly);
         return convertView;
     }
 
@@ -109,12 +98,13 @@ public class SecondTargetExpandableListViewAdapter extends BaseExpandableListAda
         return !isReadOnly;
     }
 
-    private static class GroupViewHolder {
+    public static class GroupViewHolder extends BaseViewHolder {
 
-        private TextView tvSecondTargetName;
+        @BindView(R.id.tvSecondTargetName)
+        /*package*/ TextView tvSecondTargetName;
 
         public GroupViewHolder(View itemView) {
-            tvSecondTargetName = (TextView) itemView.findViewById(R.id.tvSecondTargetName);
+            super(itemView);
         }
 
         public void bindData(EvaluateSecondTarget secondTarget) {
@@ -122,23 +112,24 @@ public class SecondTargetExpandableListViewAdapter extends BaseExpandableListAda
         }
     }
 
-    private static class ChildViewHolder {
+    public static class ChildViewHolder extends BaseViewHolder {
 
-        private TextView tvThirdTargetName;
-        private TextView tvAverageScore;
-        private TextView tvScore;
+        @BindView(R.id.tvThirdTargetName)
+        /*package*/ TextView tvThirdTargetName;
+        @BindView(R.id.tvScore)
+        /*package*/ TextView tvScore;
+        @BindView(R.id.tvTotalScore)
+        /*package*/ TextView tvTotalScore;
 
         public ChildViewHolder(View itemView) {
-            tvThirdTargetName = (TextView) itemView.findViewById(R.id.tvThirdTargetName);
-            tvAverageScore = (TextView) itemView.findViewById(R.id.tvAverageScore);
-            tvScore = (TextView) itemView.findViewById(R.id.tvScore);
+            super(itemView);
         }
 
-        public void bindData(EvaluateThirdTarget thirdTarget, float score, float averageScore, boolean isReadOnly) {
+        public void bindData(EvaluateThirdTarget thirdTarget, float score, boolean isReadOnly) {
+            Context context = itemView.getContext();
             tvThirdTargetName.setText(thirdTarget.getName());
-            tvScore.setText(score < 0.0f ? "未评价" : score + "分");
-            tvAverageScore.setVisibility(averageScore < 0 ? View.GONE : View.VISIBLE);
-            tvAverageScore.setText("平均：" + averageScore + "分");
+            tvScore.setText(score < 0.0f ? "未评价" : context.getString(R.string.point, score));
+            tvTotalScore.setText(context.getString(R.string.point, (float) thirdTarget.getTotalScore()));
         }
     }
 }

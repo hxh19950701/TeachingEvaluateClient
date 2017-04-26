@@ -1,8 +1,5 @@
 package com.hxh19950701.teachingevaluateclient.bean.response;
 
-import com.hxh19950701.teachingevaluateclient.bean.service.Course;
-import com.hxh19950701.teachingevaluateclient.bean.service.StudentCourseEvaluate;
-
 import java.util.List;
 
 public class CourseAndEvaluatedItem {

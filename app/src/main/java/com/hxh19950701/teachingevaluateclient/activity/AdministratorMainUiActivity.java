@@ -1,45 +1,45 @@
 package com.hxh19950701.teachingevaluateclient.activity;
 
-import android.support.annotation.NonNull;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.NavigationView;
-import android.support.v4.widget.DrawerLayout;
-import android.view.MenuItem;
 import android.view.View;
 
 import com.hxh19950701.teachingevaluateclient.R;
-import com.hxh19950701.teachingevaluateclient.base.BaseMainUiActivity;
+import com.hxh19950701.teachingevaluateclient.base.BaseActivity;
+import com.hxh19950701.teachingevaluateclient.utils.ActivityUtils;
+import com.hxh19950701.teachingevaluateclient.utils.IntentUtils;
 
-public class AdministratorMainUiActivity extends BaseMainUiActivity {
+import butterknife.OnClick;
 
-    private CoordinatorLayout clPersonCenter;
-    private NavigationView nvDrawer;
+public class AdministratorMainUiActivity extends BaseActivity {
 
     @Override
-    protected void initView() {
-        setContentView(R.layout.activity_administrator_main_ui);
-        clPersonCenter = (CoordinatorLayout) findViewById(R.id.clPersonCenter);
-        nvDrawer = (NavigationView) findViewById(R.id.nvDrawer);
-        dlPersonCenter = (DrawerLayout) findViewById(R.id.dlPersonCenter);
+    protected int getLayoutId() {
+        return R.layout.activity_administrator_main_ui;
     }
 
     @Override
-    protected void initListener() {
-
-    }
-
-    @Override
-    protected void initData() {
-
-    }
-
-    @Override
+    @OnClick({R.id.btnUserManage,
+            R.id.btnDepartmentManage,
+            R.id.btnCreateUser,
+            R.id.btnChangePassword,
+            R.id.btnLogout})
     public void onClick(View view) {
-
+        switch (view.getId()) {
+            case R.id.btnUserManage:
+                IntentUtils.startActivity(this, UserManageActivity.class);
+                break;
+            case R.id.btnDepartmentManage:
+                IntentUtils.startActivity(this, DepartmentManageActivity.class);
+                break;
+            case R.id.btnCreateUser:
+                IntentUtils.startActivity(this, CreateUserActivity.class);
+                break;
+            case R.id.btnChangePassword:
+                IntentUtils.startActivity(this, ModifyPasswordActivity.class);
+                break;
+            case R.id.btnLogout:
+                ActivityUtils.exitApp(this, "您已注销成功");
+                break;
+        }
     }
 
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        return false;
-    }
 }

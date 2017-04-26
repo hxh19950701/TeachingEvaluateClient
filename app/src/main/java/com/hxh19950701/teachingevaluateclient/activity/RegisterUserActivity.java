@@ -1,189 +1,127 @@
 package com.hxh19950701.teachingevaluateclient.activity;
 
-import android.content.Context;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TextInputLayout;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hxh19950701.teachingevaluateclient.R;
 import com.hxh19950701.teachingevaluateclient.base.BaseActivity;
-import com.hxh19950701.teachingevaluateclient.bean.service.User;
+import com.hxh19950701.teachingevaluateclient.bean.response.User;
+import com.hxh19950701.teachingevaluateclient.common.Constant;
 import com.hxh19950701.teachingevaluateclient.event.UserRegisterCompleteEvent;
-import com.hxh19950701.teachingevaluateclient.impl.TextWatcherImpl;
 import com.hxh19950701.teachingevaluateclient.manager.EventManager;
 import com.hxh19950701.teachingevaluateclient.network.SimpleServiceCallback;
 import com.hxh19950701.teachingevaluateclient.network.api.UserApi;
+import com.hxh19950701.teachingevaluateclient.utils.CheckTextExistenceUtils;
 import com.hxh19950701.teachingevaluateclient.utils.InputMethodUtils;
 import com.hxh19950701.teachingevaluateclient.utils.MD5Utils;
 import com.hxh19950701.teachingevaluateclient.utils.TextInputLayoutUtils;
-import com.lidroid.xutils.exception.HttpException;
-import com.lidroid.xutils.http.HttpHandler;
 
-import java.util.HashMap;
-import java.util.Map;
+import butterknife.BindView;
+import butterknife.OnClick;
+import butterknife.OnTextChanged;
 
 public class RegisterUserActivity extends BaseActivity {
 
-    private CoordinatorLayout clRegister;
-    private TextInputLayout tilUsername;
-    private TextInputLayout tilPassword;
-    private TextInputLayout tilPasswordRetype;
-    private Button btnRegister;
+    @BindView(R.id.clRegister)
+    /*package*/ CoordinatorLayout clRegister;
+    @BindView(R.id.tilUsername)
+    /*package*/ TextInputLayout tilUsername;
+    @BindView(R.id.tilPassword)
+    /*package*/ TextInputLayout tilPassword;
+    @BindView(R.id.tilPasswordRetype)
+    /*package*/ TextInputLayout tilPasswordRetype;
+    @BindView(R.id.btnRegister)
+    /*package*/ Button btnRegister;
 
-    private HttpHandler<String> httpHandler = null;
-    private Map<String, Boolean> existence = new HashMap<>(20);
-
-    private final TextWatcher USERNAME_WATCHER = new TextWatcherImpl() {
-        @Override
-        public void afterTextChanged(Editable s) {
-            String username = s.toString();
-            if (httpHandler != null) {
-                httpHandler.cancel();
-            }
-            if (username.isEmpty()) {
-                TextInputLayoutUtils.setErrorEnabled(tilUsername, false);
-                refreshOperationEnable();
-            } else if (username.length() < 6) {
-                tilUsername.setError("用户名由6~16个数字和字母组成。");
-                refreshOperationEnable();
-            } else {
-                Boolean exist = existence.get(username);
-                if (exist == null) {
-                    checkUsernameExistence();
-                } else {
-                    setupUsernameExistence(exist);
-                    refreshOperationEnable();
-                }
-            }
-        }
-    };
-
-    private final TextWatcher PASSWORD_WATCHER = new TextWatcherImpl() {
-        @Override
-        public void afterTextChanged(Editable s) {
-            if (tilPassword.getEditText().getText().toString().isEmpty()) {
-                tilPasswordRetype.getEditText().setEnabled(false);
-                TextInputLayoutUtils.setErrorEnabled(tilPassword, false);
-            } else if (s.length() < 6) {
-                tilPasswordRetype.getEditText().setEnabled(false);
-                tilPassword.setError("密码由6~16个数字，字母和符号组成。");
-            } else {
-                tilPasswordRetype.getEditText().setEnabled(true);
-                TextInputLayoutUtils.setErrorEnabled(tilPassword, false);
-            }
-            tilPasswordRetype.getEditText().setText("");
-            refreshOperationEnable();
-        }
-    };
-
-    private final TextWatcher PASSWORD_RETYPE_WATCHER = new TextWatcherImpl() {
-        @Override
-        public void afterTextChanged(Editable s) {
-            String password = tilPassword.getEditText().getText().toString();
-            if (password.startsWith(s.toString())) {
-                TextInputLayoutUtils.setErrorEnabled(tilPasswordRetype, false);
-            } else {
-                tilPasswordRetype.setError(getText(R.string.passwordInconsistent));
-            }
-            refreshOperationEnable();
-        }
-    };
+    private CheckTextExistenceUtils existenceUtils;
 
     @Override
-    public void initView() {
-        setContentView(R.layout.activity_register_user);
-        btnRegister = (Button) findViewById(R.id.btnRegister);
-        clRegister = (CoordinatorLayout) findViewById(R.id.clRegister);
-        tilUsername = (TextInputLayout) findViewById(R.id.tilUsername);
-        tilPassword = (TextInputLayout) findViewById(R.id.tilPassword);
-        tilPasswordRetype = (TextInputLayout) findViewById(R.id.tilPasswordRetype);
+    protected int getLayoutId() {
+        return R.layout.activity_register_user;
     }
 
     @Override
-    public void initListener() {
-        btnRegister.setOnClickListener(this);
-        tilUsername.getEditText().addTextChangedListener(USERNAME_WATCHER);
-        tilPassword.getEditText().addTextChangedListener(PASSWORD_WATCHER);
-        tilPasswordRetype.getEditText().addTextChangedListener(PASSWORD_RETYPE_WATCHER);
+    protected void initListener() {
+        existenceUtils = new CheckTextExistenceUtils(
+                tilUsername,
+                "正在检测该用户名是否可用，请稍后……",
+                getText(R.string.usernameInUse),
+                "我们无法检测该用户名是否可用。",
+                new CheckTextExistenceUtils.CheckListener() {
+                    @Override
+                    public void onCheckFromServer(CheckTextExistenceUtils.CheckServiceCallback callback) {
+                        UserApi.hasExist(callback.getText().toString(), callback);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        refreshOperationEnable();
+                    }
+                });
     }
 
     @Override
     public void initData() {
         displayHomeAsUp();
+
         tilPasswordRetype.getEditText().setEnabled(false);
-        refreshOperationEnable();
-
-        //弹出键盘
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_NOT_ALWAYS);
+        InputMethodUtils.showForced();
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.btnRegister:
-                register();
-        }
-    }
-
-    private void setupUsernameExistence(boolean isExist) {
-        if (isExist) {
-            CharSequence errorText = getResources().getText(R.string.usernameInUse);
-            tilUsername.setError(errorText);
-        } else {
+    @OnTextChanged(value = R.id.etUsername)
+    public void checkUsername() {
+        existenceUtils.abortCurrentCheck();
+        String username = tilUsername.getEditText().getText().toString();
+        if (username.isEmpty()) {
             TextInputLayoutUtils.setErrorEnabled(tilUsername, false);
+            refreshOperationEnable();
+        } else if (username.length() < 6) {
+            tilUsername.setError("用户名由6~16个数字和字母组成。");
+            refreshOperationEnable();
+        } else {
+            existenceUtils.checkExistence();
         }
     }
 
-    protected void checkUsernameExistence() {
-        final String username = tilUsername.getEditText().getText().toString();
-        httpHandler = UserApi.hasExist(username, new SimpleServiceCallback<Boolean>(clRegister) {
-            @Override
-            public void onStart() {
-                tilUsername.setError("正在检测该用户名是否可用，请稍后……");
-            }
-
-            @Override
-            public void onAfter() {
-                refreshOperationEnable();
-            }
-
-            @Override
-            public void onGetDataSuccessful(Boolean isExist) {
-                existence.put(username, isExist);
-                setupUsernameExistence(isExist);
-            }
-
-            @Override
-            public void onFailure(HttpException e, String s) {
-                tilUsername.setError("我们无法检测该用户名是否可用。");
-            }
-
-            @Override
-            public void onGetDataFailed(int code, String msg) {
-                tilUsername.setError("我们无法检测该用户名是否可用。");
-            }
-
-            @Override
-            public void onJsonSyntaxException(String s) {
-                tilUsername.setError("我们无法检测该用户名是否可用。");
-            }
-        });
+    @OnTextChanged(value = R.id.etPassword)
+    public void checkPassword() {
+        String password = tilPassword.getEditText().getText().toString();
+        if (password.isEmpty()) {
+            tilPasswordRetype.getEditText().setEnabled(false);
+            TextInputLayoutUtils.setErrorEnabled(tilPassword, false);
+        } else if (password.length() < 6) {
+            tilPasswordRetype.getEditText().setEnabled(false);
+            tilPassword.setError("密码由6~16个数字，字母和符号组成。");
+        } else {
+            tilPasswordRetype.getEditText().setEnabled(true);
+            TextInputLayoutUtils.setErrorEnabled(tilPassword, false);
+        }
+        tilPasswordRetype.getEditText().setText("");
+        refreshOperationEnable();
     }
 
-    protected void register() {
-        final MaterialDialog dialog = new MaterialDialog.Builder(this).title("正在注册").content("请稍后...")
-                .cancelable(false).progressIndeterminateStyle(false).progress(true, 0).build();
-        final String username = tilUsername.getEditText().getText().toString();
-        final String password = MD5Utils.encipher(tilPassword.getEditText().getText().toString());
+    @OnTextChanged(value = R.id.etPasswordRetype)
+    public void checkPasswordRetype() {
+        String password = tilPassword.getEditText().getText().toString();
+        String passwordRetype = tilPasswordRetype.getEditText().getText().toString();
+        if (password.startsWith(passwordRetype)) {
+            TextInputLayoutUtils.setErrorEnabled(tilPasswordRetype, false);
+        } else {
+            tilPasswordRetype.setError(getText(R.string.passwordInconsistent));
+        }
+        refreshOperationEnable();
+    }
 
-        UserApi.registerStudent(username, password, new SimpleServiceCallback<User>(clRegister,dialog) {
-
+    @OnClick(R.id.btnRegister)
+    public void register() {
+        MaterialDialog dialog = new MaterialDialog.Builder(this)
+                .title("正在注册").content("请稍后...")
+                .cancelable(false).progress(true, 0).build();
+        String username = tilUsername.getEditText().getText().toString();
+        String password = MD5Utils.encipher(tilPassword.getEditText().getText().toString());
+        UserApi.register(username, password, Constant.IDENTITY_STUDENT, new SimpleServiceCallback<User>(clRegister, dialog) {
             @Override
             public void onGetDataSuccessful(User user) {
                 EventManager.postEvent(new UserRegisterCompleteEvent(username, password));
@@ -199,8 +137,8 @@ public class RegisterUserActivity extends BaseActivity {
     }
 
     private void refreshOperationEnable() {
-        final String password = tilPassword.getEditText().getText().toString();
-        final String passwordRetype = tilPasswordRetype.getEditText().getText().toString();
+        String password = tilPassword.getEditText().getText().toString();
+        String passwordRetype = tilPasswordRetype.getEditText().getText().toString();
         btnRegister.setEnabled(TextInputLayoutUtils.isInputComplete(tilUsername)
                 && TextInputLayoutUtils.isInputComplete(tilPassword)
                 && TextInputLayoutUtils.isInputComplete(tilPasswordRetype)

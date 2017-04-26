@@ -2,14 +2,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
 	  xmlns:tools="http://schemas.android.com/tools"
 	  tools:context=".MainActivity">
-	<item
-		android:id="@+id/action_edit_info"
-		android:icon="@drawable/ic_border_color"
-		android:title="修改信息"/>
+
+	<item android:id="@+id/action_edit_info"
+		  android:icon="@drawable/ic_border_color"
+		  android:title="修改信息"
+		  android:visible="false"/>
+
 	<item
 		android:id="@+id/action_modify_password"
 		android:icon="@drawable/ic_border_color"
 		android:title="修改密码"/>
+
+	<item android:id="@+id/action_batch_student"
+		  android:icon="@drawable/ic_person_grey600"
+		  android:title="批量生成学生用户"
+		  android:visible="false"/>
+
 	<item
 		android:id="@+id/action_logout"
 		android:icon="@drawable/ic_exit"

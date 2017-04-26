@@ -25,7 +25,7 @@
 	<string name="firstUseHint">Welcome to the Teaching Evaluation System, for the first use, please
 		complete your information.
 	</string>
-	<string name="usernameInUse">This user name is already in use.</string>
+	<string name="usernameInUse">This username is already in use.</string>
 	<string name="name">Name</string>
 	<string name="studentId">Student ID</string>
 	<string name="passwordInconsistent">Password input inconsistent.</string>
@@ -40,6 +40,8 @@
 	</string-array>
 	<string name="ok">ok</string>
 	<string name="cancel">Cancel</string>
-
-	<string name="usernameChar">0123456789abcdefghigklmnopqrstuvwxyzABCDEFGHIGKLMNOPQRSTUVWXYZ</string>
+	<string name="usernameChar">0123456789abcdefghijgklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ
+	</string>
+	<string name="point">%1$.1f point</string>
+	<string name="title_activity_course_info">CourseInfoActivity</string>
 </resources>

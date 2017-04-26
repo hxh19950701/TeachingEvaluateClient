@@ -30,6 +30,7 @@
 			android:layout_height="wrap_content">
 
 			<EditText android:layout_width="match_parent"
+					  android:id="@+id/etComment"
 					  android:layout_height="wrap_content"
 					  android:gravity="start"
 					  android:hint="写下你的建议吧"

@@ -20,7 +20,7 @@ public class InputMethodUtils {
         return inputMethodManager.isActive();
     }
 
-    public static void toggleSoftInput() {
+    public static void showForced() {
         inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_NOT_ALWAYS);
     }
 

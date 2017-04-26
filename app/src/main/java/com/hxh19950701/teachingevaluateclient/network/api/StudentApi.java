@@ -2,7 +2,7 @@ package com.hxh19950701.teachingevaluateclient.network.api;
 
 import com.google.gson.reflect.TypeToken;
 import com.hxh19950701.teachingevaluateclient.base.ResponseData;
-import com.hxh19950701.teachingevaluateclient.bean.service.Student;
+import com.hxh19950701.teachingevaluateclient.bean.response.Student;
 import com.hxh19950701.teachingevaluateclient.network.NetClient;
 import com.hxh19950701.teachingevaluateclient.network.ServiceCallback;
 import com.lidroid.xutils.http.HttpHandler;
@@ -36,5 +36,11 @@ public class StudentApi {
         String action = "currentStudent";
         RequestParams requestParams = NetClient.buildRequestParams(action);
         return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<Student>>(){});
+    }
+
+    public static HttpHandler<String> get(int uid, ServiceCallback<Student> callBack) {
+        String action = "get";
+        RequestParams requestParams = NetClient.buildRequestParams(action, "uid", uid + "");
+        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<Student>>() {});
     }
 }

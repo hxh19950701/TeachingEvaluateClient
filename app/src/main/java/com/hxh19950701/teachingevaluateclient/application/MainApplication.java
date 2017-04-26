@@ -17,6 +17,7 @@ import com.hxh19950701.teachingevaluateclient.utils.InputMethodUtils;
 import com.hxh19950701.teachingevaluateclient.utils.IntentUtils;
 import com.hxh19950701.teachingevaluateclient.utils.PrefUtils;
 import com.hxh19950701.teachingevaluateclient.utils.ToastUtils;
+import com.tencent.bugly.Bugly;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -33,6 +34,7 @@ public class MainApplication extends Application {
         initManager();
         startServices();
         EventManager.register(this);
+        Bugly.init(getApplicationContext(), "ad61c01574", false);
     }
 
     public void initUtils() {

@@ -4,6 +4,10 @@
 
 	<uses-permission android:name="android.permission.INTERNET"/>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+	<uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+	<uses-permission android:name="android.permission.READ_LOGS"/>
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
 	<application
 		android:name=".application.MainApplication"
@@ -17,20 +21,20 @@
 			android:theme="@style/SplashTheme">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN"/>
-
 				<category android:name="android.intent.category.LAUNCHER"/>
 			</intent-filter>
 		</activity>
+
 		<activity
 			android:name=".activity.LoginActivity"
-			android:label="@string/app_name">
+			android:label="用户登录">
 		</activity>
 		<activity
 			android:name=".activity.RegisterUserActivity"
 			android:label="学生注册">
 		</activity>
 		<activity
-			android:name=".activity.RegisterStudentActivity"
+			android:name=".activity.StudentInfoCompleteActivity"
 			android:label="完善学生信息">
 		</activity>
 		<activity
@@ -58,24 +62,84 @@
 			android:label="教学评价管理端">
 		</activity>
 		<activity
-			android:name=".activity.TeacherNewCourseActivity"
+			android:name=".activity.CreateCourseActivity"
 			android:label="新建课程">
 		</activity>
+
+		<activity android:name=".activity.StudentCommentActivity"
+				  android:label="评论">
+		</activity>
+		<activity android:name=".activity.StudentEditInfoActivity"
+				  android:label="信息编辑">
+		</activity>
+		<activity android:name=".activity.TeacherInfoActivity"
+				  android:label="教师信息">
+		</activity>
+		<activity android:name=".activity.ModifyPasswordActivity"
+				  android:label="修改密码">
+		</activity>
+		<activity
+			android:name=".activity.CourseInfoActivity"
+			android:label="课程信息">
+		</activity>
+
+		<activity
+			android:name=".activity.UserManageActivity"
+			android:label="用户管理">
+		</activity>
+		<activity
+			android:name=".activity.UserInfoActivity"
+			android:label="用户信息">
+		</activity>
+		<activity
+			android:name=".activity.CourseEvaluateInfoActivity"
+			android:label="课程评价信息">
+		</activity>
+		<activity
+			android:name=".activity.CreateStudentUserActivity"
+			android:label="创建学生用户">
+		</activity>
+		<activity
+			android:name=".activity.TeacherInfoCompleteActivity"
+			android:label="完善教师信息">
+		</activity>
+		<activity
+			android:name=".activity.DepartmentManageActivity"
+			android:label="系部管理">
+		</activity>
+		<activity
+			android:name=".activity.SubjectManageActivity"
+			android:label="专业管理">
+		</activity>
+		<activity
+			android:name=".activity.ClazzManageActivity"
+			android:label="班级管理">
+		</activity>
+		<activity android:name=".activity.CreateUserActivity"
+				  android:label="新建用户">
+		</activity>
+
+		<activity
+			android:name="com.tencent.bugly.beta.ui.BetaActivity"
+			android:configChanges="keyboardHidden|orientation|screenSize|locale"
+			android:theme="@android:style/Theme.Translucent"/>
 
 		<service
 			android:name=".service.DataUpdateService"
 			android:enabled="true"
-			android:exported="true">
+			android:exported="true"
+			android:permission="">
 		</service>
 
-		<activity android:name=".activity.StudentCommentActivity">
-		</activity>
-		<activity android:name=".activity.StudentEditInfoActivity">
-		</activity>
-		<activity android:name=".activity.TeacherInfoActivity">
-		</activity>
-		<activity android:name=".activity.ModifyPasswordActivity">
-		</activity>
+		<provider
+			android:name="android.support.v4.content.FileProvider"
+			android:authorities="com.hxh19950701.teachingevaluateclient.fileProvider"
+			android:exported="false"
+			android:grantUriPermissions="true">
+			<meta-data
+				android:name="android.support.FILE_PROVIDER_PATHS"
+				android:resource="@xml/provider_paths"/>
+		</provider>
 	</application>
 
 </manifest>

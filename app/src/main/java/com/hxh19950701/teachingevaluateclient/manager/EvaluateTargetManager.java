@@ -6,9 +6,9 @@ import android.util.Log;
 
 import com.google.gson.reflect.TypeToken;
 import com.hxh19950701.teachingevaluateclient.base.ResponseData;
-import com.hxh19950701.teachingevaluateclient.bean.service.EvaluateFirstTarget;
-import com.hxh19950701.teachingevaluateclient.bean.service.EvaluateSecondTarget;
-import com.hxh19950701.teachingevaluateclient.bean.service.EvaluateThirdTarget;
+import com.hxh19950701.teachingevaluateclient.bean.response.EvaluateFirstTarget;
+import com.hxh19950701.teachingevaluateclient.bean.response.EvaluateSecondTarget;
+import com.hxh19950701.teachingevaluateclient.bean.response.EvaluateThirdTarget;
 import com.hxh19950701.teachingevaluateclient.interfaces.ManagerInitializeListener;
 import com.hxh19950701.teachingevaluateclient.network.api.EvaluateApi;
 import com.hxh19950701.teachingevaluateclient.utils.GsonUtils;
@@ -49,7 +49,6 @@ public class EvaluateTargetManager {
 
     };
 
-    private static final Initializer INITIALIZER = new Initializer();
     private static final List<EvaluateFirstTarget> FIRST_TARGETS = new ArrayList<>(4);
     private static final List<EvaluateSecondTarget> SECOND_TARGETS = new ArrayList<>(20);
     private static final List<EvaluateThirdTarget> THIRD_TARGETS = new ArrayList<>(50);
@@ -59,8 +58,7 @@ public class EvaluateTargetManager {
     private static class Initializer extends Thread implements ManagerInitializeListener {
 
         private static final Handler HANDLER = new Handler();
-        private static final Type TYPE = new TypeToken<ResponseData<List<EvaluateThirdTarget>>>() {
-        }.getType();
+        private static final Type TYPE = new TypeToken<ResponseData<List<EvaluateThirdTarget>>>() {}.getType();
 
         private Context context = null;
 
@@ -187,12 +185,9 @@ public class EvaluateTargetManager {
     }
 
     public static void init(Context context) {
-        if (!INITIALIZER.isAlive()) {
-            INITIALIZER.context = context;
-            INITIALIZER.start();
-        } else {
-            Log.w(TAG, "正在进行初始化，此次初始化请求将被忽略。");
-        }
+        Initializer initializer = new Initializer();
+        initializer.context = context;
+        initializer.start();
     }
 
     public static void setInitializeListener(ManagerInitializeListener initializeListener) {

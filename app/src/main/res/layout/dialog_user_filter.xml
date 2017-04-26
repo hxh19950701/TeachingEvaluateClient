@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			  android:layout_width="match_parent"
+			  android:padding="10dp"
+			  android:layout_height="match_parent"
+			  android:orientation="vertical">
+
+	<android.support.design.widget.TextInputLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+
+		<EditText android:id="@+id/etUsername"
+				  android:hint="包含用户名"
+				  android:layout_width="match_parent"
+				  android:layout_height="wrap_content"/>
+
+	</android.support.design.widget.TextInputLayout>
+
+	<LinearLayout android:layout_width="match_parent"
+				  android:layout_height="wrap_content"
+				  android:gravity="center_vertical">
+
+		<TextView android:layout_width="wrap_content"
+				  android:layout_height="wrap_content"
+				  android:text="身份："/>
+
+		<RadioGroup android:id="@+id/rgIdentity"
+					android:orientation="horizontal"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content">
+
+			<RadioButton android:layout_width="wrap_content"
+						 android:id="@+id/rbIdentityAll"
+						 android:layout_height="wrap_content"
+						 android:layout_weight="1"
+						 android:checked="true"
+						 android:tag="-1"
+						 android:text="不限"/>
+
+			<RadioButton android:layout_width="wrap_content"
+						 android:layout_height="wrap_content"
+						 android:id="@+id/rbStudent"
+						 android:layout_weight="1"
+						 android:tag="0"
+						 android:text="学生"/>
+
+			<RadioButton android:layout_width="wrap_content"
+						 android:id="@+id/rbTeacher"
+						 android:layout_height="wrap_content"
+						 android:layout_weight="1"
+						 android:tag="1"
+						 android:text="教师"/>
+
+			<RadioButton android:layout_width="wrap_content"
+						 android:layout_height="wrap_content"
+						 android:id="@+id/rbAdministrator"
+						 android:layout_weight="1"
+						 android:tag="2"
+						 android:text="管理员"/>
+		</RadioGroup>
+	</LinearLayout>
+
+	<LinearLayout android:layout_width="match_parent"
+				  android:layout_height="wrap_content"
+				  android:gravity="center_vertical">
+
+		<TextView android:layout_width="wrap_content"
+				  android:layout_height="wrap_content"
+				  android:text="状态："/>
+
+		<RadioGroup android:id="@+id/rgEnable"
+					android:orientation="horizontal"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content">
+
+			<RadioButton android:layout_width="wrap_content"
+						 android:layout_height="wrap_content"
+						 android:layout_weight="1"
+						 android:checked="true"
+						 android:id="@+id/rbEnableAll"
+						 android:tag="-1"
+						 android:text="不限"/>
+
+			<RadioButton android:layout_width="wrap_content"
+						 android:layout_height="wrap_content"
+						 android:layout_weight="1"
+						 android:tag="0"
+						 android:id="@+id/rbDisable"
+						 android:text="未启用"/>
+
+			<RadioButton android:layout_width="wrap_content"
+						 android:layout_height="wrap_content"
+						 android:layout_weight="1"
+						 android:id="@+id/rbEnable"
+						 android:tag="1"
+						 android:text="已启用"/>
+
+		</RadioGroup>
+	</LinearLayout>
+</LinearLayout>

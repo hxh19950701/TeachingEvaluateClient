@@ -24,11 +24,12 @@
 				  android:text="请输入教师为你提供的课程编号及课程口令来添加课程，其中课程编号只能为数字。\n如果遇到问题，请联系教师获取解决方案。"/>
 		<android.support.design.widget.TextInputLayout
 			android:layout_marginTop="14dp"
-			android:id="@+id/tilClassId"
+			android:id="@+id/tilCourseId"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content">
 
 			<EditText android:layout_width="match_parent"
+					  android:id="@+id/etCourseId"
 					  android:layout_height="wrap_content"
 					  android:hint="课程编号"
 					  android:inputType="number"
@@ -36,18 +37,19 @@
 		</android.support.design.widget.TextInputLayout>
 
 		<android.support.design.widget.TextInputLayout
-			android:id="@+id/tilCoursePasswordRetype"
+			android:id="@+id/tilCoursePassword"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content">
 
 			<EditText android:layout_width="match_parent"
+					  android:id="@+id/etCoursePassword"
 					  android:layout_height="wrap_content"
 					  android:hint="课程口令"
 					  android:inputType="textPassword"
 					  android:singleLine="true"/>
 		</android.support.design.widget.TextInputLayout>
 
-		<Button android:id="@+id/btnNewCourse"
+		<Button android:id="@+id/btnAddCourse"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_gravity="right"

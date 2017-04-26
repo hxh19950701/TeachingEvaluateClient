@@ -1,10 +1,7 @@
 package com.hxh19950701.teachingevaluateclient.fragment;
 
-import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 
@@ -12,22 +9,21 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.hxh19950701.teachingevaluateclient.R;
 import com.hxh19950701.teachingevaluateclient.adapter.SecondTargetExpandableListViewAdapter;
 import com.hxh19950701.teachingevaluateclient.base.BaseFragment;
-import com.hxh19950701.teachingevaluateclient.bean.service.EvaluateFirstTarget;
-import com.hxh19950701.teachingevaluateclient.bean.service.EvaluateThirdTarget;
+import com.hxh19950701.teachingevaluateclient.bean.response.EvaluateFirstTarget;
+import com.hxh19950701.teachingevaluateclient.bean.response.EvaluateThirdTarget;
 import com.hxh19950701.teachingevaluateclient.manager.EvaluateTargetManager;
+
+import butterknife.BindView;
 
 public class FirstTargetFragment extends BaseFragment implements ExpandableListView.OnChildClickListener {
 
-    public interface OnItemScoreUpdateListener {
-        void onItemScoreUpdate(TextView textView, int itemId, float newScore);
-    }
-
-    private ExpandableListView elvFirstTarget;
+    @BindView(R.id.elvFirstTarget)
+    /*package*/ ExpandableListView elvFirstTarget;
 
     private EvaluateFirstTarget firstTarget;
     private float[] score;
-    private OnItemScoreUpdateListener listener;
     private boolean isReadOnly;
+    private OnItemScoreUpdateListener listener;
 
     public FirstTargetFragment(EvaluateFirstTarget firstTarget, float[] score, boolean isReadOnly, @Nullable OnItemScoreUpdateListener listener) {
         this.firstTarget = firstTarget;
@@ -37,10 +33,8 @@ public class FirstTargetFragment extends BaseFragment implements ExpandableListV
     }
 
     @Override
-    public View initView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.item_first_target, container, false);
-        elvFirstTarget = (ExpandableListView) view.findViewById(R.id.elvFirstTarget);
-        return view;
+    protected int getLayoutId() {
+        return R.layout.item_first_target;
     }
 
     @Override
@@ -51,11 +45,6 @@ public class FirstTargetFragment extends BaseFragment implements ExpandableListV
     @Override
     public void initData() {
         elvFirstTarget.setAdapter(new SecondTargetExpandableListViewAdapter(firstTarget, score, isReadOnly));
-    }
-
-    @Override
-    public void onClick(View v) {
-
     }
 
     public int getCheckedId(int itemId) {
@@ -87,23 +76,24 @@ public class FirstTargetFragment extends BaseFragment implements ExpandableListV
     }
 
     @Override
-    public boolean onChildClick(ExpandableListView parent, final View v, int groupPosition, int childPosition, final long id) {
+    public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, final long id) {
         SecondTargetExpandableListViewAdapter adapter = (SecondTargetExpandableListViewAdapter) parent.getExpandableListAdapter();
         EvaluateThirdTarget thirdTarget = adapter.getChild(groupPosition, childPosition);
         final int itemId = thirdTarget.getId();
         int checkedId = getCheckedId(itemId);
         new MaterialDialog.Builder(getContext()).title("评价该项").items(R.array.checkItem)
-                .itemsCallbackSingleChoice(checkedId, new MaterialDialog.ListCallbackSingleChoice() {
-                    @Override
-                    public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
-                        float newScore = getCheckedScore(itemId, which);
-                        TextView tvScore = (TextView) v.findViewById(R.id.tvScore);
-                        if (listener != null) {
-                            listener.onItemScoreUpdate(tvScore, itemId, newScore);
-                        }
-                        return true;
+                .itemsCallbackSingleChoice(checkedId, (dialog, itemView, which, text) -> {
+                    float newScore = getCheckedScore(itemId, which);
+                    TextView tvScore = (TextView) v.findViewById(R.id.tvScore);
+                    if (listener != null) {
+                        listener.onItemScoreUpdate(tvScore, itemId, newScore);
                     }
+                    return true;
                 }).show();
         return false;
+    }
+
+    public interface OnItemScoreUpdateListener {
+        void onItemScoreUpdate(TextView textView, int itemId, float newScore);
     }
 }

@@ -1,5 +1,6 @@
 package com.hxh19950701.teachingevaluateclient.network;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 
 import com.google.gson.reflect.TypeToken;
@@ -17,10 +18,11 @@ import com.lidroid.xutils.http.client.HttpRequest;
 
 import org.apache.http.Header;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class NetClient {
 
     private NetClient() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("This class cannot be instantiated, and its methods must be called directly.");
     }
 
     private static final String TAG = NetClient.class.getSimpleName();
@@ -30,8 +32,8 @@ public class NetClient {
                                                          String url,
                                                          RequestParams requestParams,
                                                          ServiceCallback<Data> serviceCallback,
-                                                         TypeToken<? extends ResponseData<? extends Data>> typeToken) {
-        RequestCallBack<String> callBack = new RequestCallBackBuilder<Data>(typeToken.getType(), serviceCallback);
+                                                         TypeToken<ResponseData<Data>> typeToken) {
+        RequestCallBack<String> callBack = new RequestCallBackBuilder<>(typeToken.getType(), serviceCallback);
         return HTTP_UTILS.send(httpMethod, url, requestParams, callBack);
     }
 
@@ -42,14 +44,14 @@ public class NetClient {
     public static <Data> HttpHandler<String> sendGetRequest(String url,
                                                             RequestParams requestParams,
                                                             final ServiceCallback<Data> serviceCallback,
-                                                            TypeToken<? extends ResponseData<? extends Data>> typeToken) {
+                                                            TypeToken<ResponseData<Data>> typeToken) {
         return sendRequest(HttpRequest.HttpMethod.GET, url, requestParams, serviceCallback, typeToken);
     }
 
     public static <Data> HttpHandler<String> sendPostRequest(String url,
                                                              RequestParams requestParams,
                                                              ServiceCallback<Data> serviceCallback,
-                                                             TypeToken<? extends ResponseData<? extends Data>> typeToken) {
+                                                             TypeToken<ResponseData<Data>> typeToken) {
         return sendRequest(HttpRequest.HttpMethod.POST, url, requestParams, serviceCallback, typeToken);
     }
 
@@ -61,6 +63,7 @@ public class NetClient {
         return sendRequestSync(HttpRequest.HttpMethod.POST, url, requestParams);
     }
 
+    @SuppressLint("Assert")
     public static RequestParams buildRequestParams(String action, String... args) {
         assert (args.length % 2 == 0);
         RequestParams requestParams = new RequestParams();
@@ -75,7 +78,7 @@ public class NetClient {
         return requestParams;
     }
 
-    public static final void saveCookie(ResponseInfo<String> responseInfo) {
+    public static void saveCookie(ResponseInfo<String> responseInfo) {
         Header[] headers = responseInfo.getHeaders(Constant.KEY_SET_COOKIE);
         if (headers != null && headers.length > 0) {
             String str = headers[0].getValue();

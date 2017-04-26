@@ -1,6 +1,6 @@
 package com.hxh19950701.teachingevaluateclient.utils;
 
-import com.hxh19950701.teachingevaluateclient.bean.service.IdRecord;
+import com.hxh19950701.teachingevaluateclient.bean.response.IdRecord;
 
 import java.util.List;
 

@@ -7,13 +7,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.hxh19950701.teachingevaluateclient.R;
+import com.hxh19950701.teachingevaluateclient.activity.CourseEvaluateInfoActivity;
+import com.hxh19950701.teachingevaluateclient.activity.CourseInfoActivity;
 import com.hxh19950701.teachingevaluateclient.activity.EvaluateActivity;
-import com.hxh19950701.teachingevaluateclient.bean.service.Course;
+import com.hxh19950701.teachingevaluateclient.base.BaseViewHolder;
+import com.hxh19950701.teachingevaluateclient.bean.response.Course;
 import com.hxh19950701.teachingevaluateclient.common.Constant;
 import com.hxh19950701.teachingevaluateclient.utils.CourseUtils;
 
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.OnClick;
+import butterknife.OnLongClick;
 
 public class TeacherCourseRecyclerViewAdapter extends RecyclerView.Adapter<TeacherCourseRecyclerViewAdapter.ContentViewHolder> {
 
@@ -40,38 +48,56 @@ public class TeacherCourseRecyclerViewAdapter extends RecyclerView.Adapter<Teach
         return data == null ? 0 : data.size();
     }
 
-    public static class ContentViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public static class ContentViewHolder extends BaseViewHolder {
 
-        private TextView tvCourse;
-        private TextView tvStatus;
-        private TextView tvTime;
-        private TextView tvScore;
+        @BindView(R.id.tvCourse)
+        /*package*/ TextView tvCourse;
+        @BindView(R.id.tvStatus)
+        /*package*/ TextView tvStatus;
+        @BindView(R.id.tvTime)
+        /*package*/ TextView tvTime;
+        @BindView(R.id.tvScore)
+        /*package*/ TextView tvScore;
 
         private Course course;
 
         public ContentViewHolder(View itemView) {
             super(itemView);
-            tvCourse = (TextView) itemView.findViewById(R.id.tvCourse);
-            tvStatus = (TextView) itemView.findViewById(R.id.tvStatus);
-            tvScore = (TextView) itemView.findViewById(R.id.tvScore);
-            tvTime = (TextView) itemView.findViewById(R.id.tvTime);
-            itemView.setOnClickListener(this);
         }
 
         public void bindData(Course course) {
             this.course = course;
             tvCourse.setText(course.getName());
-            tvStatus.setText(course.getEvaluatedPersonCount() == course.getTotalPersonCount()
-                    ? "评价已完成"
-                    : "已有 " + course.getEvaluatedPersonCount() + " 人评价");
-            tvScore.setText(course.getScore()+"");
+            tvStatus.setText(course.getEvaluatedPersonCount() >= course.getTotalPersonCount()
+                    ? "评价已完成" : "已有 " + course.getEvaluatedPersonCount() + " 人评价");
+            tvScore.setText(course.getScore() + "");
             tvTime.setText(CourseUtils.formatCourseTime(course.getYear(), course.getTerm()));
         }
 
-        @Override
-        public void onClick(View v) {
+        @OnClick(R.id.cvItem)
+        public void viewDetail(View v) {
+            if (course.getEvaluatedPersonCount() > 0) {
+                Context context = itemView.getContext();
+                context.startActivity(CourseEvaluateInfoActivity.newIntent(context, course.getId()));
+            }
+        }
+
+        @OnLongClick(R.id.cvItem)
+        public boolean showMoreOperationDialog() {
             Context context = itemView.getContext();
-            context.startActivity(EvaluateActivity.newIntent(context, course.getId(), Constant.IDENTITY_TEACHER, true));
+            new MaterialDialog.Builder(context).items("查看得分详情", "查看详细信息")
+                    .itemsCallback((dialog, itemView, which, text) -> {
+                        switch (which) {
+                            case 0:
+                                context.startActivity(EvaluateActivity.newIntent(context, course.getId(), Constant.IDENTITY_TEACHER, true));
+                                break;
+                            case 1:
+                                context.startActivity(CourseInfoActivity.newIntent(context, course));
+                                break;
+                        }
+                    })
+                    .show();
+            return true;
         }
     }
 }

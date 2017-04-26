@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			  android:layout_width="match_parent"
+			  android:layout_height="match_parent"
+			  android:orientation="vertical">
+
+	<android.support.design.widget.TextInputLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:hint="输入班级名称">
+
+		<EditText android:layout_width="match_parent"
+				  android:id="@+id/etClazzName"
+				  android:layout_height="wrap_content"/>
+
+	</android.support.design.widget.TextInputLayout>
+
+	<android.support.design.widget.TextInputLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:hint="年份">
+
+		<EditText android:layout_width="match_parent"
+				  android:id="@+id/etClazzYear"
+				  android:layout_height="wrap_content"/>
+
+	</android.support.design.widget.TextInputLayout>
+</LinearLayout>

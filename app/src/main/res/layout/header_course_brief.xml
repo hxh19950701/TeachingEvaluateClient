@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			  android:layout_width="match_parent"
+			  android:layout_height="wrap_content"
+			  android:orientation="vertical">
+
+	<LinearLayout android:layout_width="match_parent"
+				  android:layout_height="wrap_content"
+				  android:orientation="vertical">
+
+		<TextView android:layout_width="match_parent"
+				  android:layout_height="wrap_content"
+				  android:layout_marginTop="5dp"
+				  android:background="#CCC"
+				  android:padding="3dp"
+				  android:text="最高得分项"/>
+
+		<LinearLayout android:id="@+id/llMaxThirdTarget"
+					  android:layout_width="match_parent"
+					  android:layout_height="wrap_content"
+					  android:orientation="vertical">
+
+			<TextView android:id="@+id/tvMaxThirdTargetName"
+					  android:layout_width="match_parent"
+					  android:layout_height="wrap_content"
+					  android:padding="5dp"
+					  android:text="@string/app_name"
+					  android:textColor="@color/textColor3"
+					  android:textSize="12sp"/>
+
+			<LinearLayout android:layout_width="match_parent"
+						  android:layout_height="wrap_content"
+						  android:orientation="horizontal">
+
+				<TextView android:id="@+id/tvMaxScore"
+						  android:layout_width="0dp"
+						  android:layout_height="wrap_content"
+						  android:layout_weight="1"
+						  android:gravity="end"
+						  android:text="@string/app_name"
+						  android:textColor="#FF0000"
+						  android:textSize="12sp"/>
+
+				<TextView android:layout_width="wrap_content"
+						  android:layout_height="wrap_content"
+						  android:text="/"
+						  android:textColor="#FF0000"/>
+
+				<TextView android:id="@+id/tvMaxTotalScore"
+						  android:layout_width="wrap_content"
+						  android:layout_height="wrap_content"
+						  android:text="@string/app_name"
+						  android:textColor="#FF0000"
+						  android:textSize="12sp"/>
+
+			</LinearLayout>
+		</LinearLayout>
+	</LinearLayout>
+
+	<LinearLayout android:layout_width="match_parent"
+				  android:layout_height="wrap_content"
+				  android:orientation="vertical">
+
+		<TextView android:layout_width="match_parent"
+				  android:layout_height="wrap_content"
+				  android:layout_marginTop="5dp"
+				  android:background="#CCC"
+				  android:padding="3dp"
+				  android:text="最低得分项"/>
+
+		<LinearLayout android:id="@+id/llMinThirdTarget"
+					  android:layout_width="match_parent"
+					  android:layout_height="wrap_content"
+					  android:orientation="vertical">
+
+			<TextView android:id="@+id/tvMinThirdTargetName"
+					  android:layout_width="match_parent"
+					  android:layout_height="wrap_content"
+					  android:padding="5dp"
+					  android:text="@string/app_name"
+					  android:textColor="@color/textColor3"
+					  android:textSize="12sp"/>
+
+			<LinearLayout android:layout_width="match_parent"
+						  android:layout_height="wrap_content"
+						  android:orientation="horizontal">
+
+				<TextView android:id="@+id/tvMinScore"
+						  android:layout_width="0dp"
+						  android:layout_height="wrap_content"
+						  android:layout_weight="1"
+						  android:gravity="end"
+						  android:text="@string/app_name"
+						  android:textColor="#FF0000"
+						  android:textSize="12sp"/>
+
+				<TextView android:layout_width="wrap_content"
+						  android:layout_height="wrap_content"
+						  android:text="/"
+						  android:textColor="#FF0000"/>
+
+				<TextView android:id="@+id/tvMinTotalScore"
+						  android:layout_width="wrap_content"
+						  android:layout_height="wrap_content"
+						  android:text="@string/app_name"
+						  android:textColor="#FF0000"
+						  android:textSize="12sp"/>
+
+			</LinearLayout>
+		</LinearLayout>
+	</LinearLayout>
+
+	<TextView android:layout_width="match_parent"
+			  android:layout_height="wrap_content"
+			  android:layout_marginTop="5dp"
+			  android:background="#CCC"
+			  android:padding="3dp"
+			  android:text="评价动态"/>
+</LinearLayout>

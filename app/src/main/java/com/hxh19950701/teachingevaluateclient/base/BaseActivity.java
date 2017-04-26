@@ -10,18 +10,38 @@ import android.view.View;
 import com.hxh19950701.teachingevaluateclient.R;
 import com.hxh19950701.teachingevaluateclient.manager.EventManager;
 
+import butterknife.ButterKnife;
+
 public abstract class BaseActivity extends AppCompatActivity implements View.OnClickListener {
 
-    protected abstract void initView();
-    protected abstract void initListener();
-    protected abstract void initData();
-    public abstract void onClick(View view);
+    protected abstract int getLayoutId();
+
+    protected void initView() {
+
+    }
+
+    protected void initListener() {
+
+    }
+
+    protected void initData() {
+
+    }
+
+    public void onClick(View view) {
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initView();
+        int layoutId = getLayoutId();
+        if (layoutId > 0) {
+            setContentView(layoutId);
+            ButterKnife.bind(this);
+        }
         initToolbar();
+        initView();
         initListener();
         initData();
     }
@@ -54,11 +74,15 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void stopReceiveEvent(){
         if (EventManager.isRegistered(this)) {
             EventManager.unregister(this);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopReceiveEvent();
     }
 }
