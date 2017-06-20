@@ -42,7 +42,7 @@ public class CreateStudentDialog extends MaterialDialog {
         String username = usernameList.get(pos);
         String password = MD5Utils.encipher(username);
         setContent("正在创建：" + username + " ...");
-        UserApi.register(username, password, Constant.IDENTITY_STUDENT, new ServiceCallback<User>() {
+        UserApi.register(username, password, Constant.IDENTITY_STUDENT,"", new ServiceCallback<User>() {
 
             @Override
             public void onAfter() {

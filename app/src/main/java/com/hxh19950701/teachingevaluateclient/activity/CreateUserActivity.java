@@ -67,7 +67,7 @@ public class CreateUserActivity extends BaseActivity {
     private void create() {
         String username = etUsername.getText().toString();
         int identity = Integer.parseInt(findViewById(rgIdentity.getCheckedRadioButtonId()).getTag().toString());
-        UserApi.register(username, MD5Utils.encipher(username), identity, new SimpleServiceCallback<User>(clCreateUser) {
+        UserApi.register(username, MD5Utils.encipher(username), identity, "",new SimpleServiceCallback<User>(clCreateUser) {
             @Override
             public void onGetDataSuccessful(User user) {
                 SnackBarUtils.showLong(clCreateUser, "新建用户成功");

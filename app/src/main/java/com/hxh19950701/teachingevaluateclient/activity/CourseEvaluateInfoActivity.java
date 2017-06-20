@@ -7,6 +7,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -40,6 +42,7 @@ public class CourseEvaluateInfoActivity extends BaseActivity implements CourseEv
     @BindView(R.id.clCourseEvaluateInfo)
     /*package*/ CoordinatorLayout clCourseEvaluateInfo;
 
+    private int courseId;
     private TeacherCourseEvaluate max;
     private TeacherCourseEvaluate min;
     private List<StudentCourseInfo> info;
@@ -57,7 +60,7 @@ public class CourseEvaluateInfoActivity extends BaseActivity implements CourseEv
 
     @Override
     protected void initData() {
-        int courseId = getIntent().getIntExtra(Constant.KEY_COURSE_ID, -1);
+        courseId = getIntent().getIntExtra(Constant.KEY_COURSE_ID, -1);
         if (courseId > 0) {
             initMaxAndMin(courseId);
             initCompletedEvaluate(courseId);
@@ -123,5 +126,21 @@ public class CourseEvaluateInfoActivity extends BaseActivity implements CourseEv
                 initData();
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_detail, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_detail:
+                startActivity(EvaluateActivity.newIntent(this, courseId, Constant.IDENTITY_TEACHER, true));
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

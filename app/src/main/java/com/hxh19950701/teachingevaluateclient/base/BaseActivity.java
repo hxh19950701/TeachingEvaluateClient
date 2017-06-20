@@ -1,6 +1,7 @@
 package com.hxh19950701.teachingevaluateclient.base;
 
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -14,6 +15,7 @@ import butterknife.ButterKnife;
 
 public abstract class BaseActivity extends AppCompatActivity implements View.OnClickListener {
 
+    @LayoutRes
     protected abstract int getLayoutId();
 
     protected void initView() {
@@ -74,7 +76,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         }
     }
 
-    protected void stopReceiveEvent(){
+    protected void stopReceiveEvent() {
         if (EventManager.isRegistered(this)) {
             EventManager.unregister(this);
         }

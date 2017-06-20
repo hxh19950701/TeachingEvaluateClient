@@ -70,13 +70,13 @@ public class MainApplication extends Application {
         EventManager.unregister(this);
     }
 
-    @Subscribe(sticky = false, threadMode = ThreadMode.BACKGROUND)
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onServerUrlChanged(ServerUrlChangedEvent event) {
         Log.d(TAG, "服务器地址改变，正在重新初始化API");
         initServerURL();
     }
 
-    @Subscribe(sticky = false, threadMode = ThreadMode.BACKGROUND)
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onUserLoginSuccess(UserLoginSuccessfullyEvent event) {
         Log.d(TAG, "用户" + event.getUsername() + "登录成功");
         PrefUtils.putString(Constant.KEY_USERNAME, event.getUsername());

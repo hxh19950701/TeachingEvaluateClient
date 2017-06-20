@@ -32,6 +32,7 @@
 				android:paddingTop="20dp">
 
 				<EditText android:layout_width="match_parent"
+						  android:id="@+id/etStudentId"
 						  android:layout_height="wrap_content"
 						  android:hint="学号"
 						  android:inputType="number"
@@ -47,6 +48,7 @@
 				<EditText android:layout_width="match_parent"
 						  android:layout_height="wrap_content"
 						  android:hint="姓名"
+						  android:id="@+id/etStudentName"
 						  android:singleLine="true"/>
 
 			</android.support.design.widget.TextInputLayout>

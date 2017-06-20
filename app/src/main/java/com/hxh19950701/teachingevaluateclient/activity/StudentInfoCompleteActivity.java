@@ -230,7 +230,7 @@ public class StudentInfoCompleteActivity extends BaseActivity implements Adapter
         });
     }
 
-    @OnTextChanged(value = R.id.tilStudentId)
+    @OnTextChanged(value = R.id.etStudentId)
     public void checkStudentId() {
         existenceUtils.abortCurrentCheck();
         String studentId = tilStudentId.getEditText().getText().toString();
@@ -245,15 +245,16 @@ public class StudentInfoCompleteActivity extends BaseActivity implements Adapter
         }
     }
 
-    public void checkOtherInfo() {
-
+    @OnTextChanged(value = R.id.etStudentName)
+    public void checkName() {
+        refreshOperationEnable();
     }
 
     @Override
     public void onBackPressed() {
         new MaterialDialog.Builder(this).content("你的信息尚未保存，现在退出吗？")
                 .positiveText("退出").negativeText("取消")
-                .onPositive((dialog, which) -> ActivityUtils.exitApp(StudentInfoCompleteActivity.this, "在你完善信息之前，你将无法使用本系统。"))
+                .onPositive((dialog, which) -> ActivityUtils.exitAppWithoutAsk(StudentInfoCompleteActivity.this, "在你完善信息之前，你将无法使用本系统。"))
                 .show();
     }
 

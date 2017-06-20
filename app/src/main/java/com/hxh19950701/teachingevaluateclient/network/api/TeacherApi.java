@@ -2,6 +2,7 @@ package com.hxh19950701.teachingevaluateclient.network.api;
 
 import com.google.gson.reflect.TypeToken;
 import com.hxh19950701.teachingevaluateclient.base.ResponseData;
+import com.hxh19950701.teachingevaluateclient.bean.response.Code;
 import com.hxh19950701.teachingevaluateclient.bean.response.Teacher;
 import com.hxh19950701.teachingevaluateclient.network.NetClient;
 import com.hxh19950701.teachingevaluateclient.network.ServiceCallback;
@@ -42,5 +43,11 @@ public class TeacherApi {
         String action = "getTeacherByUid";
         RequestParams requestParams = NetClient.buildRequestParams(action, "uid", uid + "");
         return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<Teacher>>() {});
+    }
+
+    public static HttpHandler<String> createCode(ServiceCallback<Code> callBack) {
+        String action = "createCode";
+        RequestParams requestParams = NetClient.buildRequestParams(action);
+        return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<Code>>() {});
     }
 }

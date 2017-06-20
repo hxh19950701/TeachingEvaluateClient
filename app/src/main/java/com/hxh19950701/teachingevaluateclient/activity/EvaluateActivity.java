@@ -199,7 +199,7 @@ public class EvaluateActivity extends BaseActivity implements FirstTargetFragmen
                     item.setVisible(getTotalScore() >= 0.0f && !isReadOnly);
                     break;
                 case R.id.action_analysis:
-                    item.setVisible(identity == Constant.IDENTITY_TEACHER);
+                    item.setVisible(false);
                     break;
                 default:
             }

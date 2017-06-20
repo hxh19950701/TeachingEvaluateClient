@@ -11,6 +11,8 @@ import com.hxh19950701.teachingevaluateclient.R;
 import com.hxh19950701.teachingevaluateclient.base.BaseActivity;
 import com.hxh19950701.teachingevaluateclient.bean.response.Course;
 import com.hxh19950701.teachingevaluateclient.common.Constant;
+import com.hxh19950701.teachingevaluateclient.event.CreateCourseCompleteEvent;
+import com.hxh19950701.teachingevaluateclient.manager.EventManager;
 import com.hxh19950701.teachingevaluateclient.network.SimpleServiceCallback;
 import com.hxh19950701.teachingevaluateclient.network.api.CourseApi;
 import com.hxh19950701.teachingevaluateclient.utils.MD5Utils;
@@ -85,6 +87,7 @@ public class CreateCourseActivity extends BaseActivity {
                 new SimpleServiceCallback<Course>(clNewCourse, dialog) {
                     @Override
                     public void onGetDataSuccessful(Course course) {
+                        EventManager.postEvent(new CreateCourseCompleteEvent(course));
                         showCreateCourseSuccessfullyDialog(course);
                     }
                 });

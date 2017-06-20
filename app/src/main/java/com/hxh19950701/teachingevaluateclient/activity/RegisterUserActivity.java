@@ -32,6 +32,8 @@ public class RegisterUserActivity extends BaseActivity {
     /*package*/ TextInputLayout tilPassword;
     @BindView(R.id.tilPasswordRetype)
     /*package*/ TextInputLayout tilPasswordRetype;
+    @BindView(R.id.tilCode)
+    /*package*/ TextInputLayout tilCode;
     @BindView(R.id.btnRegister)
     /*package*/ Button btnRegister;
 
@@ -65,7 +67,6 @@ public class RegisterUserActivity extends BaseActivity {
     @Override
     public void initData() {
         displayHomeAsUp();
-
         tilPasswordRetype.getEditText().setEnabled(false);
         InputMethodUtils.showForced();
     }
@@ -114,6 +115,16 @@ public class RegisterUserActivity extends BaseActivity {
         refreshOperationEnable();
     }
 
+    @OnTextChanged(value = R.id.etCode)
+    public void checkCode() {
+        if (tilCode.getEditText().length() == 0 || tilCode.getEditText().length() == 8) {
+            TextInputLayoutUtils.setErrorEnabled(tilCode, false);
+        } else {
+            tilCode.setError("注册码为八位字母和数字组成");
+        }
+        refreshOperationEnable();
+    }
+
     @OnClick(R.id.btnRegister)
     public void register() {
         MaterialDialog dialog = new MaterialDialog.Builder(this)
@@ -121,7 +132,8 @@ public class RegisterUserActivity extends BaseActivity {
                 .cancelable(false).progress(true, 0).build();
         String username = tilUsername.getEditText().getText().toString();
         String password = MD5Utils.encipher(tilPassword.getEditText().getText().toString());
-        UserApi.register(username, password, Constant.IDENTITY_STUDENT, new SimpleServiceCallback<User>(clRegister, dialog) {
+        String code = tilCode.getEditText().getText().toString();
+        UserApi.register(username, password, Constant.IDENTITY_STUDENT, code, new SimpleServiceCallback<User>(clRegister, dialog) {
             @Override
             public void onGetDataSuccessful(User user) {
                 EventManager.postEvent(new UserRegisterCompleteEvent(username, password));
@@ -142,6 +154,7 @@ public class RegisterUserActivity extends BaseActivity {
         btnRegister.setEnabled(TextInputLayoutUtils.isInputComplete(tilUsername)
                 && TextInputLayoutUtils.isInputComplete(tilPassword)
                 && TextInputLayoutUtils.isInputComplete(tilPasswordRetype)
+                && TextInputLayoutUtils.isInputComplete(tilCode)
                 && password.equals(passwordRetype));
     }
 }

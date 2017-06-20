@@ -22,7 +22,7 @@
 
 		<TextView android:layout_width="wrap_content"
 				  android:layout_height="wrap_content"
-				  android:text="评价已经完成，你对教师的教学方式还有什么建议呢，赶快写下来吧，教师很希望得到你的建议噢！"/>
+				  android:text="评价已经完成，你对教师的教学方式还有什么建议呢，赶快写下来吧，教师很希望得到你的建议噢！\n请放心，你所作出的评价都是匿名的，不会泄露你的信息。"/>
 
 		<android.support.design.widget.TextInputLayout
 			android:id="@+id/tilComment"

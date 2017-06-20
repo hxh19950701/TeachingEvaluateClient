@@ -18,6 +18,7 @@ import com.hxh19950701.teachingevaluateclient.network.SimpleServiceCallback;
 import com.hxh19950701.teachingevaluateclient.network.api.CourseApi;
 import com.hxh19950701.teachingevaluateclient.network.api.EvaluateApi;
 import com.hxh19950701.teachingevaluateclient.utils.SnackBarUtils;
+import com.hxh19950701.teachingevaluateclient.utils.TextInputLayoutUtils;
 import com.hxh19950701.teachingevaluateclient.utils.ToastUtils;
 
 import butterknife.BindView;
@@ -74,6 +75,7 @@ public class StudentCommentActivity extends BaseActivity {
         if (tilComment.getEditText().length() < 5) {
             tilComment.setError("评论字数至少5个字，最长120字");
         } else {
+            TextInputLayoutUtils.setErrorEnabled(tilComment, false);
             btnCommit.setEnabled(course != null);
         }
     }

@@ -15,7 +15,7 @@
 
 	<item android:id="@+id/action_batch_student"
 		  android:icon="@drawable/ic_person_grey600"
-		  android:title="批量生成学生用户"
+		  android:title="生成注册码"
 		  android:visible="false"/>
 
 	<item

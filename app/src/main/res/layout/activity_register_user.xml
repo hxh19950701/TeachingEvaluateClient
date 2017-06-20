@@ -63,6 +63,20 @@
 
 		</android.support.design.widget.TextInputLayout>
 
+		<android.support.design.widget.TextInputLayout
+			android:id="@+id/tilCode"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content">
+
+			<EditText android:id="@+id/etCode"
+					  android:layout_width="match_parent"
+					  android:layout_height="wrap_content"
+					  android:hint="输入注册码"
+					  android:digits="@string/usernameChar"
+					  android:maxLength="8"/>
+
+		</android.support.design.widget.TextInputLayout>
+
 		<Button android:id="@+id/btnRegister"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"

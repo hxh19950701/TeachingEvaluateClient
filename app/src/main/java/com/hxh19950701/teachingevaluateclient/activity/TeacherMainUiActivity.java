@@ -15,16 +15,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.hxh19950701.teachingevaluateclient.R;
 import com.hxh19950701.teachingevaluateclient.adapter.TeacherCourseRecyclerViewAdapter;
 import com.hxh19950701.teachingevaluateclient.base.BaseActivity;
+import com.hxh19950701.teachingevaluateclient.bean.response.Code;
 import com.hxh19950701.teachingevaluateclient.bean.response.Course;
 import com.hxh19950701.teachingevaluateclient.bean.response.Teacher;
+import com.hxh19950701.teachingevaluateclient.event.CreateCourseCompleteEvent;
 import com.hxh19950701.teachingevaluateclient.network.SimpleServiceCallback;
 import com.hxh19950701.teachingevaluateclient.network.api.CourseApi;
 import com.hxh19950701.teachingevaluateclient.network.api.TeacherApi;
 import com.hxh19950701.teachingevaluateclient.utils.ActivityUtils;
 import com.hxh19950701.teachingevaluateclient.utils.IntentUtils;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -88,6 +94,7 @@ public class TeacherMainUiActivity extends BaseActivity
     protected void initData() {
         initTeacherInfo();
         initCourse();
+        startReceiveEvent();
     }
 
     private void initTeacherInfo() {
@@ -115,13 +122,25 @@ public class TeacherMainUiActivity extends BaseActivity
                 IntentUtils.startActivity(this, ModifyPasswordActivity.class);
                 break;
             case R.id.action_batch_student:
-                IntentUtils.startActivity(this, CreateStudentUserActivity.class);
+                createCode();
                 break;
             case R.id.action_logout:
                 ActivityUtils.exitApp(this, "您已注销成功");
                 break;
         }
         return true;
+    }
+
+    private void createCode() {
+        MaterialDialog dialog = new MaterialDialog.Builder(this).content("正在创建...")
+                .progress(true, 0).cancelable(false).build();
+        TeacherApi.createCode(new SimpleServiceCallback<Code>(clPersonCenter, dialog) {
+            @Override
+            public void onGetDataSuccessful(Code code) {
+                new MaterialDialog.Builder(TeacherMainUiActivity.this).title("成功生成注册码")
+                        .content("注册码为：" + code.getCode() + "\n10分钟内有效。").positiveText("关闭").show();
+            }
+        });
     }
 
     @OnClick(R.id.fabCreateCourse)
@@ -141,5 +160,10 @@ public class TeacherMainUiActivity extends BaseActivity
                 rvCourse.setAdapter(new TeacherCourseRecyclerViewAdapter(courses));
             }
         });
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onCreateCourseComplete(CreateCourseCompleteEvent event) {
+        initCourse();
     }
 }

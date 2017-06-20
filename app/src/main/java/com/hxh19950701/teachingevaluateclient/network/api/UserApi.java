@@ -35,9 +35,9 @@ public class UserApi {
         return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<User>>(){});
     }
 
-    public static HttpHandler<String> register(String username, String password, int identity, ServiceCallback<User> callBack) {
+    public static HttpHandler<String> register(String username, String password, int identity, String code, ServiceCallback<User> callBack) {
         String action = "register";
-        RequestParams requestParams = NetClient.buildRequestParams(action, "username", username, "password", password, "identity", identity+"");
+        RequestParams requestParams = NetClient.buildRequestParams(action, "username", username, "password", password, "identity", identity+"", "code", code);
         return NetClient.sendPostRequest(URL, requestParams, callBack, new TypeToken<ResponseData<User>>(){});
     }
 

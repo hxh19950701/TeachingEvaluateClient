@@ -43,11 +43,19 @@ public class ActivityUtils {
     public static void exitApp(Activity activity, String msg) {
         new MaterialDialog.Builder(activity).content("确认注销当前用户吗？")
                 .positiveText("注销").onPositive((dialog, which) -> {
-                    PrefUtils.putBoolean(Constant.KEY_AUTO_LOGIN, false);
-                    UserApi.logout(null);
-                    activity.startActivity(LoginActivity.newIntent(activity, msg)
-                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
-                    activity.overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out);
-                }).negativeText("取消").show();
+            PrefUtils.putBoolean(Constant.KEY_AUTO_LOGIN, false);
+            UserApi.logout(null);
+            activity.startActivity(LoginActivity.newIntent(activity, msg)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+            activity.overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out);
+        }).negativeText("取消").show();
+    }
+
+    public static void exitAppWithoutAsk(Activity activity, String msg) {
+        PrefUtils.putBoolean(Constant.KEY_AUTO_LOGIN, false);
+        UserApi.logout(null);
+        activity.startActivity(LoginActivity.newIntent(activity, msg)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+        activity.overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out);
     }
 }

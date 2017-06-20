@@ -90,7 +90,7 @@ public class TeacherInfoCompleteActivity extends BaseActivity {
     public void onBackPressed() {
         new MaterialDialog.Builder(this).content("你的信息尚未保存，现在退出吗？")
                 .positiveText("退出").negativeText("取消")
-                .onPositive((dialog, which) -> ActivityUtils.exitApp(TeacherInfoCompleteActivity.this, "在你完善信息之前，你将无法使用本系统。"))
+                .onPositive((dialog, which) -> ActivityUtils.exitAppWithoutAsk(TeacherInfoCompleteActivity.this, "在你完善信息之前，你将无法使用本系统。"))
                 .show();
     }
 }
